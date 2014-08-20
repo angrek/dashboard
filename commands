@@ -1,0 +1,15 @@
+
+in /usr/src there's a tgz of python 2.7
+To install it you must use --prefix=<whatever dir> when compiling and make altinstall rather than make install - VERY IMPORTANT or it will hose the system version of python
+
+from my home directory
+
+virtualenv -p /usr/local/bin/python2.7 EVN
+source ENV/bin/activate
+cd ENV
+pip install https://www.djangoproject.com/download/1.7b1.tarball/
+
+message that it's now installed into ENV/bin, and in fact it looks that way
+and python runs as 2.7 so it looks like we're good and can run django from in here
+
+I'm going to use port 8000 so as not to interfere with anything else here.
