@@ -22,16 +22,17 @@ def update_server():
     server_list = Server.objects.all()
     for server in server_list:
         print server
-        client = SSHClient()
-        client.load_system_host_keys()
-        client.connect(str(server), username="wrehfiel")
-        stdin, stdout, stderr = client.exec_command('oslevel -s')
-        oslevel = stdout.readlines()[0]
+        if Server.objects.filter(name=server, active=True, exception=False):
+            client = SSHClient()
+            client.load_system_host_keys()
+            client.connect(str(server), username="wrehfiel")
+            stdin, stdout, stderr = client.exec_command('oslevel -s')
+            oslevel = stdout.readlines()[0]
 
-        #check existing value, if it exists, don't update
-        if str(oslevel) != str(server.os_level):
-            Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
-            Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+            #check existing value, if it exists, don't update
+            if str(oslevel) != str(server.os_level):
+                Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
+                Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
 
 

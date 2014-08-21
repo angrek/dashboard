@@ -26,7 +26,7 @@ server_list = open(filename, "r").read().split()
 
 #starting with AIX servers first
 def populate():
-    exclusion_list = ['p1vio01', 'p1vio02', 'd1vio01', 'd1vio02', 't1sandbox', 'p3vio01', 'p3vio02', 'd2vio01', 'd2vio02', 'd1sasemin-10152013', 'u3midcap2', 'qpar1midtier', 'p1hmc', 'd1sysdir', 'p1goldimg', 'd0drtest', 'p720vio01', '720vio02', 'p1sasvio01', 'p1sasvio02', 'p7goldimg', 'qpar2midtier', 'uftsdwdb', 'p1testlpar']
+    exclusion_list = ['p1vio01', 'p1vio02', 'd1vio01', 'd1vio02', 't1sandbox', 'p3vio01', 'p3vio02', 'd2vio01', 'd2vio02', 'd1sasemin-10152013', 'u3midcap2', 'qpar1midtier', 'p1hmc', 'd1sysdir', 'p1goldimg', 'd0drtest', 'p720vio01', '720vio02', 'p1sasvio01', 'p1sasvio02', 'p7goldimg', 'qpar2midtier', 'uftsdwdb', 'p1testlpar', 'qpar1cesdb01', 'q2crmsdb', 'qpar2cesdb01', 'qpar1diamdb', 'qpar2diamdb', 'qprjqrsdb']
     for server in server_list:
         #get_or_create - no need to check for server first
         add_server(name=server, os="AIX")
