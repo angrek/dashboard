@@ -45,6 +45,8 @@ def update_server():
 #start execution
 if __name__ == '__main__':
     print "Checking SSL versions..."
+    print timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     from server.models import Server
     update_server()
+    print timezone.now()
