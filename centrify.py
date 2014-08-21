@@ -22,7 +22,8 @@ def update_server():
     server_list = Server.objects.all()
     for server in server_list:
         print server
-        if Server.objects.filter(name=server, active=True, exception=False):
+        #if Server.objects.filter(name=server, active=True, exception=False):
+        if Server.objects.filter(name=server, exception=False):
             client = SSHClient()
             client.load_system_host_keys()
             client.connect(str(server), username="wrehfiel")
