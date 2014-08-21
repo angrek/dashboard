@@ -21,7 +21,6 @@ django.setup()
 def update_server():
     server_list = Server.objects.all()
     for server in server_list:
-        print server
         client = SSHClient()
         client.load_system_host_keys()
         client.connect(str(server), username="wrehfiel")
@@ -38,6 +37,6 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Starting populations..."
+    print "Checking OS versions..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
