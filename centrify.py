@@ -22,18 +22,19 @@ def update_server():
     server_list = Server.objects.all()
     for server in server_list:
         print server
-        client = SSHClient()
-        client.load_system_host_keys()
-        client.connect(str(server), username="wrehfiel")
-        stdin, stdout, stderr = client.exec_command('adinfo -v')
-        centrify = stdout.readlines()[0]
-        #strings in Python are immutable so we need to create a new one
-        new_centrify = centrify[8:-2]
-       
-        #if it's the same version, we don't need to update the record
-        if str(new_centrify) != str(server.centrify):
-            Server.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
-            Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+        if Server.objects.filter(name=server, active=True, exception=False):
+            client = SSHClient()
+            client.load_system_host_keys()
+            client.connect(str(server), username="wrehfiel")
+            stdin, stdout, stderr = client.exec_command('adinfo -v')
+            centrify = stdout.readlines()[0]
+            #strings in Python are immutable so we need to create a new one
+            new_centrify = centrify[8:-2]
+           
+            #if it's the same version, we don't need to update the record
+            if str(new_centrify) != str(server.centrify):
+                Server.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
+                Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
 
 
