@@ -17,10 +17,10 @@ from dashboard import settings
 django.setup()
 
 
+
 def update_server():
     server_list = Server.objects.all()
     for server in server_list:
-        print server.ssl
         client = SSHClient()
         client.load_system_host_keys()
         client.connect(str(server), username="wrehfiel")
@@ -40,6 +40,8 @@ def update_server():
 #start execution
 if __name__ == '__main__':
     print "Checking centrify version..."
+    print timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     from server.models import Server
     update_server()
+    print timezone.now()
