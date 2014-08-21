@@ -17,23 +17,18 @@ from dashboard import settings
 django.setup()
 
 
-#Temporary server list
-server_list = ['d1nim', 'u2jdpdb', 'u3webdb']
-
-
-
-
 def update_server():
-    for name in server_list:
+    server_list = Server.objects.all()
+    for server in server_list:
         client = SSHClient()
         client.load_system_host_keys()
-        client.connect(name, username="wrehfiel")
+        client.connect(str(server), username="wrehfiel")
         stdin, stdout, stderr = client.exec_command('adinfo -v')
         centrify = stdout.readlines()[0]
         #strings in Python are immutable so we need to create a new one
         new_centrify = centrify[8:-2]
-        Server.objects.filter(name=name, exception=False, active=True).update(centrify=new_centrify)
-        Server.objects.filter(name=name, exception=False, active=True).update(modified=timezone.now())
+        Server.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
+        Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
     #s = Server.objects.get_or_create(name=name, ip_address=ip_address, os=os, os_level=os_level)[0]
     #return s
