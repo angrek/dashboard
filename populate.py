@@ -14,13 +14,13 @@ import django
 from dashboard import settings
 django.setup()
 
-
+server_list = ['d1nim', 'u2jdpdb', 'u3webdb', 'u3jdpdb']
 
 #starting with AIX servers first
 def populate():
-    add_server(name="d1nim", os="AIX")
-    add_server(name="u2jdpdb", os="AIX")
-    add_server(name="u3webdb", os="AIX")
+    for server in server_list:
+        #get_or_create - no need to check for server first
+        add_server(name=server, os="AIX")
 
 def add_server(name, os):
     s = Server.objects.get_or_create(name=name, os=os)[0]
