@@ -34,8 +34,11 @@ def update_server():
             p = re.compile(r' +')
             temp2 = p.split(temp)
             ssl = temp2[2]
-            Server.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
-            Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+            
+            #if existing value is the same, don't update
+            if str(ssl) != str(server.ssl):
+                Server.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
+                Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
 
 
