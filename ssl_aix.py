@@ -37,9 +37,6 @@ def update_server():
             Server.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
             Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
-    #s = Server.objects.get_or_create(name=name, ip_address=ip_address, os=os, os_level=os_level)[0]
-    #return s
-
 
 
 #start execution
