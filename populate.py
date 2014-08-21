@@ -14,14 +14,16 @@ import django
 from dashboard import settings
 django.setup()
 
+
+
 #starting with AIX servers first
 def populate():
     add_server(name="d1nim", os="AIX")
     add_server(name="u2jdpdb", os="AIX")
     add_server(name="u3webdb", os="AIX")
 
-def add_server(name, ip_address, os, os_level):
-    s = Server.objects.get_or_create(name=name, ip_address=ip_address, os=os, os_level=os_level)[0]
+def add_server(name, os):
+    s = Server.objects.get_or_create(name=name, os=os)[0]
     return s
 
 
