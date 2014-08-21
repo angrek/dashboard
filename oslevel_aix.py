@@ -26,8 +26,11 @@ def update_server():
         client.connect(str(server), username="wrehfiel")
         stdin, stdout, stderr = client.exec_command('oslevel -s')
         oslevel = stdout.readlines()[0]
-        Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
-        Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+
+        #check existing value, if it exists, don't update
+        if str(oslevel) != str(server.os_level):
+            Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
+            Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
 
 
