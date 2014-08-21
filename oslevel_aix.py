@@ -26,12 +26,8 @@ def update_server():
         client.connect(str(server), username="wrehfiel")
         stdin, stdout, stderr = client.exec_command('oslevel -s')
         oslevel = stdout.readlines()[0]
-        #FIXME GAHHHHHHH os_level...you dork...
         Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
         Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
-
-    #s = Server.objects.get_or_create(name=name, ip_address=ip_address, os=os, os_level=os_level)[0]
-    #return s
 
 
 
