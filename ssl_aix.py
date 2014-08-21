@@ -18,23 +18,12 @@ from dashboard import settings
 django.setup()
 
 
-#Temporary server list
-server_list = ['u2jdpdb', 'u3webdb', 'd1nim']
-
-
-
-#starting with AIX servers first
-#def populate():
-#    update_server(name="d1nim", ip_address="10.5.32.72", os="AIX", os_level="7100-03-03-1415")
-#    update_server(name="u2jdpdb", ip_address="10.5.44.73", os="AIX", os_level="6100-09-02-1311")
-#    update_server(name="u3webdb", ip_address="10.5.45.56", os="AIX", os_level="6100-09-02-1311")
-
-
 def update_server():
-    for name in server_list:
+    server_list = Server.objects.all()
+    for server in server_list:
         client = SSHClient()
         client.load_system_host_keys()
-        client.connect(name, username="wrehfiel")
+        client.connect(str(server), username="wrehfiel")
         stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i openssl.base')
         #this is going to pull 4 different parts of ssl, we just need the base
         rows = stdout.readlines()
@@ -45,8 +34,8 @@ def update_server():
             p = re.compile(r' +')
             temp2 = p.split(temp)
             ssl = temp2[2]
-            Server.objects.filter(name=name, exception=False, active=True).update(ssl=ssl)
-            Server.objects.filter(name=name, exception=False, active=True).update(modified=timezone.now())
+            Server.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
+            Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
     #s = Server.objects.get_or_create(name=name, ip_address=ip_address, os=os, os_level=os_level)[0]
     #return s
