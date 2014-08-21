@@ -21,6 +21,7 @@ django.setup()
 def update_server():
     server_list = Server.objects.all()
     for server in server_list:
+        print server
         client = SSHClient()
         client.load_system_host_keys()
         client.connect(str(server), username="wrehfiel")
