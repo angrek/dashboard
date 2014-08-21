@@ -14,6 +14,7 @@ import django
 from dashboard import settings
 django.setup()
 
+#FIXME - ok, this is where we need to hit the servers and get what servers actually exist
 server_list = ['d1nim', 'u2jdpdb', 'u3webdb', 'u3jdpdb']
 
 #starting with AIX servers first
