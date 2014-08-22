@@ -5,6 +5,7 @@ from server.models import Server
 
 
 class ServerAdmin(admin.ModelAdmin):
+    list_max_show_all = 500
     list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
     list_filter = ['os', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
