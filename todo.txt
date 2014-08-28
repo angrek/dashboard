@@ -1,0 +1,18 @@
+
+-make 'get servers' scripts 
+-server exclusions and lists
+-#FIXME server crashes if server name is unknown
+-make the error checking a seperate module we can call
+
+-get the honeydew module from the TBO vm
+-write xcelys version script 
+
+-error checking if values don't exist? (say a server is wrongly
+    classified as AIX so oslevel -s doesn't work?
+
+-output times so we have a rough idea how long each of these scripts are taking
+
+-centrify update hanging on inactive server d1sysdir
+
+-let's make a check all servers scripts to run before hand so we're not pinging the servers for every single script
+
