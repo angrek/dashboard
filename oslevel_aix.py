@@ -10,7 +10,7 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-
+from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -20,7 +20,7 @@ django.setup()
 
 def update_server():
     #server_list = Server.objects.all()
-    #quick way of testing a few servers
+    #FIXME quick way of testing a few servers
     server_list = Server.objects.filter(name='t4sandbox')
     for server in server_list:
         print server
@@ -35,6 +35,13 @@ def update_server():
             if str(oslevel) != str(server.os_level):
                 Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
                 Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                #pretty user the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
+                change_message = 'Changed os_level to ' + str(oslevel)
+                LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
+                #We can do that or we can FK to the admin log...should we try to add our own columns?
+                #log = Server.objects.log(name=server 
+
 
 
 
