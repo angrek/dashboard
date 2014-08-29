@@ -24,6 +24,20 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+#FIXME - added this per a stackflow thread, but not sure it's doing anything
+TEMPLATE_DIRS = (
+    'templates',
+    '..',
+    os.path.join(BASE_DIR, "templates"),
+)
+
+#FIXME - added this per a stackflow thread, but not sure it's doing anything
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+
 ALLOWED_HOSTS = []
 
 
@@ -43,6 +57,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.admindocs',
+    'todo',
     'server',
 )
 
