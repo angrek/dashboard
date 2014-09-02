@@ -7,7 +7,7 @@ class ItemAdmin(admin.ModelAdmin):
     list_filter = ('list', 'completed', 'priority')
     ordering = ('completed', 'priority',)
     search_fields = ('name',)
-
+    save_on_top = True
 
 admin.site.register(List)
 admin.site.register(Comment)
