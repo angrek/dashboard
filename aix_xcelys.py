@@ -54,7 +54,7 @@ def update_server():
                     if str(xcelys_version) != str(server.xcelys):
                         Server.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version)
                         Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
-                        #pretty user the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
+                        #pretty sure the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
                         change_message = 'Changed xcelys to ' + str(xcelys_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                         #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though

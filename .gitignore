@@ -5,3 +5,6 @@ ALL_AIX.072114.list.orig.good
 server/migrations
 todo/migrations
 .gitignore
+server/*.pyc
+todo/*.pyc
+dashboard/*.pyc
