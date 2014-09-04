@@ -37,7 +37,7 @@ class Server(models.Model):
     os = models.CharField(max_length=10, blank=True, null=True)
     os_level = models.CharField(max_length=20, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
-    xcelys = models.CharField(max_length=20, blank=True, null=True)
+    xcelys = models.CharField(max_length=35, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
