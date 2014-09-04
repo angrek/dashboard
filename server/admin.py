@@ -19,7 +19,7 @@ class LogEntryAdmin(admin.ModelAdmin):
     
     #note the loss of _id on user_id and content_type_id in the list display
     list_display = ('action_time', 'user', 'content_type', 'object_repr', 'action_flag', 'change_message')
-    list_filter = ('action_time', 'user_id', 'content_type_id', 'object_repr', 'action_flag', 'change_message')
+    list_filter = ('action_time', 'user_id', 'content_type_id')
     search_fields = ('action_time', 'user_id', 'content_type_id', 'object_repr', 'action_flag', 'change_message')
     save_on_top = True
     fields = ('action_time', 'user_id', 'content_type_id', 'object_repr', 'action_flag', 'change_message')
