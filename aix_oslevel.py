@@ -30,7 +30,13 @@ def update_server():
             client = SSHClient()
             client.load_system_host_keys()
             client.connect(str(server), username="wrehfiel")
-            command = 'oslevel -s'
+            
+            #with the vio servers we want the ios.level rather than the os_level
+            vio_servers = Server.objects.filter(name__contains='vio')
+            if server in vio_servers:
+                command = 'cat /usr/ios/cli/ios.level'
+            else:
+                command = 'oslevel -s'
             stdin, stdout, stderr = client.exec_command(command)
             oslevel = stdout.readlines()[0]
 
