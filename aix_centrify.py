@@ -21,15 +21,15 @@ django.setup()
 
 
 def update_server():
-    #server_list = Server.objects.all()
+    server_list = Server.objects.all()
     #just a quick way to on off test a server without the whole list
-    server_list = Server.objects.filter(name='t3dbatest')
+    #server_list = Server.objects.filter(name='t3dbatest')
     for server in server_list:
         server_is_active=1
 
         #these are hardcoded because
         #none of the vio servers have Centrify installed on them
-        server_exceptions = ['d1vio01', 'd1vio02', 'd2vio01', 'd2vio02', 'p1vio01', 'p1vio02', 'p3vio01', 'p3vio02', 'p1sasvio01', 'p1sasvio02', 'p720vio01', 'p720vio02']
+        server_exceptions = Server.objects.filter(name__contains='vio')
 
         #Make sure the server is set to active and not an exception
         if Server.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
