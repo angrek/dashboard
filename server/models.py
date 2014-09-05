@@ -46,6 +46,14 @@ class Server(models.Model):
     def __unicode__(self):
         return self.name
 
+class Errpt(models.Model):
+    name = models.ForeignKey(Server)
+    report = models.TextField(blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    def __unixcode__(self):
+        return self.name
+
 
 #    def save(self, *args, **kwargs):
 #        '''On save, update timestamps'''
