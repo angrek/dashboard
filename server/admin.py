@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import Server
+from server.models import Server, Errpt
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -29,10 +29,11 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         #returning false causes table to gray out in the admin page for some reason
         return True
-    def has_delete_permission(self, request, obj=None):
-        return False
 
+class ErrptAdmin(admin.ModelAdmin):
+    list_display = ['name', 'modified', 'report']
 
 
 admin.site.register(Server, ServerAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Errpt, ErrptAdmin)
