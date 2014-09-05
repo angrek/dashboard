@@ -39,9 +39,13 @@ def update_server():
                     client.connect(str(server), username="wrehfiel")
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
+                    #SSH fails so we set it to an exception, update the modified time, and add a log entry
                     Server.objects.filter(name=server).update(exception=True)
+                    Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
+
                     server_is_active=0
+
                 if server_is_active: 
                     stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
                     temp_xcelys_version = stdout.readlines()[0]
