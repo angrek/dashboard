@@ -1,2 +1,10 @@
 ALL_AIX.072114.list.orig
 ALL_AIX.072114.list.orig.good
+*.pyc
+*.swp
+server/migrations
+todo/migrations
+.gitignore
+server/*.pyc
+todo/*.pyc
+dashboard/*.pyc

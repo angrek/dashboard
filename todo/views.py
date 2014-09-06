@@ -21,7 +21,6 @@ import datetime
 # Need for links in email templates
 current_site = Site.objects.get_current()
 
-
 def check_user_allowed(user):
     """
     test for user_passes_test decorator
