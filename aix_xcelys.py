@@ -23,8 +23,8 @@ django.setup()
 def update_server():
     server_list = Server.objects.all()
     #FIXME quick way of testing a few servers
+    #do not use a list/dict as it needs the actual object for the 'server'
     #server_list = Server.objects.filter(name='u3midcap2')
-    #server_list = ['d1vio01', 'd1vio02', 'u2midpb']
     for server in server_list:
         server_is_active=1
         if Server.objects.filter(name=server, active=True, exception=False):
