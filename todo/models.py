@@ -37,15 +37,15 @@ class List(models.Model):
 
 class Item(models.Model):
     title = models.CharField(max_length=140)
-    list = models.ForeignKey(List)
+    list = models.ForeignKey(List, default=1)
     created_date = models.DateField(auto_now=True, auto_now_add=True)
     due_date = models.DateField(blank=True, null=True, )
-    completed = models.BooleanField()
+    completed = models.BooleanField(default=False)
     completed_date = models.DateField(blank=True, null=True)
-    created_by = models.ForeignKey(User, related_name='todo_created_by')
-    assigned_to = models.ForeignKey(User, related_name='todo_assigned_to')
+    created_by = models.ForeignKey(User, related_name='todo_created_by', default=1)
+    assigned_to = models.ForeignKey(User, related_name='todo_assigned_to', default=1)
     note = models.TextField(blank=True, null=True)
-    priority = models.PositiveIntegerField(max_length=3)
+    priority = models.PositiveIntegerField(max_length=3, default=3)
 
     # Model method: Has due date for an instance of this object passed?
     def overdue_status(self):

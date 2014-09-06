@@ -3,11 +3,12 @@ from todo.models import Item, User, List, Comment
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'list', 'priority', 'due_date')
-    list_filter = ('list',)
-    ordering = ('priority',)
+    list_display = ('title', 'list', 'priority', 'assigned_to', 'completed', 'due_date')
+    list_editable = ('list', 'priority', 'completed', 'assigned_to', 'due_date')
+    list_filter = ('list', 'completed', 'priority', 'assigned_to', 'due_date')
+    ordering = ('completed', 'priority',)
     search_fields = ('name',)
-
+    save_on_top = True
 
 admin.site.register(List)
 admin.site.register(Comment)

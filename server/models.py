@@ -37,13 +37,21 @@ class Server(models.Model):
     os = models.CharField(max_length=10, blank=True, null=True)
     os_level = models.CharField(max_length=20, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
-    xcelys = models.CharField(max_length=20, blank=True, null=True)
+    xcelys = models.CharField(max_length=35, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
 
     def __unicode__(self):
+        return self.name
+
+class Errpt(models.Model):
+    name = models.ForeignKey(Server)
+    report = models.TextField(blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    def __unixcode__(self):
         return self.name
 
 
