@@ -20,12 +20,12 @@ django.setup()
 
 def update_server():
     counter = 0
-    server_list = Server.objects.all()
+    server_list = AIXServer.objects.all()
     for server in server_list:
         #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
         print str(counter) + " - " + str(server)
-        if Server.objects.filter(name=server, active=True, exception=False):
+        if AIXServer.objects.filter(name=server, active=True, exception=False):
             client = SSHClient()
             client.load_system_host_keys()
             client.connect(str(server), username="wrehfiel")
@@ -42,8 +42,8 @@ def update_server():
                 
                 #if existing value is the same, don't update
                 if str(ssl) != str(server.ssl):
-                    Server.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
-                    Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl)
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
 
 
 
@@ -52,6 +52,6 @@ if __name__ == '__main__':
     print "Checking SSL versions..."
     print timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import Server
+    from server.models import AIXServer
     update_server()
     print timezone.now()

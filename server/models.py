@@ -17,7 +17,7 @@ class UserProfile(models.Model):
 
 
 
-class Server(models.Model):
+class AIXServer(models.Model):
     name = models.CharField(max_length=30)
     
     #active will let us keep historical data of past servers if needed
@@ -46,8 +46,42 @@ class Server(models.Model):
     def __unicode__(self):
         return self.name
 
+class LinuxServer(models.Model):
+    name = models.CharField(max_length=30)
+    
+    #active will let us keep historical data of past servers if needed
+    active = models.NullBooleanField(default=True, blank=True)
+
+    #exceptions will be servers we don't want to gather data on - manually set
+    exception = models.NullBooleanField(default=False, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    #last_updated should be auto set by the scripts anytime it is CHANGED
+    #this means the script will need to compare values and if something is changed
+    #it should change this and add both to the log
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    #I'm not sure why we might need the IP but whatever, just in case..
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    os = models.CharField(max_length=10, blank=True, null=True)
+    os_level = models.CharField(max_length=20, blank=True, null=True)
+    centrify = models.CharField(max_length=35, blank=True, null=True)
+    xcelys = models.CharField(max_length=35, blank=True, null=True)
+    ssl = models.CharField(max_length=20, blank=True, null=True)
+    java = models.CharField(max_length=20, blank=True, null=True)
+    log = models.TextField(blank=True, null=True)
+
+
+    def __unicode__(self):
+        return self.name
+
+class VIOServer(AIXServer):
+    class Meta:
+        proxy=True
+
+
 class Errpt(models.Model):
-    name = models.ForeignKey(Server)
+    name = models.ForeignKey(AIXServer)
     report = models.TextField(blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
@@ -59,8 +93,8 @@ class Errpt(models.Model):
         return self.name
 
 class Lpar(models.Model):
-    lpar = models.ForeignKey(Server)
-    wpars = models.ManyToManyField(Server, related_name='wpar_name')
+    lpar = models.ForeignKey(AIXServer)
+    wpars = models.ManyToManyField(AIXServer, related_name='wpar_name')
 
 #    def save(self, *args, **kwargs):
 #        '''On save, update timestamps'''
@@ -68,5 +102,6 @@ class Lpar(models.Model):
 #            self.created = datetime.datetime.today()
 #        self.modified = datetime.datetime.today()
 #        return super(Server, self).save(*args, **kwargs)
+
 
 

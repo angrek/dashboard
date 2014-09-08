@@ -14,14 +14,14 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import Server
+from server.models import AIXServer
 import ping_server
 django.setup()
 
 
 
 def update_server():
-    server_list = Server.objects.all()
+    server_list = AIXServer.objects.all()
     #just a quick way to on off test a server without the whole list
     #server_list = Server.objects.filter(name='t3dbatest')
     for server in server_list:
@@ -29,10 +29,10 @@ def update_server():
 
         #these are hardcoded because
         #none of the vio servers have Centrify installed on them
-        server_exceptions = Server.objects.filter(name__contains='vio')
+        server_exceptions = AIXServer.objects.filter(name__contains='vio')
 
         #Make sure the server is set to active and not an exception
-        if Server.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
+        if AIXServer.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
             response = ping_server.ping(server)
             
             #typically = is false, but that's what ping gives back for a positive
@@ -45,8 +45,8 @@ def update_server():
                     client.connect(str(server), username="wrehfiel")
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
-                    Server.objects.filter(name=server).update(exception=True)
-                    Server.objects.filter(name=server).update(modified=timezone.now())
+                    AIXServer.objects.filter(name=server).update(exception=True)
+                    AIXServer.objects.filter(name=server).update(modified=timezone.now())
 
                     #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
@@ -61,14 +61,14 @@ def update_server():
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
                         old_version = str(server.centrify)
-                        Server.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
-                        Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                        AIXServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
+                        AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                         change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
             else:
-                Server.objects.filter(name=server).update(active=False)
+                AIXServer.objects.filter(name=server).update(active=False)
                 print str(server) + ' not responding to ping, setting to inactive.'
-                Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                 LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
 
 
@@ -79,6 +79,6 @@ if __name__ == '__main__':
     print "Checking centrify version..."
     print timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import Server
+    from server.models import AIXServer
     update_server()
     print timezone.now()
