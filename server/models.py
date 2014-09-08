@@ -51,6 +51,10 @@ class Errpt(models.Model):
     report = models.TextField(blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    class Meta:
+        verbose_name = "AIX Errpt"
+        verbose_name_plural = "AIX Errpts"
+
     def __unixcode__(self):
         return self.name
 
