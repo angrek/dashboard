@@ -14,25 +14,25 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import Server
+from server.models import AIXServer
 django.setup()
 
 
 def update_server():
-    #server_list = Server.objects.all()
+    #server_list = AIXServer.objects.all()
     #FIXME quick way of testing a few servers
-    #server_list = Server.objects.filter(name='d2vio01')
+    #server_list = AIXServer.objects.filter(name='d2vio01')
     #server_list = ['d1vio01', 'd1vio01']
-    server_list = Server.objects.filter(name__contains='vio')
+    server_list = AIXServer.objects.filter(name__contains='vio')
     for server in server_list:
         print server
-        if Server.objects.filter(name=server, active=True, exception=False):
+        if AIXServer.objects.filter(name=server, active=True, exception=False):
             client = SSHClient()
             client.load_system_host_keys()
             client.connect(str(server), username="wrehfiel")
             
             #with the vio servers we want the ios.level rather than the os_level
-            vio_servers = Server.objects.filter(name__contains='vio')
+            vio_servers = AIXServer.objects.filter(name__contains='vio')
             if server in vio_servers:
                 command = 'cat /usr/ios/cli/ios.level'
             else:
@@ -42,14 +42,14 @@ def update_server():
 
             #check existing value, if it exists, don't update
             if str(oslevel) != str(server.os_level):
-                Server.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
-                Server.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel)
+                AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                 #pretty user the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
                 change_message = 'Changed os_level to ' + str(oslevel)
                 LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                 #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
                 #We can do that or we can FK to the admin log...should we try to add our own columns?
-                #log = Server.objects.log(name=server 
+                #log = AIXServer.objects.log(name=server 
 
 
 
