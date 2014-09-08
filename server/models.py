@@ -58,6 +58,9 @@ class Errpt(models.Model):
     def __unixcode__(self):
         return self.name
 
+class Lpar(models.Model):
+    lpar = models.ForeignKey(Server)
+    wpars = models.ManyToManyField(Server, related_name='wpar_name')
 
 #    def save(self, *args, **kwargs):
 #        '''On save, update timestamps'''

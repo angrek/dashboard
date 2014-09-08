@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import Server, Errpt
+from server.models import Server, Errpt, Lpar
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -33,7 +33,11 @@ class LogEntryAdmin(admin.ModelAdmin):
 class ErrptAdmin(admin.ModelAdmin):
     list_display = ['name', 'modified', 'report']
 
+class LparAdmin(admin.ModelAdmin):
+    fields = ['lpar', 'wpars']
+    filter_horizontal = ('wpars',)
 
 admin.site.register(Server, ServerAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
+admin.site.register(Lpar, LparAdmin)
