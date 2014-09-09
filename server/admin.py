@@ -8,11 +8,11 @@ from django.contrib.admin.models import LogEntry
 class AIXServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
+    list_display = ['name', 'frame', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
     list_filter = ['os', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
+    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
 
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
