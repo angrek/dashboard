@@ -19,7 +19,7 @@ class UserProfile(models.Model):
 
 class AIXServer(models.Model):
     name = models.CharField(max_length=30)
-    
+    frame = models.CharField(max_length=30, blank=True, null=True)    
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
 
