@@ -16,7 +16,6 @@ class UserProfile(models.Model):
         return self.user
 
 
-
 class AIXServer(models.Model):
     name = models.CharField(max_length=30)
     frame = models.CharField(max_length=30, blank=True, null=True)    
@@ -41,6 +40,10 @@ class AIXServer(models.Model):
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "AIX Server"
+        verbose_name_plural = "AIX Servers"
 
 
     def __unicode__(self):
@@ -71,6 +74,9 @@ class LinuxServer(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = "Linux Server"
+        verbose_name_plural = "Linux Servers"
 
     def __unicode__(self):
         return self.name
@@ -78,6 +84,8 @@ class LinuxServer(models.Model):
 class VIOServer(AIXServer):
     class Meta:
         proxy=True
+        verbose_name = "VIO Server"
+        verbose_name_plural = "VIO Servers"
 
 
 class Errpt(models.Model):
@@ -92,9 +100,6 @@ class Errpt(models.Model):
     def __unixcode__(self):
         return self.name
 
-class Lpar(models.Model):
-    lpar = models.ForeignKey(AIXServer)
-    wpars = models.ManyToManyField(AIXServer, related_name='wpar_name')
 
 #    def save(self, *args, **kwargs):
 #        '''On save, update timestamps'''
