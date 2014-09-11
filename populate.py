@@ -33,8 +33,11 @@ logging.basicConfig( level=logging.INFO )
 def populate():
 
     f = open("../../.ssh/p", "r")
-    text = f.read()
-    print text
+
+    #need rstrip to strip off the newline at the end
+    password = str(f.read().rstrip())
+    print password
+    print len(password)
     f.close()
     #do I need a ping test for p1hmc?? lol
     client = SSHClient()
@@ -42,7 +45,7 @@ def populate():
     
     #we don't have ssh keys to p1hmc so this is going to prompt us for a password for now
     try:
-        client.connect('p1hmc', username="wrehfiel", password='Boomer77')
+        client.connect('p1hmc', username="wrehfiel", password=password)
     except:
         print 'SSH to p1hmc has failed!'
 
