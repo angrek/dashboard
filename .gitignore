@@ -8,3 +8,4 @@ todo/migrations
 server/*.pyc
 todo/*.pyc
 dashboard/*.pyc
+check_esb_console_log.py
