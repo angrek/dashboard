@@ -36,8 +36,6 @@ def populate():
 
     #need rstrip to strip off the newline at the end
     password = str(f.read().rstrip())
-    print password
-    print len(password)
     f.close()
     #do I need a ping test for p1hmc?? lol
     client = SSHClient()
@@ -53,19 +51,56 @@ def populate():
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
     for frame in frames:
-
         #the output is throwing newlines at the end of the names for some reason
         #hence the use of rstrip below
-        print frame.rstrip()
+        #print frame.rstrip()
+
+        client = SSHClient()
+        client.load_system_host_keys()
+
+        #we've already established a connect6ion, but should put in error checking
+        #FIXME
+        client.connect('p1hmc', username="wrehfiel", password=password)
+
         #for each frame, let's grab the LPARS now
         command = 'lssyscfg -m ' + frame.rstrip() + ' -r lpar -F name'
         #print command
         sdtin, stdout, stderr = client.exec_command(command)
         server_list = stdout.readlines()
+        client.close()
         for server in server_list:
             print frame.rstrip() + ' -> ' + server.rstrip()
-            #add_server(name=server.rstrip(), frame=frame.rstrip()( os="AIX")
-            AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX')[0]
+            #quick ping test
+            response = ping_server.ping(server)
+            #typically 0 = False, but not for ping apparently
+            if response == 0:
+                #server is active, let's ssh to it
+                client = SSHClient()
+                client.load_system_host_keys()
+                server_is_active=1
+                try:
+                    client.connect(str(server).rstrip(), username="wrehfiel")
+
+                except:
+                    #can't log in, set it as an exception
+                    #b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)[0]
+                    b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)
+                    b.save()
+                    server_is_active=0
+                client.close()
+                if server_is_active:
+                    #server is good, let's add it to the database.
+                    #add_server(name=server.rstrip(), frame=frame.rstrip()( os="AIX")
+                    b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=False)
+                    b.save()
+
+
+            else:
+                #server is inactive, let's flag it
+                b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', active=False)
+                b.save()
+
+
 
     #for server in exclusion_list:
     #    Server.objects.filter(name=server).update(exception=True)
