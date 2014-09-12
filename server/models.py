@@ -17,9 +17,8 @@ class UserProfile(models.Model):
 
 
 class AIXServer(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30)
-    frame = models.CharField(max_length=30, blank=True, null=True)    
+    name = models.CharField(max_length=30, primary_key=True)
+    frame = models.CharField(max_length=30)    
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
 
@@ -43,6 +42,7 @@ class AIXServer(models.Model):
     log = models.TextField(blank=True, null=True)
 
     class Meta:
+        #unique_together = ('id', 'name', 'frame')
         verbose_name = "AIX Server"
         verbose_name_plural = "AIX Servers"
 
