@@ -84,21 +84,31 @@ def populate():
                 except:
                     #can't log in, set it as an exception
                     #b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)[0]
-                    b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)
-                    b.save()
+                    try:
+                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), os='AIX', exception=True, modified=timezone.now())
+                        change_message = "Could not SSH to server. Set exception to True"
+                        #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                    except:
+                        AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)
                     server_is_active=0
                 client.close()
                 if server_is_active:
                     #server is good, let's add it to the database.
                     #add_server(name=server.rstrip(), frame=frame.rstrip()( os="AIX")
-                    b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=False)
-                    b.save()
+                    try:
+                        AIXServer.objects.filter(name=server.rstrip()).update(frame = frame.rstrip(), os='AIX', exception=False, modified=timezone.now())
+                    except:
+                        AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=False)
 
 
             else:
                 #server is inactive, let's flag it
-                b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', active=False)
-                b.save()
+                try:
+                    AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), os='AIX', active=False, modified=timezone.now())
+                    change_message = "Server is now inactive. Set active to False"
+                    #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                except:
+                    AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', active=False)
 
 
 
