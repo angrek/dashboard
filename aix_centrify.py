@@ -26,6 +26,7 @@ def update_server():
     #server_list = Server.objects.filter(name='t3dbatest')
     for server in server_list:
         server_is_active=1
+        new_centrify = ''
 
         #these are hardcoded because
         #none of the vio servers have Centrify installed on them
@@ -54,9 +55,13 @@ def update_server():
 
                 if server_is_active:
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
-                    centrify = stdout.readlines()[0]
+                    try:
+                        centrify = stdout.readlines()[0]
+                        new_centrify = centrify[8:-2]
+                    except:
+                        print "WELL CRAP"
+                        new_centrify = "Not Installed"
                     #strings in Python are immutable so we need to create a new one
-                    new_centrify = centrify[8:-2]
                    
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
