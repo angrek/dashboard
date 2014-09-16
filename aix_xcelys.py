@@ -40,8 +40,7 @@ def update_server():
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
                     #SSH fails so we set it to an exception, update the modified time, and add a log entry
-                    AIXServer.objects.filter(name=server).update(exception=True)
-                    AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                    AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
 
                     server_is_active=0

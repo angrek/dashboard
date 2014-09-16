@@ -46,8 +46,7 @@ def update_server():
                     client.connect(str(server), username="wrehfiel")
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
-                    AIXServer.objects.filter(name=server).update(exception=True)
-                    AIXServer.objects.filter(name=server).update(modified=timezone.now())
+                    AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
 
                     #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
@@ -59,7 +58,6 @@ def update_server():
                         centrify = stdout.readlines()[0]
                         new_centrify = centrify[8:-2]
                     except:
-                        print "WELL CRAP"
                         new_centrify = "Not Installed"
                     #strings in Python are immutable so we need to create a new one
                    
