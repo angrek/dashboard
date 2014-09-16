@@ -45,6 +45,7 @@ class AIXServer(models.Model):
         #unique_together = ('id', 'name', 'frame')
         verbose_name = "AIX Server"
         verbose_name_plural = "AIX Servers"
+        ordering = ["name"]
 
 
     def __unicode__(self):
