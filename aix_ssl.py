@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve OS levels and drop them into Django dashboard
+# Script to retrieve SSL versions on the servers and drop them into Django dashboard
 #
 # Boomer Rehfield - 8/7/2014
 #
