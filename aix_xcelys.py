@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve OS levels and drop them into Django dashboard
+# Script to retrieve Xcelys versions and drop them into Django dashboard
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -76,7 +76,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking OS versions..."
+    print "Checking Xcelys versions..."
     print timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
