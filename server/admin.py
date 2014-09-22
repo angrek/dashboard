@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, LinuxServer, Errpt, VIOServer
+from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -37,6 +37,15 @@ class VIOServerAdmin(admin.ModelAdmin):
     readonly_fields = ['created', 'modified']
     fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
 
+class Power7InventoryAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
+    list_filter = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
+    search_fields = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
+    fields = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
+
+
+
 
 class LogEntryAdmin(admin.ModelAdmin):
     """Creating an admin view of the Django contrib auto admin history/log table thingy"""
@@ -59,5 +68,6 @@ class ErrptAdmin(admin.ModelAdmin):
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
+admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)

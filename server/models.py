@@ -51,6 +51,28 @@ class AIXServer(models.Model):
     def __unicode__(self):
         return self.name
 
+class Power7Inventory(models.Model):
+    name = models.ForeignKey(AIXServer)
+    lpar_id = models.IntegerField(blank=True, null=True)
+    proc_pool = models.CharField(max_length=20, blank=True, null=True)
+    min_proc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    current_proc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    max_proc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    min_vproc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    current_vproc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    max_vproc = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    min_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    cur_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    max_mem = models.IntegerField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Power7 Inventory"
+        verbose_name_plural = "Power7 Inventory"
+
+    def __unicode__(self):
+        return self.name
+
+
 class LinuxServer(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
