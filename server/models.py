@@ -76,6 +76,7 @@ class Power7Inventory(models.Model):
     pend_max_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     pend_max_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     pend_sharing_mode = models.CharField(max_length=20, blank=True, null=True)
+    pend_uncap_weight = models.IntegerField(max_length=6, blank=True, null=True)
     run_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     run_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     run_uncap_weight = models.IntegerField(max_length=6, blank=True, null=True)

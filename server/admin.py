@@ -47,6 +47,8 @@ class Power7InventoryAdmin(admin.ModelAdmin):
 
 
 
+
+
 class LogEntryAdmin(admin.ModelAdmin):
     """Creating an admin view of the Django contrib auto admin history/log table thingy"""
     #note the loss of _id on user_id and content_type_id in the list display
