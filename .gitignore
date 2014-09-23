@@ -2,6 +2,7 @@ ALL_AIX.072114.list.orig
 ALL_AIX.072114.list.orig.good
 *.pyc
 *.swp
+*.swo
 server/migrations
 todo/migrations
 .gitignore
