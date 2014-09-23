@@ -38,12 +38,12 @@ class VIOServerAdmin(admin.ModelAdmin):
     fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
 
 class Power7InventoryAdmin(admin.ModelAdmin):
+    list_max_show_all = 500
     save_on_top = True
-    list_display = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
-    list_filter = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
-    search_fields = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
-    fields = ('name', 'lpar_id', 'proc_pool', 'min_proc', 'current_proc', 'max_proc', 'min_vproc', 'current_vproc', 'max_vproc', 'min_mem', 'cur_mem', 'max_mem')
-
+    list_display = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'min_mem', 'cur_mem', 'max_mem')
+    list_filter = ('curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'min_mem', 'cur_mem', 'max_mem')
+    search_fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'min_mem', 'cur_mem', 'max_mem')
+    #fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'min_mem', 'cur_mem', 'max_mem')
 
 
 
