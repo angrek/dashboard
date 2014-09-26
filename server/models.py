@@ -37,6 +37,7 @@ class AIXServer(models.Model):
     os_level = models.CharField(max_length=20, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
     xcelys = models.CharField(max_length=35, blank=True, null=True)
+    bash = models.CharField(max_length=25, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
@@ -81,9 +82,27 @@ class Power7Inventory(models.Model):
     run_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     run_uncap_weight = models.IntegerField(max_length=6, blank=True, null=True)
 
-    min_mem = models.IntegerField(max_length=10, blank=True, null=True)
-    cur_mem = models.IntegerField(max_length=10, blank=True, null=True)
-    max_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_min_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_max_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_min_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_max_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    run_min_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    run_mem = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_min_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_max_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_min_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_max_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    run_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    mem_mode = models.CharField(max_length=20, blank=True, null=True)
+    desired_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_hpt_ration = models.CharField(max_length=10, blank=True, null=True)
+    curr_bsr_arrays = models.IntegerField(max_length=10, blank=True, null=True)
+
 
     class Meta:
         verbose_name = "Power7 Inventory"
