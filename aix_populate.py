@@ -123,5 +123,8 @@ def add_server(name, frame, os):
 #start execution
 if __name__ == '__main__':
     print "Starting populations..."
+    start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     populate()
+    elapsed_time = timezone_now() - start_time
+    print "Elapsed time: " + elapsed_time
