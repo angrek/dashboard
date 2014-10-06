@@ -80,8 +80,9 @@ def update_server():
 #start execution
 if __name__ == '__main__':
     print "Checking centrify version..."
-    print timezone.now()
+    starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     from server.models import AIXServer
     update_server()
-    print timezone.now()
+    elapsed_time= timezone.now() - starting_time
+    print "Elapsed time: " + str(elapsed_time)
