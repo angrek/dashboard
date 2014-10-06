@@ -74,8 +74,10 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking OS versions..."
-    print timezone.now()
+    print "Checking Bash versions..."
+    starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    print timezone.now()
+    elapsed_time = timezone.now() - starting_time 
+    print "Elapsed time: " + str(elapsed_time)
+
