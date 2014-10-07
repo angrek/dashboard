@@ -10,7 +10,6 @@ class ItemAdmin(admin.ModelAdmin):
     ordering = ('completed', 'priority',)
     search_fields = ('name',)
     save_on_top = True
-<<<<<<< HEAD
 
 class PersonalTodoAdmin(admin.ModelAdmin):
     list_display = ('title', 'list', 'priority', 'created_by', 'assigned_to', 'completed', 'due_date')
@@ -26,13 +25,8 @@ class PersonalTodoAdmin(admin.ModelAdmin):
         #if request.user.is_superuser:
         #    return qs
         return qs.filter(assigned_to=request.user)
-=======
->>>>>>> ec98d8a0af588ab406380457def1b63f1459b31e
 
 admin.site.register(List)
 admin.site.register(Comment)
 admin.site.register(Item, ItemAdmin)
-<<<<<<< HEAD
 admin.site.register(PersonalTodo, PersonalTodoAdmin)
-=======
->>>>>>> ec98d8a0af588ab406380457def1b63f1459b31e
