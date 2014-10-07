@@ -67,6 +67,11 @@ class Item(models.Model):
     class Meta:
         ordering = ["priority"]
 
+class PersonalTodo(Item):
+    class Meta:
+        proxy=True
+        verbose_name = "Personal Todo List"
+        verbose_name_plural = "Personal Todo List"
 
 class Comment(models.Model):
     """
