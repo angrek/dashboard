@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory
+from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -67,9 +67,13 @@ class LogEntryAdmin(admin.ModelAdmin):
 class ErrptAdmin(admin.ModelAdmin):
     list_display = ['name', 'modified', 'report']
 
+class ZoneAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
+admin.site.register(Zone, ZoneAdmin)

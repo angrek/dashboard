@@ -34,6 +34,7 @@ class AIXServer(models.Model):
     #I'm not sure why we might need the IP but whatever, just in case..
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     os = models.CharField(max_length=10, blank=True, null=True)
+
     os_level = models.CharField(max_length=20, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
     xcelys = models.CharField(max_length=35, blank=True, null=True)
@@ -161,8 +162,22 @@ class Errpt(models.Model):
         verbose_name = "AIX Errpt"
         verbose_name_plural = "AIX Errpts"
 
-    def __unixcode__(self):
+    def __unicode__(self):
         return self.name
+
+class Zone(models.Model):
+    name = models.CharField(max_length=18, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "AD Zones"
+        verbose_name_plural = "AD Zones"
+        
+        def __unicode__(self):
+            return self.name
+
+
+
+
 
 
 #    def save(self, *args, **kwargs):
