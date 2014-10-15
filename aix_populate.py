@@ -46,7 +46,7 @@ def populate():
         client.connect('p1hmc', username="wrehfiel", password=password)
     except:
         print 'SSH to p1hmc has failed!'
-
+        print '*************HAVE YOU CHANGED YOUR PASSWORD RECENTLY??***********'
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
