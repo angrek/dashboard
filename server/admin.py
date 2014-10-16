@@ -12,7 +12,7 @@ class AIXServerAdmin(admin.ModelAdmin):
     list_filter = ['frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
     search_fields = ['name', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
+    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
 
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
