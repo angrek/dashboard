@@ -23,7 +23,7 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer
+from server.models import AIXServer, Zone
 import ping_server
 import logging
 django.setup()
@@ -87,28 +87,41 @@ def populate():
                     try:
                         AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), os='AIX', exception=True, modified=timezone.now())
                         change_message = "Could not SSH to server. Set exception to True"
+                        print '11111111111111111111111111111111111111111111111111111111'
                         #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                     except:
                         AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)
+                        print '222222222222222222222222222222222222222222222222222222222222'
                     server_is_active=0
                 client.close()
                 if server_is_active:
                     #server is good, let's add it to the database.
                     #add_server(name=server.rstrip(), frame=frame.rstrip()( os="AIX")
                     try:
+                        if AIXServer.objects.get(name=server.rstrip()):
+                            print "WINNERWINNERWINNERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+                        #FIXME why am I setting the os if I am just updating??
                         AIXServer.objects.filter(name=server.rstrip()).update(frame = frame.rstrip(), os='AIX', exception=False, modified=timezone.now())
+                        print '33333333333333333333333333333333333333333333333333333333333333333'
                     except:
-                        AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=False)
+                        #FIXME = zone = 3??
+                        zone = Zone.objects.get(name='Unsure')
+                        AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', zone=zone, exception=False)
+                        print '44444444444444444444444444444444444444444444444444444444444444444'
 
 
             else:
                 #server is inactive, let's flag it
                 try:
+                    if AIXServer.objects.get(name=server.rstrip()):
+                        print "WARGLBLARGLEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+
                     AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), os='AIX', active=False, modified=timezone.now())
                     change_message = "Server is now inactive. Set active to False"
                     #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                 except:
-                    AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', active=False)
+                    zone = Zone.objects.get(name='Unsure')
+                    AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', zone=zone, active=False)
 
 
 
@@ -127,4 +140,8 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     populate()
     elapsed_time = timezone.now() - start_time
-    print "Elapsed time: " + elapsed_time
+    print "Elapsed time: " + str(elapsed_time)
+
+
+
+
