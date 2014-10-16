@@ -29,7 +29,8 @@ def update_server():
         counter = counter + 1
         print str(counter) + " - " + str(server)
         if AIXServer.objects.filter(name=server, active=True, exception=False):
-
+            
+            response = ping_server.ping(server)
             #ping test
             if response == 0:
                 client = SSHClient()

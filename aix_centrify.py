@@ -14,17 +14,16 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer
+from server.models import AIXServer, Zone
 import ping_server
 django.setup()
 
 
 
 def update_server():
-    #server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.all()
     #just a quick way to on off test a server without the whole list
-    #FIXME - change this back to ALL servers!
-    server_list = AIXServer.objects.filter(name='ustswebdb')
+    #server_list = AIXServer.objects.filter(name='ustswebdb')
     for server in server_list:
         server_is_active=1
         new_centrify = ''
@@ -75,7 +74,9 @@ def update_server():
                         stdin, stdout, stderr = client.exec_command('adinfo | grep Zone')
                         #print stdout.readlines()[0]
                         x = stdout.readlines()[0].split("/")
-                        zone = x[4].rstrip()
+                        zone_tmp = x[4].rstrip()
+                        zone = Zone.objects.get(name=zone_tmp)
+
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
                     
             else:
