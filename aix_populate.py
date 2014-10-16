@@ -97,38 +97,42 @@ def populate():
                     client.connect(str(server).rstrip(), username="wrehfiel")
 
                 except:
-                    #can't log in, set it as an exception
+                    ####can't log in, set it as an exception
                     #b = AIXServer(name=server.rstrip(), frame=frame.rstrip(), os='AIX', exception=True)[0]
-                    try:
-                        if AIXServer.objects.get(name=server.rstrip()):
-                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, exception=True, modified=timezone.now())
+                    if AIXServer.objects.get(name=server.rstrip()):
+                        print '11111111111111111111'
+                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), ip_address=ip_address, os='AIX', exception=True, modified=timezone.now())
                         change_message = "Could not SSH to server. Set exception to True"
                         #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                    except:
+                    else:
+                        zone = Zone.objects.get(name='Unsure')
                         AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, exception=True)
+                        print '22222222222222222222222222222'
                     server_is_active=0
                 client.close()
                 if server_is_active:
                     #server is good, let's add it to the database.
                     #add_server(name=server.rstrip(), frame=frame.rstrip()( os="AIX")
-                    try:
-                        if AIXServer.objects.get(name=server.rstrip()):
+                    if AIXServer.objects.get(name=server.rstrip()):
+                        print '333333333333333333333333'
                         #FIXME why am I setting the os if I am just updating??
-                        AIXServer.objects.filter(name=server.rstrip()).update(frame = frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, exception=False, modified=timezone.now())
-                    except:
+                        AIXServer.objects.filter(name=server.rstrip()).update(frame = frame.rstrip(), ip_address=ip_address, os='AIX', exception=False, modified=timezone.now())
+                    else:
+                        print '4444444444444444444444444444444'
                         zone = Zone.objects.get(name='Unsure')
                         AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, exception=False)
 
 
+
             else:
                 #server is inactive, let's flag it
-                try:
-                    if AIXServer.objects.get(name=server.rstrip()):
-
-                    AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, active=False, modified=timezone.now())
+                if AIXServer.objects.get(name=server.rstrip()):
+                    print '5555555555555555555555555555'
+                    AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), ip_address=ip_address, os='AIX', active=False, modified=timezone.now())
                     change_message = "Server is now inactive. Set active to False"
                     #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                except:
+                else:
+                    print '666666666666666666666666666'
                     zone = Zone.objects.get(name='Unsure')
                     AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), ip_address=ipaddress, os='AIX', zone=zone, active=False)
 

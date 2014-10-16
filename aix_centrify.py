@@ -21,9 +21,10 @@ django.setup()
 
 
 def update_server():
-    server_list = AIXServer.objects.all()
+    #server_list = AIXServer.objects.all()
     #just a quick way to on off test a server without the whole list
-    #server_list = Server.objects.filter(name='t3dbatest')
+    #FIXME - change this back to ALL servers!
+    server_list = AIXServer.objects.filter(name='ustswebdb')
     for server in server_list:
         server_is_active=1
         new_centrify = ''
@@ -53,14 +54,15 @@ def update_server():
                     server_is_active=0
 
                 if server_is_active:
+                    centrify_is_installed = 1
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
                     try:
                         centrify = stdout.readlines()[0]
                         new_centrify = centrify[8:-2]
                     except:
                         new_centrify = "Not Installed"
-                    #strings in Python are immutable so we need to create a new one
-                   
+                        centrify_is_installed = 0
+
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
                         old_version = str(server.centrify)
@@ -68,6 +70,14 @@ def update_server():
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                         change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                    if centrify_is_installed:
+                        #Since we're using adinfo to find the zone, it fits that it should be here in the centrify script
+                        stdin, stdout, stderr = client.exec_command('adinfo | grep Zone')
+                        #print stdout.readlines()[0]
+                        x = stdout.readlines()[0].split("/")
+                        zone = x[4].rstrip()
+                        AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
+                    
             else:
                 AIXServer.objects.filter(name=server).update(active=False)
                 print str(server) + ' not responding to ping, setting to inactive.'

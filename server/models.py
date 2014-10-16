@@ -16,7 +16,7 @@ class UserProfile(models.Model):
         return self.user
 
 class Zone(models.Model):
-    name = models.CharField(max_length=18, blank=True, null=True)
+    name = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         verbose_name = "AD Zones"
