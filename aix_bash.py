@@ -20,10 +20,10 @@ django.setup()
 
 
 def update_server():
-    #server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.all()
     #FIXME quick way of testing a few servers
     #server_list = AIXServer.objects.filter(name='d2vio01')
-    server_list = AIXServer.objects.filter(name='qwestnim')
+    #server_list = AIXServer.objects.filter(name='qwestnim')
     #server_list = ['d1vio01', 'd1vio01']
     #server_list = AIXServer.objects.filter(name__contains='vio')
     for server in server_list:
