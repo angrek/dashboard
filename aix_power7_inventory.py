@@ -61,42 +61,44 @@ def populate():
         #FIXME
         client.connect('p1hmc', username="wrehfiel", password=password)
 
+        types = ['proc', 'mem']
 
-        #for each frame, let's get all of the HMC memory data
-        command = 'lshwres -r proc -m ' + frame.rstrip() + ' --level lpar'
-        print command
+        for type in types:
+            #for each frame, let's get all of the HMC memory data
+            command = 'lshwres -r ' + type + ' -m ' + frame.rstrip() + ' --level lpar'
+            print command
 
-        stdin, stdout, stderr = client.exec_command(command)
-        lpar_list = stdout.readlines()
-        #we'll close the connection after the next section
+            stdin, stdout, stderr = client.exec_command(command)
+            lpar_list = stdout.readlines()
+            #we'll close the connection after the next section
 
-        lpar_array = {}
-        for lpar in lpar_list:
-            lpar_dict = lpar.split(",")
-            for entry in lpar_dict:
-                #test for an empty value
-                if entry:
-                    a,b = entry.split('=')
-                    lpar_array[a] = b
+            lpar_array = {}
+            for lpar in lpar_list:
+                lpar_dict = lpar.split(",")
+                for entry in lpar_dict:
+                    #test for an empty value
+                    if entry:
+                        a,b = entry.split('=')
+                        lpar_array[a] = b
 
-            #ok, first we want to get the lpar name and then remove it from the dict
-            #NOTE: in the database it is FK to 'name'. When I created the server db
-            #I just called it name so that's why there is a difference. I can't go back
-            #and change it because it is populated with WPARs also.
-            server_name = lpar_array['lpar_name']
-            print server_name
-            #deleting so we can iterate over all of the values
-            del lpar_array['lpar_name']
-           
-            #in case the server is new since the last time it ran, we'll just create a blank server record and then update it.
-            #we don't really need error checking here because it's whatever the HMC gave us and the previous scripts will have added them to the AIXServer database.
-            name = AIXServer.objects.get(name=server_name)
-            print name
-            Power7Inventory.objects.get_or_create(name=name)
-            for key, value in lpar_array.iteritems():
-                print key, "=>",value
-                print "attempting to update value...."
-                Power7Inventory.objects.filter(name=name).update(**{key: value})
+                #ok, first we want to get the lpar name and then remove it from the dict
+                #NOTE: in the database it is FK to 'name'. When I created the server db
+                #I just called it name so that's why there is a difference. I can't go back
+                #and change it because it is populated with WPARs also.
+                server_name = lpar_array['lpar_name']
+                print server_name
+                #deleting so we can iterate over all of the values
+                del lpar_array['lpar_name']
+               
+                #in case the server is new since the last time it ran, we'll just create a blank server record and then update it.
+                #we don't really need error checking here because it's whatever the HMC gave us and the previous scripts will have added them to the AIXServer database.
+                name = AIXServer.objects.get(name=server_name)
+                print name
+                Power7Inventory.objects.get_or_create(name=name)
+                for key, value in lpar_array.iteritems():
+                    print key, "=>",value
+                    print "attempting to update value...."
+                    Power7Inventory.objects.filter(name=name).update(**{key: value})
 
 ###########temp comment block
         #for each frame, let's get all of the HMC CPU data for it

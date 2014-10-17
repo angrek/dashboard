@@ -22,7 +22,7 @@ django.setup()
 def update_server():
     server_list = AIXServer.objects.all()
     #FIXME quick way of testing a few servers
-    #server_list = AIXServer.objects.filter(name='d2vio01')
+    #server_list = AIXServer.objects.filter(name='qinfipcapp')
     #server_list = AIXServer.objects.filter(name='qwestnim')
     #server_list = ['d1vio01', 'd1vio01']
     #server_list = AIXServer.objects.filter(name__contains='vio')
@@ -33,6 +33,7 @@ def update_server():
         if AIXServer.objects.filter(name=server, active=True, exception=False):
             response = ping_server.ping(server)
             if response == 0:
+                #SSHClient.util.log_to_file('test.log')
                 client = SSHClient()
                 client.load_system_host_keys()
 

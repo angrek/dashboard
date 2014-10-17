@@ -103,6 +103,9 @@ class Power7Inventory(models.Model):
     run_mem = models.IntegerField(max_length=10, blank=True, null=True)
     curr_min_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
     curr_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
+    pend_mem_expansion = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    curr_mem_expansion = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+
     curr_max_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
     pend_min_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
     pend_num_huge_pages = models.IntegerField(max_length=10, blank=True, null=True)
@@ -111,7 +114,7 @@ class Power7Inventory(models.Model):
     mem_mode = models.CharField(max_length=20, blank=True, null=True)
     desired_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
     curr_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
-    curr_hpt_ration = models.CharField(max_length=10, blank=True, null=True)
+    curr_hpt_ratio = models.CharField(max_length=10, blank=True, null=True)
     curr_bsr_arrays = models.IntegerField(max_length=10, blank=True, null=True)
 
 
