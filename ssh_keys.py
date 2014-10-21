@@ -25,7 +25,7 @@ username = 'wrehfiel'
 def update_server():
     counter = 0
     #server_list = AIXServer.objects.all()
-    server_list = AIXServer.objects.filter(name='p1sasgrid06-new2')
+    server_list = AIXServer.objects.filter(name='p1sasgrid06-new')
     for server in server_list:
         server_is_active = 1
 
