@@ -29,7 +29,7 @@ def update_server():
     counter = 0
     for server in server_list:
         counter += 1
-        print counter + ' - ' + server
+        print str(counter) + ' - ' + str(server)
         server_is_active=1
 
         if AIXServer.objects.filter(name=server, active=True, exception=False):
