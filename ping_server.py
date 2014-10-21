@@ -11,7 +11,7 @@
 import os
 
 def ping(server):
-    response = os.system("ping -c 1 " + str(server))
+    response = os.system("ping -c 1 " + str(server) + "> /dev/null 2>&1")
     return response
 
 #ping(server)

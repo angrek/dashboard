@@ -25,7 +25,9 @@ username = 'wrehfiel'
 def update_server():
     counter = 0
     #server_list = AIXServer.objects.all()
-    server_list = AIXServer.objects.filter(name='p1sasgrid06-new')
+    #the below exception is for my account's inability to ssh in (service account in the future)
+    server_list = AIXServer.objects.filter(exception=True)
+    #server_list = AIXServer.objects.filter(name='p1sasgrid06-new')
     for server in server_list:
         server_is_active = 1
 
@@ -49,7 +51,11 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                client.connect(str(server), username=username, password=password)
+                try:
+                    client.connect(str(server), username=username, password=password)
+                except:
+                    print 'SSH HAS FAILED. BREAKING LOOP HERE'
+                    continue
                 command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
                 #command = 'ls /home'
                 sdtin, stdout, stderr = client.exec_command(command)
