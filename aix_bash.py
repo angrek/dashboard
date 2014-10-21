@@ -26,8 +26,10 @@ def update_server():
     #server_list = AIXServer.objects.filter(name='qwestnim')
     #server_list = ['d1vio01', 'd1vio01']
     #server_list = AIXServer.objects.filter(name__contains='vio')
+    counter = 0
     for server in server_list:
-        print server
+        counter += 1
+        print counter + ' - ' + server
         server_is_active=1
 
         if AIXServer.objects.filter(name=server, active=True, exception=False):
