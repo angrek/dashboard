@@ -76,7 +76,8 @@ def populate():
 
         for server in server_list:
             counter += 1
-            print str(counter) + " - " + frame.rstrip() + ' -> ' + server.rstrip()
+            #for troubleshooting - please leave
+            #print str(counter) + " - " + frame.rstrip() + ' -> ' + server.rstrip()
 
 
             #Before we ping and do our other tests we're going to get the ip address from
@@ -97,7 +98,7 @@ def populate():
             response = ping_server.ping(server)
 
             if response == 0:
-                print "-Ping test is good"
+                #print "-Ping test is good"
                 #server is active, let's ssh to it
                 client = paramiko.SSHClient()
                 client.load_system_host_keys()
@@ -138,14 +139,14 @@ def populate():
             else:
                 #server is inactive, let's flag it
                 try:
-                    print '55555555555555555555555555555555'
+                    #print '55555555555555555555555555555555'
                     AIXServer.objects.get(name=server.rstrip())
                     #print '5555555555555555555555555555'
                     AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), ip_address=ip_address, os='AIX', active=False, modified=timezone.now())
                     change_message = "Server is now inactive. Set active to False"
                     #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                 except:
-                    print '666666666666666666666666666'
+                    #print '666666666666666666666666666'
                     zone = Zone.objects.get(name='Unsure')
                     AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), ip_address=ip_address, os='AIX', zone=zone, active=False)
 
