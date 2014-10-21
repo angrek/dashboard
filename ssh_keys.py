@@ -18,9 +18,12 @@ from dashboard import settings
 import ping_server
 django.setup()
 import paramiko
+import getpass
 
-username = 'wrehfiel'
-
+#this will get the username of the person logged in and then prompt them for their password
+username = getpass.getuser()
+print "You are logged in as " + username
+password = getpass.getpass()
 
 def update_server():
     counter = 0
@@ -41,10 +44,6 @@ def update_server():
             #ping test
             if response == 0:
                 print "-Ping test is good"
-
-                f = open("../../.ssh/p", "r")
-                password = str(f.read().rstrip())
-                f.close()
 
                 all_ahead_flank = 0
 
