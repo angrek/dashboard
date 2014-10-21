@@ -92,7 +92,7 @@ def populate():
             #quick ping test
             #FIXME - apparently without the rstrip, it adds /n to the end, which
             #screws up our silencing of the ping and creates stdout ping response
-            #to be printed.... what the hell man....
+            #to be printed.... what the hell man.... not really a FIXME, more of an FYI :\
             server = server.rstrip()
             response = ping_server.ping(server)
 
