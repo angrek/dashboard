@@ -34,39 +34,35 @@ def update_server():
                 AIXServer.objects.filter(name=server).update(active=True)
                 client = SSHClient()
                 client.load_system_host_keys()
-                print server
                 try:
                     client.connect(str(server), username="wrehfiel")
                 except:
-                    print 'SSH to ' + str(server) + ' failed, changing exception'
                     #SSH fails so we set it to an exception, update the modified time, and add a log entry
                     AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
+                    continue
 
-                    server_is_active=0
 
-                if server_is_active: 
-                    stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
-                    temp_xcelys_version = stdout.readlines()[0]
+                stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
+                temp_xcelys_version = stdout.readlines()[0]
 
-                    #need to cut the string down
-                    xcelys_version = temp_xcelys_version[36:-16]
-                    print xcelys_version
-                     
-                    #check existing value, if it exists, don't update
-                    if str(xcelys_version) != str(server.xcelys):
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version)
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
-                        #pretty sure the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
-                        change_message = 'Changed xcelys to ' + str(xcelys_version)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                        #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
-                        #We can do that or we can FK to the admin log...should we try to add our own columns?
-                        #log = AIXServer.objects.log(name=server 
+                #need to cut the string down
+                xcelys_version = temp_xcelys_version[36:-16]
+                 
+                #check existing value, if it exists, don't update
+                if str(xcelys_version) != str(server.xcelys):
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version)
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                    #pretty sure the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
+                    change_message = 'Changed xcelys to ' + str(xcelys_version)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                    #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
+                    #We can do that or we can FK to the admin log...should we try to add our own columns?
+                    #log = AIXServer.objects.log(name=server 
             else:
                 #server is labeled as good, but didn't respond to a ping so we'll change it's status
                 AIXServer.objects.filter(name=server).update(active=False)
-                print str(server) + ' not responding to ping, setting to inactive.'
+                #print str(server) + ' not responding to ping, setting to inactive.'
                 LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
 
                 

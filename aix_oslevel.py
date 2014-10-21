@@ -26,7 +26,7 @@ def update_server():
     #server_list = ['d1vio01', 'd1vio01']
     #server_list = AIXServer.objects.filter(name__contains='vio')
     for server in server_list:
-        print server
+        #print server
         server_is_active=1
 
         if AIXServer.objects.filter(name=server, active=True, exception=False):
@@ -38,7 +38,7 @@ def update_server():
                 try:
                     client.connect(str(server), username="wrehfiel")
                 except:
-                    print 'SSH to ' + str(server) + ' failed, changing exception'
+                    #print 'SSH to ' + str(server) + ' failed, changing exception'
                     AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
                     
                     #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
@@ -67,7 +67,7 @@ def update_server():
 
 
             else:
-                print str(server) + ' not responding to ping, setting to inactive.'
+                #print str(server) + ' not responding to ping, setting to inactive.'
                 AIXServer.objects.filter(name=server, exception=False, active=True).update(active=False, modified=timezone.now())
                 #FIXME I need a check here otherwise it isn't really a change, it's updating the same value
                 LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
