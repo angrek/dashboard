@@ -18,3 +18,9 @@ I'm going to use port 8000 so as not to interfere with anything else here.
 (ENV)[wrehfiel@p1rhrep images]$ cp favicon.ico /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/images/
 
 ==============================================
+
+#to be able to write/export to spreadsheets
+pip install openpyxl
+
+#pillow is installed to be able to add pics to a spreadsheet
+pip install pillow
