@@ -12,6 +12,9 @@ import os
 import re
 from ssh import SSHClient
 import paramiko
+from openpyxl import Workbook
+from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
+
 from django.utils import timezone
 from server.models import AIXServer, Power7Inventory
 
@@ -22,22 +25,131 @@ django.setup()
 
 import ping_server
 
+s = Style(font=Font(name='Calibri', size=11, bold=True))
+
+
+
+wb = Workbook()
+ws1 = wb.active
+ws1.title = 'AIX'
+ws2 = wb.create_sheet()
+ws2.title = 'Linux'
+
+
+#create the header
+ws1['A1'] = 'Host Name'
+ws1['B1'] = 'OS'
+ws1['C1'] = 'Physical/VM'
+ws1['D1'] = 'IP'
+ws1['E1'] = 'Size(GB)'
+ws1['F1'] = 'Database Name'
+ws1['G1'] = 'Storage'
+ws1['H1'] = 'CPU Cores'
+
+ws2['A1'] = 'Host Name'
+ws2['B1'] = 'OS'
+ws2['C1'] = 'Physical/VM'
+ws2['D1'] = 'IP'
+ws2['E1'] = 'Size(GB)'
+ws2['F1'] = 'Database Name'
+ws2['G1'] = 'Storage'
+ws2['H1'] = 'CPU Cores'
+
+ws1.column_dimensions["A"].width = 20
+ws1.column_dimensions["B"].width = 10
+ws1.column_dimensions["C"].width = 20
+ws1.column_dimensions["F"].width = 20
+ws1.column_dimensions["H"].width = 12
+
+list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+#to hell with writing all this out because the row dimensions are working...
+for letter in list:
+    cell = letter + '1'
+    c = ws1[cell]
+    c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+d = ws1.row_dimensions[1].height = 20
 
 def get_server_data():
+#starting line = 3
+    line = 3
     counter = 0
-    #server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.all()
     #shortening this just to speed up testing
-    server_list = AIXServer.objects.filter(name__contains='vio')
+    #server_list = AIXServer.objects.filter(name__contains='vio')
     for server in server_list:
 
         #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
-        r = Power7Inventory.objects.get(name=server)
+        try:
+            r = Power7Inventory.objects.get(name=server)
+        except:
+            pass
         t = AIXServer.objects.get(name=server)
+        if t.active == False:
+            #we don't care about inactive servers for capacity planning
+            continue
+
         print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',,,,' + str(r.curr_procs)
+
+        cell = 'A' + str(line)
+        ws1[cell] = str(server)
+
+        cell = 'B' + str(line)
+        ws1[cell] = 'AIX'
+
+        cell = 'C' + str(line)
+        ws1[cell] = 'VM'
+
+        cell = 'D' + str(line)
+        ws1[cell] = t.ip_address.rstrip()
+
+        cell = 'E' + str(line)
+        ws1[cell] = ''
+
+        cell = 'F' + str(line)
+        ws1[cell] = ''
+
+        cell = 'G' + str(line)
+        ws1[cell] = ''
+
+        cell = 'H' + str(line)
+        ws1[cell] = r.curr_procs
+
+
+
         #AIXServer.objects.filter(name=server).update(active=False, modified=timezone.now())
-        #print str(server) + ' not responding to ping, setting to inactive.'
-        #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
+        line += 1
+
+    #total
+    cell = 'A' + str(line + 1)
+    ws1[cell] = 'Total'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+    cell = 'E' + str(line + 1)
+    sum = "=SUM(E3:E" + str((line - 1)) + ")"
+    ws1[cell] = sum
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+    cell = 'G' + str(line + 1)
+    sum = "=SUM(G3:G" + str((line - 1)) + ")"
+    ws1[cell] = sum
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+    cell = 'H' + str(line + 1)
+    sum = "=SUM(H3:H" + str((line - 1)) + ")"
+    ws1[cell] = sum
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+    wb.save('Unix_Capacity_Planning_Report.xlsx')
+
+
+    c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+
+
+
 
 
 

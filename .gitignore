@@ -10,3 +10,4 @@ server/*.pyc
 todo/*.pyc
 dashboard/*.pyc
 check_esb_console_log.py
+Unix_Capacity_Planning_Report.xlsx
