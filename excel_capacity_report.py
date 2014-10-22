@@ -41,7 +41,7 @@ ws1['A1'] = 'Host Name'
 ws1['B1'] = 'OS'
 ws1['C1'] = 'Physical/VM'
 ws1['D1'] = 'IP'
-ws1['E1'] = 'Size(GB)'
+ws1['E1'] = 'Mem(MB)'
 ws1['F1'] = 'Database Name'
 ws1['G1'] = 'Storage'
 ws1['H1'] = 'CPU Cores'
@@ -50,7 +50,7 @@ ws2['A1'] = 'Host Name'
 ws2['B1'] = 'OS'
 ws2['C1'] = 'Physical/VM'
 ws2['D1'] = 'IP'
-ws2['E1'] = 'Size(GB)'
+ws2['E1'] = 'Mem(MB)'
 ws2['F1'] = 'Database Name'
 ws2['G1'] = 'Storage'
 ws2['H1'] = 'CPU Cores'
@@ -91,7 +91,7 @@ def get_server_data():
             #we don't care about inactive servers for capacity planning
             continue
 
-        print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',,,,' + str(r.curr_procs)
+        print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',' + str(r.curr_mem) + ',,,' + str(r.curr_procs)
 
         cell = 'A' + str(line)
         ws1[cell] = str(server)
@@ -106,7 +106,7 @@ def get_server_data():
         ws1[cell] = t.ip_address.rstrip()
 
         cell = 'E' + str(line)
-        ws1[cell] = ''
+        ws1[cell] = r.curr_mem
 
         cell = 'F' + str(line)
         ws1[cell] = ''
