@@ -1,5 +1,6 @@
 from django.contrib import admin
-from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone
+from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone, Storage
+#from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 
 # Register your models here.
@@ -70,6 +71,17 @@ class ErrptAdmin(admin.ModelAdmin):
 class ZoneAdmin(admin.ModelAdmin):
     list_display = ['name',]
 
+class StorageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'size']
+
+#class CapacityPlanningAdmin(admin.ModelAdmin):
+#    list_display = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
+#    list_filter = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
+#    search_fields = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
+#    save_on_top = True
+#    fields = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
+
+
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
@@ -77,3 +89,5 @@ admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
 admin.site.register(Zone, ZoneAdmin)
+admin.site.register(Storage, StorageAdmin)
+#admin.site.register(CapacityPlanning, CapacityPlanningAdmin)

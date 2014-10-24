@@ -61,7 +61,7 @@ class AIXServer(models.Model):
 
 
     def __unicode__(self):
-        return self.name
+        return '%s' % (self.name)
 
 class Power7Inventory(models.Model):
     name = models.ForeignKey(AIXServer)
@@ -176,12 +176,27 @@ class Errpt(models.Model):
         verbose_name_plural = "AIX Errpts"
 
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
+class Storage(models.Model):
+    name = models.ForeignKey(AIXServer)
+    size = models.CharField(max_length=10, blank=True, null=True)
 
-
-
-
+#class CapacityPlanning(models.Model):
+#    name = models.ForeignKey(AIXServer, related_name='capacity_name')
+#    os = models.ForeignKey(AIXServer, related_name='capacity_os')
+#    ip_address = models.ForeignKey(AIXServer, related_name='capacity_ip_address')
+#    curr_procs = models.ForeignKey(Power7Inventory, related_name = 'capacity_curr_procs')
+#    curr_mem = models.ForeignKey(Power7Inventory, related_name = 'capacity_curr_mem')
+#    storage = models.IntegerField(max_length=10, blank=True, null=True)
+#    database_name = models.CharField(max_length=40, blank=True, null=True)
+#
+#    class Meta:
+#        verbose_name = "Capacity Planning"
+#        verbose_name_plural = "Capacity Planning"
+#
+#    def __unicode__(self):
+#        return unicode(self.capacity_name)
 
 #    def save(self, *args, **kwargs):
 #        '''On save, update timestamps'''
