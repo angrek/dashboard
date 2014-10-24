@@ -16,7 +16,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
 
 from django.utils import timezone
-from server.models import AIXServer, Power7Inventory
+from server.models import AIXServer, Power7Inventory, Storage
 
 #these are need in django 1.7 and needed vs the django settings command
 import django
@@ -82,16 +82,23 @@ def get_server_data():
 
         #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
-        try:
-            r = Power7Inventory.objects.get(name=server)
-        except:
-            pass
+
         t = AIXServer.objects.get(name=server)
         if t.active == False:
             #we don't care about inactive servers for capacity planning
             continue
 
-        print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',' + str(r.curr_mem) + ',,,' + str(r.curr_procs)
+        try:
+            r = Power7Inventory.objects.get(name=server)
+        except:
+            pass
+
+        try:
+            p = Storage.objects.get(name=server)
+        except:
+            pass
+
+        print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',' + str(r.curr_mem) + ',,' + str(p.size) + ',' + str(r.curr_procs)
 
         cell = 'A' + str(line)
         ws1[cell] = str(server)
@@ -112,7 +119,7 @@ def get_server_data():
         ws1[cell] = ''
 
         cell = 'G' + str(line)
-        ws1[cell] = ''
+        ws1[cell] = p.size
 
         cell = 'H' + str(line)
         ws1[cell] = r.curr_procs

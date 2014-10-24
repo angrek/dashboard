@@ -180,7 +180,7 @@ class Errpt(models.Model):
 
 class Storage(models.Model):
     name = models.ForeignKey(AIXServer)
-    size = models.CharField(max_length=10, blank=True, null=True)
+    size = models.IntegerField(max_length=10, blank=True, null=True)
 
     class Meta:
         verbose_name = "Storage"
