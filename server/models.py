@@ -125,11 +125,12 @@ class Power7Inventory(models.Model):
     def __unicode__(self):
         return self.name
 
+def get_default_zone():
+    return Zone.objects.get(id=3)
 
 class LinuxServer(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
-    
+    vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
 
@@ -144,10 +145,12 @@ class LinuxServer(models.Model):
 
     #I'm not sure why we might need the IP but whatever, just in case..
     ip_address = models.GenericIPAddressField(blank=True, null=True)
-    os = models.CharField(max_length=10, blank=True, null=True)
+    zone = models.ForeignKey(Zone)
+    os = models.CharField(max_length=50, blank=True, null=True)
     os_level = models.CharField(max_length=20, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
     xcelys = models.CharField(max_length=35, blank=True, null=True)
+    bash = models.CharField(max_length=25, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
@@ -155,9 +158,11 @@ class LinuxServer(models.Model):
     class Meta:
         verbose_name = "Linux Server"
         verbose_name_plural = "Linux Servers"
+        ordering = ["name"]
 
     def __unicode__(self):
-        return self.name
+        return '%s' % (self.name)
+
 
 class VIOServer(AIXServer):
     class Meta:
