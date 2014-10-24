@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get AIX errpts
+# Script to storage size of each of the servers
 #
-# Boomer Rehfield - 9/5/2014
+# Boomer Rehfield - 10/24/2014
 #
 #########################################################################
 
@@ -14,7 +14,7 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, Errpt, Storage
+from server.models import AIXServer, Storage
 import ping_server
 django.setup()
 
@@ -90,7 +90,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Getting Errpts..."
+    print "Storage size for each server..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     from server.models import AIXServer

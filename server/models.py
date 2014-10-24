@@ -182,6 +182,13 @@ class Storage(models.Model):
     name = models.ForeignKey(AIXServer)
     size = models.CharField(max_length=10, blank=True, null=True)
 
+    class Meta:
+        verbose_name = "Storage"
+        verbose_name_plural = "Storage"
+    
+    def __unicode__(self):
+        return unicode(self.name)
+
 #class CapacityPlanning(models.Model):
 #    name = models.ForeignKey(AIXServer, related_name='capacity_name')
 #    os = models.ForeignKey(AIXServer, related_name='capacity_os')
