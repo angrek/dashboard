@@ -10,7 +10,7 @@ class AddListForm(ModelForm):
     # to derive that list.
     def __init__(self, user, *args, **kwargs):
         super(AddListForm, self).__init__(*args, **kwargs)
-        self.fields['group'].queryset = Group.objects.filter(user=user)
+        self.fields['group'].get_queryset = Group.objects.filter(user=user)
 
     class Meta:
         model = List
@@ -23,7 +23,7 @@ class AddItemForm(ModelForm):
         super(AddItemForm, self).__init__(*args, **kwargs)
         # print dir(self.fields['list'])
         # print self.fields['list'].initial
-        self.fields['assigned_to'].queryset = User.objects.filter(groups__in=[task_list.group])
+        self.fields['assigned_to'].get_queryset = User.objects.filter(groups__in=[task_list.group])
 
     due_date = forms.DateField(
         required=False,
@@ -43,7 +43,7 @@ class EditItemForm(ModelForm):
     # must find other members of the groups the current list belongs to.
     def __init__(self, *args, **kwargs):
         super(EditItemForm, self).__init__(*args, **kwargs)
-        self.fields['assigned_to'].queryset = User.objects.filter(groups__in=[self.instance.list.group])
+        self.fields['assigned_to'].get_queryset = User.objects.filter(groups__in=[self.instance.list.group])
 
     class Meta:
         model = Item

@@ -20,8 +20,8 @@ class PersonalTodoAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     save_on_top = True
 
-    def queryset(self, request):
-        qs = super(PersonalTodoAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(PersonalTodoAdmin, self).get_queryset(request)
         #if request.user.is_superuser:
         #    return qs
         return qs.filter(assigned_to=request.user)
