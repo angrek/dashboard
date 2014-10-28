@@ -29,7 +29,8 @@ my $username = 'AD\wrehfiel';
 my $service_url = "https://vcenterdev01/sdk/vimService";
 #my $service_url = "https://esx028/sdk/vimService";
 
-my $cluster_name = "Savvis Non-Prod UCS-Linux";
+#my $cluster_name = "Savvis Non-Prod UCS-Linux";
+my $cluster_name = "Savvis Non-Prod UCS-DMZ";
 
 
 open (FILE,  "/home/wrehfiel/.ssh/p");
@@ -77,21 +78,33 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-      $vmcounter++;
-      print "| ";
-      printf '%3.3s', $vmcounter;
-      print ": ";
-      printf '%30.30s', $host->name;
-      print " | ";
-      printf '%35.35s', $vm->name;
-      print " | ";
-      #printf $vm->config.guestFullName;
-      print $vm->guest->guestFullName;
-      print "\n";
-      if ($vmcounter == 5){
-      #     print Dumper($vm);
-           break;
-      } 
+        if (($vm->guest->guestFamily) eq 'linuxGuest'){
+            $vmcounter++;
+            print "| ";
+            printf '%3.3s', $vmcounter;
+            print ": ";
+            printf '%23.23s', $host->name;
+            print " | ";
+            printf '%26.26s', $vm->name;
+            print " | ";
+            #printf $vm->config.guestFullName;
+            printf '%12.12s', $vm->guest->guestFamily;
+            print " | ";
+            printf '%11.11s', $vm->guest->guestState;
+            print " | ";
+            printf '%10.10s', $vm->runtime->maxMemoryUsage;
+            print " | ";
+            printf '%3.3s', $vm->summary->config->numCpu;
+            #FIXME commenting this out for a little bit since it takes up so much screen real estate
+            #print $vm->guest->guestFullName;
+            print "\n";
+
+            #Dumper command to get all of the possible data we can pull out of ESX 
+            #if ($vmcounter == 5){
+            #     print Dumper($vm);
+            #     break;
+            #}
+        } 
     }
 
   $hostcounter++;
