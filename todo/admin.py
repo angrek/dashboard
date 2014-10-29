@@ -17,7 +17,7 @@ class PersonalTodoAdmin(admin.ModelAdmin):
     list_filter = ('list', 'completed', 'priority', 'assigned_to', 'due_date')
     readonly_fields = ('created_by',)
     ordering = ('completed', 'priority',)
-    search_fields = ('name',)
+    search_fields = ('title',)
     save_on_top = True
 
     def get_queryset(self, request):
