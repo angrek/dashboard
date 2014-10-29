@@ -129,7 +129,7 @@ def get_default_zone():
     return Zone.objects.get(id=3)
 
 class LinuxServer(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=40, unique=True)
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)

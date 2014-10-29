@@ -20,18 +20,11 @@
 use Getopt::Long;
 use Term::ANSIColor qw(:constants);
 use VMware::VIRuntime;
-
+use DBI;
 
 ########## Set your username and password and define where the VMware Web Service can be located
-my $username = 'AD\wrehfiel';
-#my $service_url = "https://172.28.1.250/sdk/vimService";
-#my $service_url = "https://vcenterdev01:9443/sdk/vimService";
-my $service_url = "https://vcenterdev01/sdk/vimService";
-#my $service_url = "https://esx028/sdk/vimService";
-
-#my $cluster_name = "Savvis Non-Prod UCS-Linux";
-my $cluster_name = "Savvis Non-Prod UCS-DMZ";
-
+$username = 'AD\wrehfiel';
+$service_url = "https://vcenterdev01/sdk/vimService";
 
 open (FILE,  "/home/wrehfiel/.ssh/p");
 #@lines = <FILE>;
@@ -39,8 +32,15 @@ while (<FILE>){
     chomp;
     $password = $_;
 }
+print "blah\n";
+@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ');
+##my $cluster_name = "Savvis Non-Prod UCS-Linux";
+#my $cluster_name = "Savvis Non-Prod UCS-DMZ";
+print @clusters;
+print "\n";
 
-
+foreach $cluster_name(@clusters){
+print $cluster_name;
 ########## Login to the VMware Infrastrucure Web Service
 Vim::login(service_url => $service_url, user_name => $username, password => $password);
 
@@ -66,6 +66,9 @@ my $host_views = Vim::find_entity_views(view_type => 'HostSystem',
 
 my $hostcounter = 0;
 my $vmcounter = 0;
+
+%hash_of_servers = ();
+
 foreach my $host (@$host_views) {
 
   ########## Get a view of the current host
@@ -79,6 +82,42 @@ foreach my $host (@$host_views) {
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
         if (($vm->guest->guestFamily) eq 'linuxGuest'){
+
+            #putting it into an array
+            $server_name=$vm->name;
+            $esx_server_name = $host->name;
+            $guest_family = $vm->guest->guestFamily;
+            $state = $vm->guest->guestState;
+            $memory = $vm->runtime->maxMemoryUsage;
+            $cpu = $vm->summary->config->numCpu;
+            $active = '';
+            if ($memory == ''){$memory = 0;}
+            if ($cpu == ''){$cpu = 0;}
+            if ($state eq 'running'){
+                $active = 1;
+            }else{
+                $active = 0;
+            }
+            #print "State=$state";
+            #print "Length=", length($state);
+            print 'server:', "$server_name,$cluster_name,$guest_family,$state,$active,$memory,$cpu";
+
+            $dbh = DBI->connect('DBI:mysql:dashboard', 'wrehfiel', '') || die "Could not connect to database: $DBI::errstr";
+            $rv=$dbh->do("lock table server_linuxserver write");
+            $sth = $dbh->prepare (qq{insert into server_linuxserver (
+                name,
+                vmware_cluster,
+                active,
+                exception,
+                zone_id,
+                memory,
+                cpu)
+                VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, $cluster_name, $active, 0, 3, $memory, $cpu);
+            $rv=$dbh->do("unlock table");
+            $dbh->disconnect();
+
+
             $vmcounter++;
             print "| ";
             printf '%3.3s', $vmcounter;
@@ -95,6 +134,8 @@ foreach my $host (@$host_views) {
             printf '%10.10s', $vm->runtime->maxMemoryUsage;
             print " | ";
             printf '%3.3s', $vm->summary->config->numCpu;
+
+            #should really get this directly from the OS anyway.
             #FIXME commenting this out for a little bit since it takes up so much screen real estate
             #print $vm->guest->guestFullName;
             print "\n";
@@ -116,8 +157,8 @@ print "| Found " . $vmcounter . " Virtual Machines on " . $hostcounter . " ESX H
 print "|--------------------------------------------------------------------------|\n";
 print "\n";
 
-print "\ntesting\n";
-print Dumper($vm);
+#print "\ntesting\n";
+#print Dumper($vm);
 ########## Logout of the VMware Infrastructure Web Service
 Vim::logout();
-
+}
