@@ -67,6 +67,12 @@ class Item(models.Model):
     class Meta:
         ordering = ["priority"]
 
+class ItemCompleted(Item):
+    class Meta:
+        proxy=True
+        verbose_name = "Items Completed"
+        verbose_name_plural = "Items Completed"
+
 class PersonalTodo(Item):
     class Meta:
         proxy=True
