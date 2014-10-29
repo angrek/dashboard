@@ -83,6 +83,11 @@ foreach my $host (@$host_views) {
     foreach my $vm (@$vm_views) {
         if (($vm->guest->guestFamily) eq 'linuxGuest'){
 
+
+            $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+            $timestamp = sprintf ("%04d-%02d-%02d %02d:%02d:%02d",
+                                    $year+1900,$mon+1,$mday,$hour,$min,$sec);
+
             #putting it into an array
             $server_name=$vm->name;
             $esx_server_name = $host->name;
@@ -100,7 +105,7 @@ foreach my $host (@$host_views) {
             }
             #print "State=$state";
             #print "Length=", length($state);
-            print 'server:', "$server_name,$cluster_name,$guest_family,$state,$active,$memory,$cpu";
+            #print 'server:', "$server_name,$cluster_name,$guest_family,$state,$active,$memory,$cpu";
 
             $dbh = DBI->connect('DBI:mysql:dashboard', 'wrehfiel', '') || die "Could not connect to database: $DBI::errstr";
             $rv=$dbh->do("lock table server_linuxserver write");
@@ -109,11 +114,13 @@ foreach my $host (@$host_views) {
                 vmware_cluster,
                 active,
                 exception,
+                created,
+                modified,
                 zone_id,
                 memory,
                 cpu)
-                VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, $cluster_name, $active, 0, 3, $memory, $cpu);
+                VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, created="$timestamp", modified="$timestamp",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, $cluster_name, $active, 0, "$timestamp", "$timestamp", 3, $memory, $cpu);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
