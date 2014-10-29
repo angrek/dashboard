@@ -9,20 +9,20 @@ from django.contrib.admin.models import LogEntry
 class AIXServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
-    list_filter = ['frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
-    search_fields = ['name', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
+    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
+    list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
+    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
+    fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
 
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'vmware_cluster', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
-    list_filter = ['os', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
-    search_fields = ['name', 'vmware_cluster', 'os', 'os_level', 'centrify', 'xcelys','ssl']
+    list_display = ['name', 'owner', 'vmware_cluster', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'os', 'os_level', 'centrify', 'xcelys','ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'vmware_cluster', 'active', 'exception', 'created', 'modified', 'cpu', 'memory','ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'active', 'exception', 'created', 'modified', 'cpu', 'memory','ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
 
 
 

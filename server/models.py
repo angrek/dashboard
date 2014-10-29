@@ -28,6 +28,7 @@ class Zone(models.Model):
 
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
+    owner = models.CharField(max_length=50, blank=True, null=True)
     frame = models.CharField(max_length=30)    
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
@@ -130,6 +131,7 @@ def get_default_zone():
 
 class LinuxServer(models.Model):
     name = models.CharField(max_length=40, unique=True)
+    owner = models.CharField(max_length=30, blank=True, null=True)
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
