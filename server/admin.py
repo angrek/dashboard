@@ -18,11 +18,11 @@ class AIXServerAdmin(admin.ModelAdmin):
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'vmware_cluster', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
+    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
     list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
-    search_fields = ['name', 'owner', 'vmware_cluster', 'os', 'os_level', 'centrify', 'xcelys','ssl']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys','ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'active', 'exception', 'created', 'modified', 'cpu', 'memory','ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
 
 
 

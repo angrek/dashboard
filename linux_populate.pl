@@ -24,7 +24,7 @@ use DBI;
 
 ########## Set your username and password and define where the VMware Web Service can be located
 $username = 'AD\wrehfiel';
-$service_url = "https://vcenterdev01/sdk/vimService";
+
 
 open (FILE,  "/home/wrehfiel/.ssh/p");
 #@lines = <FILE>;
@@ -32,14 +32,25 @@ while (<FILE>){
     chomp;
     $password = $_;
 }
-print "blah\n";
-@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ');
+
+
+@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
+            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
+            'Savvis Prod UCS-SANMGMT');
+#@clusters = ('Savvis Non-Prod UCS-DMZ');
 ##my $cluster_name = "Savvis Non-Prod UCS-Linux";
 #my $cluster_name = "Savvis Non-Prod UCS-DMZ";
 print @clusters;
 print "\n";
 
 foreach $cluster_name(@clusters){
+
+if ($cluster_name =~ /Non-Prod/){
+    $service_url = "https://vcenterdev01/sdk/vimService";
+}else{
+    $service_url = "https://vcenterprod01/sdk/vimService";
+}
+
 print $cluster_name;
 ########## Login to the VMware Infrastrucure Web Service
 Vim::login(service_url => $service_url, user_name => $username, password => $password);
@@ -88,6 +99,7 @@ foreach my $host (@$host_views) {
             $timestamp = sprintf ("%04d-%02d-%02d %02d:%02d:%02d",
                                     $year+1900,$mon+1,$mday,$hour,$min,$sec);
 
+
             #putting it into an array
             $server_name=$vm->name;
             $esx_server_name = $host->name;
@@ -96,13 +108,27 @@ foreach my $host (@$host_views) {
             $memory = $vm->runtime->maxMemoryUsage;
             $cpu = $vm->summary->config->numCpu;
             $active = '';
+
+            #ORM apparently isn't liking NULL....
             if ($memory == ''){$memory = 0;}
             if ($cpu == ''){$cpu = 0;}
+
+
             if ($state eq 'running'){
                 $active = 1;
+                #it's running, let's grab the ip address from nslookup
+                $ns_command = "nslookup $server_name | grep Address | grep -v '#'";
+                $ip_address = qx($ns_command);
+                $ip_address = substr $ip_address, 9, -1;
+                #print "$ip_address";
+                #print "Length:", length($ip_address);
             }else{
                 $active = 0;
+                $ip_address = "0.0.0.0";
             }
+
+
+
             #print "State=$state";
             #print "Length=", length($state);
             #print 'server:', "$server_name,$cluster_name,$guest_family,$state,$active,$memory,$cpu";
@@ -116,11 +142,12 @@ foreach my $host (@$host_views) {
                 exception,
                 created,
                 modified,
+                ip_address,
                 zone_id,
                 memory,
                 cpu)
-                VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, created="$timestamp", modified="$timestamp",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, $cluster_name, $active, 0, "$timestamp", "$timestamp", 3, $memory, $cpu);
+                VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, $cluster_name, $active, 0, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
