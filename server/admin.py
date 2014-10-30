@@ -1,12 +1,15 @@
 from django.contrib import admin
 from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone, Storage
+from server.models import AIXServerResource
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
+from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 
 
-class AIXServerAdmin(admin.ModelAdmin):
+#class AIXServerAdmin(admin.ModelAdmin):
+class AIXServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
@@ -14,6 +17,11 @@ class AIXServerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
+    resource_class = AIXServerResource
+    pass
+
+#class AIXServerAdmin(ImportExportModelAdmin):
+#    pass
 
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500

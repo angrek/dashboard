@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from import_export import resources
 
 # Create your models here.
 
@@ -63,6 +64,11 @@ class AIXServer(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.name)
+
+class AIXServerResource(resources.ModelResource):
+    class Meta:
+        model = AIXServer
+
 
 class Power7Inventory(models.Model):
     name = models.ForeignKey(AIXServer)
