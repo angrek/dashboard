@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.admindocs',
+    'import_export',
     'todo',
     'server',
 )
