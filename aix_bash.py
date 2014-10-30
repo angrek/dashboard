@@ -53,7 +53,7 @@ def update_server():
                     #with the vio servers we want the ios.level rather than the os_level
                     command = 'rpm -qa | grep bash |grep -v doc'
                     stdin, stdout, stderr = client.exec_command(command)
-                    bash_version = stdout.readlines()[0]
+                    bash_version = stdout.readlines()[0].rstrip()
 
                     #check existing value, if it exists, don't update
                     if str(bash_version) != str(server.bash):
