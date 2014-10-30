@@ -53,7 +53,9 @@ def update_server():
                     else:
                         command = 'oslevel -s'
                     stdin, stdout, stderr = client.exec_command(command)
-                    oslevel = stdout.readlines()[0]
+
+                    #need rstrip() because there are extra characters at the end
+                    oslevel = stdout.readlines()[0].rstrip()
 
                     #check existing value, if it exists, don't update
                     if str(oslevel) != str(server.os_level):
