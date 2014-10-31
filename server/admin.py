@@ -12,11 +12,11 @@ from import_export.admin import ImportExportModelAdmin
 class AIXServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
-    list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
-    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
+    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'log']
+    fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'log']
     resource_class = AIXServerResource
     pass
 
@@ -26,11 +26,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl']
-    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl']
-    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys','ssl']
+    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'imperva']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'ssl', 'java', 'imperva']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys','ssl', 'java', 'imperva']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'os', 'os_level', 'centrify', 'xcelys', 'ssl', 'java', 'imperva', 'log']
 
 
 

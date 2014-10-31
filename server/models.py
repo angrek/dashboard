@@ -53,6 +53,7 @@ class AIXServer(models.Model):
     bash = models.CharField(max_length=25, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
+    imperva = models.CharField(max_length=15, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -163,6 +164,7 @@ class LinuxServer(models.Model):
     bash = models.CharField(max_length=25, blank=True, null=True)
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
+    imperva = models.CharField(max_length=15, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
     class Meta:
