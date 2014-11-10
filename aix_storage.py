@@ -51,7 +51,7 @@ def update_server():
                     continue 
 
 
-                stdin, stdout, stderr = client.exec_command('sudo /scripts/disksize_dashboard.sh')
+                stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')
                 #stdin, stdout, stderr = client.exec_command('ls /')
 
                 #we have to do errpt differently due to the way it is handled by stdout
