@@ -13,6 +13,7 @@ todo/*.pyc
 dashboard/*.pyc
 check_esb_console_log.py
 Unix_Capacity_Planning_Report.xlsx
+Unix_Configuration*
 1.txt
 2.txt
 3.txt
