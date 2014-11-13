@@ -14,26 +14,26 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, Zone
+from server.models import LinuxServer, Zone
 import ping_server
 django.setup()
 
 
 
 def update_server():
-    server_list = AIXServer.objects.all()
+    server_list = LinuxServer.objects.all()
     #just a quick way to on off test a server without the whole list
-    #server_list = AIXServer.objects.filter(name='ustswebdb')
+    #server_list = LinuxServer.objects.filter(name='ustswebdb')
     for server in server_list:
         server_is_active=1
         new_centrify = ''
 
         #these are hardcoded because
         #none of the vio servers have Centrify installed on them
-        server_exceptions = AIXServer.objects.filter(name__contains='vio')
+        server_exceptions = LinuxServer.objects.filter(name__contains='vio')
 
         #Make sure the server is set to active and not an exception
-        if AIXServer.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
+        if LinuxServer.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
             response = ping_server.ping(server)
             
             #typically = is false, but that's what ping gives back for a positive
@@ -46,7 +46,7 @@ def update_server():
                     client.connect(str(server), username="wrehfiel")
                 except:
                     #print 'SSH to ' + str(server) + ' failed, changing exception'
-                    AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
+                    LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
 
                     #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
@@ -65,8 +65,8 @@ def update_server():
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
                         old_version = str(server.centrify)
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
+                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                         change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                     if centrify_is_installed:
@@ -77,12 +77,12 @@ def update_server():
                         zone_tmp = x[4].rstrip()
                         zone = Zone.objects.get(name=zone_tmp)
 
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
+                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
                     
             else:
-                AIXServer.objects.filter(name=server).update(active=False)
+                LinuxServer.objects.filter(name=server).update(active=False)
                 #print str(server) + ' not responding to ping, setting to inactive.'
-                AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                LinuxServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
                 LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
 
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     print "Checking centrify version..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import AIXServer
+    from server.models import LinuxServer
     update_server()
     elapsed_time= timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
