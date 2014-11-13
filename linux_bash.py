@@ -7,7 +7,7 @@
 #
 #########################################################################
 
-import os
+import os, re
 from ssh import SSHClient
 from django.utils import timezone
 from django.contrib.admin.models import LogEntry
@@ -47,8 +47,7 @@ def update_server():
                     client.connect(str(server), username="wrehfiel")
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
-                    #FIXME - commented out below until I can fix
-                    #LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
+                    LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
                     
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
                     server_is_active=0 
@@ -57,6 +56,8 @@ def update_server():
                     command = 'rpm -qa | grep bash |grep -v doc'
                     stdin, stdout, stderr = client.exec_command(command)
                     bash_version = stdout.readlines()[0].rstrip()
+
+                    bash_version = re.sub(r'x86_64', '', bash_version)
 
                     #check existing value, if it exists, don't update
                     if str(bash_version) != str(server.bash):
