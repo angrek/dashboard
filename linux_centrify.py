@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get centrify version and drop it into Django dashboard
+# Script to get centrify version from the Linux servers and drop it into Django dashboard
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 11/13/2014
 #
 #########################################################################
 

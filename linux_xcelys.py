@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve Xcelys versions and drop them into Django dashboard
+# Script to retrieve Linux Xcelys versions and drop them into Django dashboard
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 11/13/2014
 #
 #########################################################################
 

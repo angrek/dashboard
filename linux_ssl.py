@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve SSL versions on the servers and drop them into Django dashboard
+# Script to retrieve Linux SSL versions on the servers and drop them into Django dashboard
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 11/13/2014
 #
 #########################################################################
 

@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve imperva versions and drop them into Django dashboard
+# Script to retrieve Linux imperva versions and drop them into Django dashboard
 #
-# Boomer Rehfield - 10/30/2014
+# Boomer Rehfield - 11/13/2014
 #
 #########################################################################
 

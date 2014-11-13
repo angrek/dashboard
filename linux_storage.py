@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to storage size of each of the servers
+# Script to storage size of each of the Linux servers
 #
-# Boomer Rehfield - 10/24/2014
+# Boomer Rehfield - 11/13/2014
 #
 #########################################################################
 
