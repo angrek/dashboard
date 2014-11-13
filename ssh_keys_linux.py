@@ -11,6 +11,10 @@ import os
 import re
 from ssh import SSHClient
 from django.utils import timezone
+from server.models import AIXServer, LinuxServer
+
+#need itertools to concatenate the query sets to combine lists of servers from two different tables
+from itertools import chain
 
 #these are need in django 1.7 and needed vs the django settings command
 import django
@@ -29,8 +33,12 @@ def update_server():
     counter = 0
     #server_list = AIXServer.objects.all()
     #the below exception is for my account's inability to ssh in (service account in the future)
-    server_list = AIXServer.objects.filter(exception=True)
-    #server_list = AIXServer.objects.filter(name='p1sasgrid06-new')
+    #Part 2 - revisiting what is or isn't an exception later, might be changing the field
+    #server_list_aix = AIXServer.objects.filter(active=True)
+    #server_list_aix = AIXServer.objects.filter(name='blah')
+    server_list = LinuxServer.objects.filter(active=True)
+    #server_list = list(chain(server_list_aix, server_list_linux))
+
     for server in server_list:
         server_is_active = 1
 
@@ -38,7 +46,7 @@ def update_server():
         counter = counter + 1
         print 'Working on server ' + str(counter) + " - " + str(server)
         #removed exception because it should be an exception (should it filter exception=True???)
-        if AIXServer.objects.filter(name=server, active=True):
+        if LinuxServer.objects.filter(name=server, active=True):
             
             response = ping_server.ping(server)
             #ping test
@@ -63,7 +71,7 @@ def update_server():
                 #print "stdout!"
                 #print directory_exists[0].rstrip()
                 if directory_exists[0].rstrip() == '0':
-                    print '-Ssh directory does not exit. Creating'
+                    print '-Ssh directory does not exist. Creating'
                     #directory does not exist so we need to create it
                     client = paramiko.SSHClient()
                     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -130,7 +138,6 @@ if __name__ == '__main__':
     print "Beginning your SSH key transfers..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import AIXServer
     update_server()
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)
