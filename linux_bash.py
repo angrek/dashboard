@@ -32,7 +32,7 @@ def update_server():
         print str(counter) + ' - ' + str(server)
         server_is_active=1
 
-        if LinuxServer.objects.filter(name=server, active=True, exception=False):
+        if LinuxServer.objects.filter(name=server, active=True):
             response = ping_server.ping(server)
             if response == 0:
                 #SSHClient.util.log_to_file('test.log')
@@ -40,11 +40,11 @@ def update_server():
                 client.load_system_host_keys()
 
                 #redundant testing...ssh won't connect for some reason
-                server = str(server).rstrip()
-                print server
-                print len(server)
+                #server = str(server).rstrip()
+                #print server
+                #print len(server)
                 try:
-                    client.connect(server, username="wrehfiel")
+                    client.connect(str(server), username="wrehfiel")
                 except:
                     print 'SSH to ' + str(server) + ' failed, changing exception'
                     #FIXME - commented out below until I can fix
