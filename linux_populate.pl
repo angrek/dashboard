@@ -40,8 +40,6 @@ while (<FILE>){
 #@clusters = ('Savvis Non-Prod UCS-DMZ');
 ##my $cluster_name = "Savvis Non-Prod UCS-Linux";
 #my $cluster_name = "Savvis Non-Prod UCS-DMZ";
-print @clusters;
-print "\n";
 
 foreach $cluster_name(@clusters){
 
@@ -51,7 +49,7 @@ if ($cluster_name =~ /Non-Prod/){
     $service_url = "https://vcenterprod01/sdk/vimService";
 }
 
-print $cluster_name;
+i#print $cluster_name;
 ########## Login to the VMware Infrastrucure Web Service
 Vim::login(service_url => $service_url, user_name => $username, password => $password);
 
@@ -65,11 +63,11 @@ if (!$cluster_view) {
    die  "\nERROR: '" . $cluster_name . "' was not found in the VMware Infrastructure\n\n";
 }
 
-########## Print the table header
-print "\n";
-print "|--------------------------------------------------------------------------|\n";
-print "| VMware Cluster: " . $cluster_view->name . "\n"; 
-print "|--------------------------------------------------------------------------|\n";
+########### Print the table header
+#print "\n";
+#print "|--------------------------------------------------------------------------|\n";
+#print "| VMware Cluster: " . $cluster_view->name . "\n"; 
+#print "|--------------------------------------------------------------------------|\n";
 
 ########## Get a view of the ESX Hosts in the specified Cluster
 my $host_views = Vim::find_entity_views(view_type => 'HostSystem',
@@ -115,23 +113,25 @@ foreach my $host (@$host_views) {
 
 
             if ($state eq 'running'){
-                $active = 1;
-                #it's running, let's grab the ip address from nslookup
-                $ns_command = "nslookup $server_name | grep Address | grep -v '#'";
-                $ip_address = qx($ns_command);
-                $ip_address = substr $ip_address, 9, -1;
-                #print "$ip_address";
-                #print "Length:", length($ip_address);
+                $active = True;
             }else{
-                $active = 0;
-                $ip_address = "0.0.0.0";
+                $active = False;
+            }
+
+            #it can be inactive with an ip,lets grab it from  nslookup
+            $ns_command = "nslookup $server_name | grep Address | grep -v '#'";
+            $ip_address = qx($ns_command);
+            $ip_address = substr $ip_address, 9, -1;
+
+            if ($ip_address == ''){
+                $ipaddress = "0.0.0.0";
+                $exception = 1;
+            }else{
+                $exception = 0;
             }
 
 
 
-            #print "State=$state";
-            #print "Length=", length($state);
-            #print 'server:', "$server_name,$cluster_name,$guest_family,$state,$active,$memory,$cpu";
 
             $dbh = DBI->connect('DBI:mysql:dashboard', 'wrehfiel', '') || die "Could not connect to database: $DBI::errstr";
             $rv=$dbh->do("lock table server_linuxserver write");
@@ -146,34 +146,37 @@ foreach my $host (@$host_views) {
                 zone_id,
                 memory,
                 cpu)
-                VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, $cluster_name, $active, 0, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
+                VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, exception=$exception, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, $cluster_name, $active, $exception, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
 
             $vmcounter++;
-            print "| ";
-            printf '%3.3s', $vmcounter;
-            print ": ";
-            printf '%23.23s', $host->name;
-            print " | ";
-            printf '%26.26s', $vm->name;
-            print " | ";
+
+            #just put this here because it's easy to see all of the values while troubleshooting
+            #print "| ";
+            #printf '%3.3s', $vmcounter;
+            #print ": ";
+            #printf '%23.23s', $host->name;
+            #print " | ";
+            #printf '%26.26s', $vm->name;
+            #print " | ";
             #printf $vm->config.guestFullName;
-            printf '%12.12s', $vm->guest->guestFamily;
-            print " | ";
-            printf '%11.11s', $vm->guest->guestState;
-            print " | ";
-            printf '%10.10s', $vm->runtime->maxMemoryUsage;
-            print " | ";
-            printf '%3.3s', $vm->summary->config->numCpu;
+            #printf '%12.12s', $vm->guest->guestFamily;
+            #print " | ";
+            #printf '%11.11s', $vm->guest->guestState;
+            #print " | ";
+            #printf '%10.10s', $vm->runtime->maxMemoryUsage;
+            #print " | ";
+            #printf '%3.3s', $vm->summary->config->numCpu;
 
             #should really get this directly from the OS anyway.
             #FIXME commenting this out for a little bit since it takes up so much screen real estate
             #print $vm->guest->guestFullName;
-            print "\n";
+            #print "\n";
 
+            #LEAVE THIS HERE TO SEE VALUES FOR THE FUTURE
             #Dumper command to get all of the possible data we can pull out of ESX 
             #if ($vmcounter == 5){
             #     print Dumper($vm);
@@ -186,13 +189,10 @@ foreach my $host (@$host_views) {
 }
 
 ########## Print the table footer
-print "|--------------------------------------------------------------------------|\n";
-print "| Found " . $vmcounter . " Virtual Machines on " . $hostcounter . " ESX Host(s) in " . $cluster_view->name . "\n";
-print "|--------------------------------------------------------------------------|\n";
-print "\n";
+#print "|--------------------------------------------------------------------------|\n";
+#print "| Found " . $vmcounter . " Virtual Machines on " . $hostcounter . " ESX Host(s) in " . $cluster_view->name . "\n";
+#print "|--------------------------------------------------------------------------|\n";
+#print "\n";
 
-#print "\ntesting\n";
-#print Dumper($vm);
-########## Logout of the VMware Infrastructure Web Service
 Vim::logout();
 }
