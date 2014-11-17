@@ -26,11 +26,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'storage', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
     list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
     search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'log']
 
 
 

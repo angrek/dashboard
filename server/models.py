@@ -159,6 +159,7 @@ class LinuxServer(models.Model):
     os_level = models.CharField(max_length=20, blank=True, null=True)
     memory = models.IntegerField(max_length=10, blank=True, null=True)
     cpu = models.IntegerField(max_length=3, blank=True, null=True)
+    storage = models.IntegerField(max_length=10, blank=True, null=True)
     centrify = models.CharField(max_length=35, blank=True, null=True)
     xcelys = models.CharField(max_length=35, blank=True, null=True)
     bash = models.CharField(max_length=25, blank=True, null=True)
