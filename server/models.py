@@ -54,6 +54,7 @@ class AIXServer(models.Model):
     ssl = models.CharField(max_length=20, blank=True, null=True)
     java = models.CharField(max_length=20, blank=True, null=True)
     imperva = models.CharField(max_length=15, blank=True, null=True)
+    netbackup = models.CharField(max_length=35, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
     class Meta:

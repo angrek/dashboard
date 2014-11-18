@@ -12,11 +12,11 @@ from import_export.admin import ImportExportModelAdmin
 class AIXServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level']
+    list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception']
+    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'log']
+    fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = AIXServerResource
     pass
 
@@ -25,11 +25,11 @@ class AIXApplicationsAdmin(admin.ModelAdmin):
     #def queryset(self, request):
     #    return self.model.objects.filter(name__contains='vio')
     save_on_top = True
-    list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    list_filter = ['active', 'exception', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_filter = ['active', 'exception', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva']
+    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
 
 #class AIXServerAdmin(ImportExportModelAdmin):
 #    pass
