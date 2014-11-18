@@ -1,6 +1,7 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone, Storage
+from server.models import AIXServer, AIXApplications, LinuxServer, LinuxApplications, Errpt, VIOServer, Power7Inventory, Zone, Storage
 from server.models import AIXServerResource
+from server.models import LinuxServerResource
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
@@ -22,8 +23,6 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
 class AIXApplicationsAdmin(ImportExportModelAdmin):
-    resource_class = AIXServerResource
-    pass
     #def queryset(self, request):
     #    return self.model.objects.filter(name__contains='vio')
     save_on_top = True
@@ -32,11 +31,11 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
+    resource_class = AIXServerResource
+    pass
 
-#class AIXServerAdmin(ImportExportModelAdmin):
-#    pass
 
-class LinuxServerAdmin(admin.ModelAdmin):
+class LinuxServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'storage', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
@@ -44,11 +43,25 @@ class LinuxServerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
-
-
-
-class VIOServerAdmin(admin.ModelAdmin):
+    resource_class = LinuxServerResource
     pass
+
+class LinuxApplicationsAdmin(ImportExportModelAdmin):
+    save_on_top = True
+    list_display = ['name', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_filter = ['active', 'exception', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    search_fields = ['name', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
+    resource_class = LinuxServerResource
+    pass
+
+
+
+#class VIOServerAdmin(admin.ModelAdmin):
+class VIOServerAdmin(ImportExportModelAdmin):
+    #FIXME why was this pass here??
+    #pass
     def queryset(self, request):
         return self.model.objects.filter(name__contains='vio')
     save_on_top = True
@@ -57,6 +70,8 @@ class VIOServerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'log']
+    resource_class = AIXServerResource
+    pass
 
 class Power7InventoryAdmin(admin.ModelAdmin):
     list_max_show_all = 500
@@ -105,6 +120,7 @@ class StorageAdmin(admin.ModelAdmin):
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
+admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)

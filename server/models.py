@@ -67,17 +67,49 @@ class AIXServer(models.Model):
     def __unicode__(self):
         return '%s' % (self.name)
 
+#Meta model to split off the AIX applications in the admin
 class AIXApplications(AIXServer):
     class Meta:
         proxy=True
         verbose_name = "AIX Applications"
         verbose_name_plural = "AIX Applications"
 
-
+#Meta model for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):
     class Meta:
         model = AIXServer
 
+#Meta model of AIX Server to just show VIO servers
+class VIOServer(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "VIO Server"
+        verbose_name_plural = "VIO Servers"
+
+#Model for AIX error reports
+class Errpt(models.Model):
+    name = models.ForeignKey(AIXServer)
+    report = models.TextField(blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "AIX Errpt"
+        verbose_name_plural = "AIX Errpts"
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+#Poorly thought out model that only contains storage for AIX servers. Sigh.
+class Storage(models.Model):
+    name = models.ForeignKey(AIXServer)
+    size = models.IntegerField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Storage"
+        verbose_name_plural = "Storage"
+    
+    def __unicode__(self):
+        return unicode(self.name)
 
 class Power7Inventory(models.Model):
     name = models.ForeignKey(AIXServer)
@@ -185,36 +217,19 @@ class LinuxServer(models.Model):
     def __unicode__(self):
         return '%s' % (self.name)
 
-
-class VIOServer(AIXServer):
+#Meta model to just show the application versions
+class LinuxApplications(LinuxServer):
     class Meta:
         proxy=True
-        verbose_name = "VIO Server"
-        verbose_name_plural = "VIO Servers"
+        verbose_name = "Linux Applications"
+        verbose_name_plural = "Linux Applications"
 
-
-class Errpt(models.Model):
-    name = models.ForeignKey(AIXServer)
-    report = models.TextField(blank=True, null=True)
-    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-
+#Meta model to use for exporting into Excel and other formats
+class LinuxServerResource(resources.ModelResource):
     class Meta:
-        verbose_name = "AIX Errpt"
-        verbose_name_plural = "AIX Errpts"
+        model = LinuxServer
 
-    def __unicode__(self):
-        return unicode(self.name)
 
-class Storage(models.Model):
-    name = models.ForeignKey(AIXServer)
-    size = models.IntegerField(max_length=10, blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Storage"
-        verbose_name_plural = "Storage"
-    
-    def __unicode__(self):
-        return unicode(self.name)
 
 #class CapacityPlanning(models.Model):
 #    name = models.ForeignKey(AIXServer, related_name='capacity_name')
