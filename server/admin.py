@@ -63,7 +63,7 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
 class VIOServerAdmin(ImportExportModelAdmin):
     #FIXME why was this pass here??
     #pass
-    def queryset(self, request):
+    def get_queryset(self, request):
         return self.model.objects.filter(name__contains='vio')
     save_on_top = True
     list_display = ['name', 'frame', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
