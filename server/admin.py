@@ -20,7 +20,9 @@ class AIXServerAdmin(ImportExportModelAdmin):
     resource_class = AIXServerResource
     pass
 
-class AIXApplicationsAdmin(admin.ModelAdmin):
+#class AIXApplicationsAdmin(admin.ModelAdmin):
+class AIXApplicationsAdmin(ImportExportModelAdmin):
+    resource_class = AIXServerResource
     pass
     #def queryset(self, request):
     #    return self.model.objects.filter(name__contains='vio')
