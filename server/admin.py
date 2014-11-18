@@ -25,11 +25,11 @@ class AIXApplicationsAdmin(admin.ModelAdmin):
     #def queryset(self, request):
     #    return self.model.objects.filter(name__contains='vio')
     save_on_top = True
-    list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
-    list_filter = ['active', 'exception', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
-    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_display = ['name', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_filter = ['active', 'exception', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    search_fields = ['name', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
+    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
 
 #class AIXServerAdmin(ImportExportModelAdmin):
 #    pass
@@ -37,11 +37,11 @@ class AIXApplicationsAdmin(admin.ModelAdmin):
 class LinuxServerAdmin(admin.ModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'storage', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
-    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'storage', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
 
 
 
