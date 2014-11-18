@@ -2,6 +2,7 @@ from django.contrib import admin
 from server.models import AIXServer, AIXApplications, LinuxServer, LinuxApplications, Errpt, VIOServer, Power7Inventory, Zone, Storage
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
+from server.models import Power7InventoryResource
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
@@ -73,14 +74,16 @@ class VIOServerAdmin(ImportExportModelAdmin):
     resource_class = AIXServerResource
     pass
 
-class Power7InventoryAdmin(admin.ModelAdmin):
+class Power7InventoryAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
     list_filter = ('curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
     search_fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
-    #fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'cur_mem', 'max_mem')
+    fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'cur_mem', 'max_mem')
 
+    resource_class = Power7InventoryResource
+    pass
 
 
 

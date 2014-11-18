@@ -173,6 +173,14 @@ class Power7Inventory(models.Model):
     def __unicode__(self):
         return self.name
 
+#Meta model to use for exporting into Excel and other formats
+class Power7InventoryResource(resources.ModelResource):
+    class Meta:
+        model = Power7Inventory
+
+
+
+
 def get_default_zone():
     return Zone.objects.get(id=3)
 
