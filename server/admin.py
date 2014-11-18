@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone, Storage
+from server.models import AIXServer, AIXApplications, LinuxServer, Errpt, VIOServer, Power7Inventory, Zone, Storage
 from server.models import AIXServerResource
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
@@ -20,6 +20,17 @@ class AIXServerAdmin(ImportExportModelAdmin):
     resource_class = AIXServerResource
     pass
 
+class AIXApplicationsAdmin(admin.ModelAdmin):
+    pass
+    #def queryset(self, request):
+    #    return self.model.objects.filter(name__contains='vio')
+    save_on_top = True
+    list_display = ['name', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    list_filter = ['active', 'exception', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva']
+
 #class AIXServerAdmin(ImportExportModelAdmin):
 #    pass
 
@@ -34,7 +45,6 @@ class LinuxServerAdmin(admin.ModelAdmin):
 
 
 
-#testing the proxy model
 class VIOServerAdmin(admin.ModelAdmin):
     pass
     def queryset(self, request):
@@ -91,6 +101,7 @@ class StorageAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AIXServer, AIXServerAdmin)
+admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)

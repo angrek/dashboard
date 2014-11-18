@@ -66,6 +66,13 @@ class AIXServer(models.Model):
     def __unicode__(self):
         return '%s' % (self.name)
 
+class AIXApplications(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX Applications"
+        verbose_name_plural = "AIX Applications"
+
+
 class AIXServerResource(resources.ModelResource):
     class Meta:
         model = AIXServer
