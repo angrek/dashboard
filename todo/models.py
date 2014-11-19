@@ -29,6 +29,7 @@ class List(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "List"
         verbose_name_plural = "Lists"
 
         # Prevents (at the database level) creation of two lists with the same name in the same group
@@ -66,6 +67,8 @@ class Item(models.Model):
 
     class Meta:
         ordering = ["priority"]
+        verbose_name = 'Item'
+        verbose_name_plural = 'Items'
 
 class ItemCompleted(Item):
     class Meta:
@@ -94,3 +97,6 @@ class Comment(models.Model):
             self.author,
             self.date,
         )
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
