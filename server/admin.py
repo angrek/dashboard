@@ -39,9 +39,9 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
 class LinuxServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'vmware_cluster', 'ip_address', 'cpu', 'memory', 'storage', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
-    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
-    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_display = ['name', 'owner', 'active', 'exception', 'vmware_cluster', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = LinuxServerResource
