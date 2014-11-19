@@ -16,7 +16,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level']
     list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception']
-    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level']
+    search_fields = ['name', 'owner', 'frame', 'ip_address', 'zone', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = AIXServerResource
@@ -93,9 +93,10 @@ class LogEntryAdmin(admin.ModelAdmin):
     #note the loss of _id on user_id and content_type_id in the list display
     list_display = ('action_time', 'user', 'content_type', 'object_repr', 'action_flag', 'change_message')
     list_filter = ('action_time', 'user_id', 'content_type_id')
-    search_fields = ('action_time', 'user_id', 'content_type_id', 'object_repr', 'action_flag', 'change_message')
+    #search_fields = ( 'user_id', 'content_type', 'object_repr', 'action_flag', 'change_message')
+    search_fields = ('user__id', 'content_type__id', 'object_repr', 'change_message',)
     save_on_top = True
-    fields = ('action_time', 'user_id', 'content_type_id', 'object_repr', 'action_flag', 'change_message')
+    #fields = ('id', 'action_time', 'user', 'content_type', 'object_repr', 'action_flag', 'change_message')
     order = ('-action_time')
     def has_add_permissions(self, request):
         return False
