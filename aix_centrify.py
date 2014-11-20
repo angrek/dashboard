@@ -36,21 +36,10 @@ def update_server():
         if AIXServer.objects.filter(name=server) and str(server) not in server_exceptions:
             
             if test_server.ping(server):
+
                 client = SSHClient()
-                client.load_system_host_keys()
+                if test_server.ssh(server, client):
 
-                #without try, it will break the script if it can't SSH
-                try:
-                    client.connect(str(server), username="wrehfiel")
-                except:
-                    #print 'SSH to ' + str(server) + ' failed, changing exception'
-                    AIXServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
-
-                    #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
-                    server_is_active=0
-
-                if server_is_active:
                     centrify_is_installed = 1
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
                     try:

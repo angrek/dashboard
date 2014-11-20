@@ -23,7 +23,8 @@ django.setup()
 def update_server():
     counter = 0
 
-    server_list = LinuxServer.objects.all()
+    #server_list = LinuxServer.objects.all()
+    server_list = LinuxServer.objects.filter(name='p1ecmapp14-v6')
 
     for server in server_list:
         server_is_active = 1
@@ -33,26 +34,20 @@ def update_server():
             if test_server.ping(server):
 
                 client = SSHClient()
-                client.load_system_host_keys()
-                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                try:
-                    client.connect(str(server), username="wrehfiel")
-                except:
-                    #FIXME - need to check and see if it was an exception before and make it one if it wasn't
-                    continue
+                if test_server.ssh(server, client):
 
-                stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq')
-                #this is going to pull 4 different parts of ssl, we just need the base
-                rows = stdout.readlines()
-                ssl = str(rows[0])
+                    stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq')
+                    #this is going to pull 4 different parts of ssl, we just need the base
+                    rows = stdout.readlines()
+                    ssl = str(rows[0])
 
-                #cutton off the beginning and end, not really needed.
-                ssl = re.sub('openssl-', '', ssl)
-                ssl = re.sub('.x86_64', '', ssl)
+                    #cut off the beginning and end, not really needed.
+                    ssl = re.sub('openssl-', '', ssl)
+                    ssl = re.sub('.x86_64', '', ssl)
 
-                #if existing value is the same, don't update
-                if str(ssl) != str(server.ssl):
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+                    #if existing value is the same, don't update
+                    if str(ssl) != str(server.ssl):
+                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
 
 
 

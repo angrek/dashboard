@@ -33,20 +33,8 @@ def update_server():
             if test_server.ping(server):
 
                 client = SSHClient()
-                client.load_system_host_keys()
+                if test_server.ssh(server, client):
 
-                #without try, it will break the script if it can't SSH
-                try:
-                    client.connect(str(server), username="wrehfiel")
-                except:
-                    #print 'SSH to ' + str(server) + ' failed, changing exception'
-                    LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
-
-                    #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
-                    server_is_active=0
-
-                if server_is_active:
                     centrify_is_installed = 1
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
                     try:
@@ -59,10 +47,11 @@ def update_server():
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
                         old_version = str(server.centrify)
-                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify)
-                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
+                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
                         change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+
+                    #Using the centrify script here to pull the Active Directory Zone
                     if centrify_is_installed:
                         #Since we're using adinfo to find the zone, it fits that it should be here in the centrify script
                         stdin, stdout, stderr = client.exec_command('adinfo | grep Zone')

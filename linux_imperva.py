@@ -33,48 +33,25 @@ def update_server():
 
         if LinuxServer.objects.filter(name=server):
 
-            if test_server.ping(server):
+            if test_server.ping(server, client):
 
                 client = SSHClient()
-                client.load_system_host_keys()
+                if test_server.ssh(server):
 
-                try:
-                    client.connect(str(server), username="wrehfiel")
-                except:
-                    print 'SSH to ' + str(server) + ' failed, changing exception'
-                    #LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
-                    
-                    #LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action
-                    #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
-                    server_is_active=0 
-
-                if server_is_active:
-                    #with the vio servers we want the ios.level rather than the os_level
                     command = 'lslpp -L | grep -i imper'
                     stdin, stdout, stderr = client.exec_command(command)
-                    #print 'stdout' 
-                    #print stdout
-                    #print 'readlines' 
                     test = stdout.readlines()
-                    #print "stdout.readlines()"
-                    #print  stdout.readlines()
-                    #print "test " 
-                    #print test
-                    #print "test[0] " + test[0]
+
                     try:
                         output = test[0].rstrip()
                         imperva_version = ' '.join(output.split())
                         imperva_version = imperva_version.split(" ")[1].rstrip()
-                        print imperva_version
+
                         #check existing value, if it exists, don't update
                         if str(imperva_version) != str(server.imperva):
                             LinuxServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                            #pretty user the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
                             change_message = 'Changed imperva version to ' + str(imperva_version)
                             LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                            #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
-                            #We can do that or we can FK to the admin log...should we try to add our own columns?
-                            #log = LinuxServer.objects.log(name=server 
                     except:
                         imperva_version = 'Not installed'
                         if str(imperva_version) != str(server.imperva):
@@ -87,7 +64,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Checking Imperva versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()

@@ -36,22 +36,8 @@ def update_server():
             if test_server.ping(server):
 
                 client = SSHClient()
-                client.load_system_host_keys()
 
-                #redundant testing...ssh won't connect for some reason
-                #server = str(server).rstrip()
-                #print server
-                #print len(server)
-                try:
-                    client.connect(str(server), username="wrehfiel")
-                except:
-                    print 'SSH to ' + str(server) + ' failed, changing exception'
-                    LinuxServer.objects.filter(name=server).update(exception=True, modified=timezone.now())
-                    
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
-                    server_is_active=0 
-
-                if server_is_active:
+                if test_server.ssh(server, client): 
                     command = 'sudo /sbin/fdisk -l | grep Disk'
                     stdin, stdout, stderr = client.exec_command(command)
                     print stdout
@@ -61,18 +47,16 @@ def update_server():
                     print size
                     print 'Size' + str(size[1])
                     exit
+                    continue
+                    #FIXME above
                                      
                     bash_version = re.sub(r'x86_64', '', bash_version)
 
                     #check existing value, if it exists, don't update
                     if str(bash_version) != str(server.bash):
                         LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())
-                        #pretty user the timestamp is auto created even though the table doesn't reflect it... maybe it's in the model
                         change_message = 'Changed bash version to ' + str(bash_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                        #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
-                        #We can do that or we can FK to the admin log...should we try to add our own columns?
-                        #log = LinuxServer.objects.log(name=server 
 
 
 

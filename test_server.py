@@ -48,22 +48,36 @@ def ping(server):
 
 
 #test ssh... duh
-def ssh(server):
-    response = os.system("ping -c 1 " + str(server) + "> /dev/null 2>&1")
-    if response == 0:
-        print "Ping succeeded"
+def ssh(server, client):
 
-        if server.active == False:
-            server.active=True
-            server.modified=timezone.now()
+    client.load_system_host_keys()
+
+    try:
+        client.connect(str(server), username="wrehfiel")
+        print 'ssh good'
+        if server.exception == True:
+            server.exception = False
             server.save()
-            LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping succeeded, changed to active.')
-    else:
-        print "Ping failed"
-        if server.active == True:
-            server.active=False
-            server.modified=timezone.now()
+            LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH succeeded, changed exception.')
+            print 'changed exception'
+        response = 1
+
+    except:
+        print 'ssh bad'
+        if server.exception == False:
+            server.exception = True
             server.save()
-            LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
+            LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
+            print 'changed exception'
+        response = 0
     return response
-#ping(server)
+
+
+
+
+
+
+
+
+
+
