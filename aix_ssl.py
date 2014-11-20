@@ -24,31 +24,28 @@ def update_server():
 
     server_list = AIXServer.objects.all()
     for server in server_list:
-        server_is_active = 1
 
-        if AIXServer.objects.filter(name=server, active=True, exception=False):
-            
-            if server_test.ping(server):
+        if server_test.ping(server):
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-                    stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i openssl.base')
-                    #this is going to pull 4 different parts of ssl, we just need the base
-                    rows = stdout.readlines()
-                    if rows:
-                        row = rows[0]
-                        #split the lines and grab the first one
-                        temp = row.split("\r")[0]
-                        p = re.compile(r' +')
-                        temp2 = p.split(temp)
-                        ssl = temp2[2]
-                        
-                        #if existing value is the same, don't update
-                        if str(ssl) != str(server.ssl):
-                            AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
-                            change_message = 'Changed SSL version to ' + str(ssl)
-                            LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i openssl.base')
+                #this is going to pull 4 different parts of ssl, we just need the base
+                rows = stdout.readlines()
+                if rows:
+                    row = rows[0]
+                    #split the lines and grab the first one
+                    temp = row.split("\r")[0]
+                    p = re.compile(r' +')
+                    temp2 = p.split(temp)
+                    ssl = temp2[2]
+                    
+                    #if existing value is the same, don't update
+                    if str(ssl) != str(server.ssl):
+                        AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+                        change_message = 'Changed SSL version to ' + str(ssl)
+                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

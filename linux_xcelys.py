@@ -26,27 +26,23 @@ def update_server():
 
     for server in server_list:
 
-        server_is_active=1
+        if test_server.ping(server):
 
-        if AIXServer.objects.filter(name=server):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-            if test_server.ping(server):
+                stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
+                temp_xcelys_version = stdout.readlines()[0]
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+                #need to cut the string down
+                xcelys_version = temp_xcelys_version[36:-16]
+                 
+                #check existing value, if it exists, don't update
+                if str(xcelys_version) != str(server.xcelys):
 
-                    stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
-                    temp_xcelys_version = stdout.readlines()[0]
-
-                    #need to cut the string down
-                    xcelys_version = temp_xcelys_version[36:-16]
-                     
-                    #check existing value, if it exists, don't update
-                    if str(xcelys_version) != str(server.xcelys):
-
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
-                        change_message = 'Changed xcelys to ' + str(xcelys_version)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
+                    change_message = 'Changed xcelys to ' + str(xcelys_version)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

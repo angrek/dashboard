@@ -29,28 +29,23 @@ def update_server():
 
     counter = 0
     for server in server_list:
-        counter += 1
-        print str(counter) + ' - ' + str(server)
-        server_is_active=1
+        #counter += 1
+        #print str(counter) + ' - ' + str(server)
 
-        #FIXME The thought here is that I don't care if it's active or an exception, I should be retesting it all anyway....
-        #if AIXServer.objects.filter(name=server, active=True, exception=False):
-        if AIXServer.objects.filter(name=server):
+        if test_server.ping(server):
+            
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-            if test_server.ping(server):
-                
-                client = SSHClient()
-                if test_server.ssh(server, client):
+                command = 'rpm -qa | grep bash |grep -v doc'
+                stdin, stdout, stderr = client.exec_command(command)
+                bash_version = stdout.readlines()[0].rstrip()
 
-                    command = 'rpm -qa | grep bash |grep -v doc'
-                    stdin, stdout, stderr = client.exec_command(command)
-                    bash_version = stdout.readlines()[0].rstrip()
-
-                    #check existing value, if it exists, don't update
-                    if str(bash_version) != str(server.bash):
-                        AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
-                        change_message = 'Changed bash version to ' + str(bash_version)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                #check existing value, if it exists, don't update
+                if str(bash_version) != str(server.bash):
+                    AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
+                    change_message = 'Changed bash version to ' + str(bash_version)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

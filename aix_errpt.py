@@ -25,27 +25,23 @@ def update_server():
     server_list = AIXServer.objects.filter(name__contains='vio')
     #server_list = AIXServer.objects.filter(name__contains='p1vio01')
     for server in server_list:
-        server_is_active=1
 
-        #Make sure the server is set to active and not an exception
-        if AIXServer.objects.filter(name=server, active=True, exception=False):
+        if test_server.ping(server):
+
+            client = SSHClient()
+            if test_server.ssh(server, client):
+                stdin, stdout, stderr = client.exec_command('errpt | tail -n 20"')
+                report = ''
+
+                #we have to do errpt differently due to the way it is handled by stdout
+                for line in stdout:
+                    report = report + str(line)
+                if report == '':
+                    report = "The errpt was empty."
             
-            if test_server.ping(server):
-
-                client = SSHClient()
-                if test_server.ssh(server, client):
-                    stdin, stdout, stderr = client.exec_command('errpt | tail -n 20"')
-                    report = ''
-
-                    #we have to do errpt differently due to the way it is handled by stdout
-                    for line in stdout:
-                        report = report + str(line)
-                    if report == '':
-                        report = "The errpt was empty."
-                
-                    #we don't care about the old record and we'll just add another
-                    Errpt.objects.get_or_create(name=server, report=report, modified=timezone.now())
-                    change_message = 'Updated errpt.'
+                #we don't care about the old record and we'll just add another
+                Errpt.objects.get_or_create(name=server, report=report, modified=timezone.now())
+                change_message = 'Updated errpt.'
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

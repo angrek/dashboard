@@ -29,28 +29,26 @@ def update_server():
 
     counter  = 1
     for server in server_list:
-        server_is_active=1
 
-        if AIXServer.objects.filter(name=server):
             
-            if test_server.ping(server):
+        if test_server.ping(server):
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-                    stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')
+                stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')
 
-                    #we have to do errpt differently due to the way it is handled by stdout
+                #we have to do errpt differently due to the way it is handled by stdout
 
-                    for line in stdout:
-                        print line.rstrip()
-                    
-                    counter += 1
-                    try:
-                        Storage.objects.get(name=server)
-                        Storage.objects.filter(name=server).update(size=line.rstrip())
-                    except:
-                        Storage.objects.get_or_create(name=server, size=line.rstrip())
+                for line in stdout:
+                    print line.rstrip()
+                
+                counter += 1
+                try:
+                    Storage.objects.get(name=server)
+                    Storage.objects.filter(name=server).update(size=line.rstrip())
+                except:
+                    Storage.objects.get_or_create(name=server, size=line.rstrip())
 
 
 

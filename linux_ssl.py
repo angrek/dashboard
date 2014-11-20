@@ -21,33 +21,29 @@ django.setup()
 
 
 def update_server():
-    counter = 0
 
     #server_list = LinuxServer.objects.all()
     server_list = LinuxServer.objects.filter(name='p1ecmapp14-v6')
 
     for server in server_list:
-        server_is_active = 1
-
-        if LinuxServer.objects.filter(name=server):
             
-            if test_server.ping(server):
+        if test_server.ping(server):
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-                    stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq')
-                    #this is going to pull 4 different parts of ssl, we just need the base
-                    rows = stdout.readlines()
-                    ssl = str(rows[0])
+                stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq')
+                #this is going to pull 4 different parts of ssl, we just need the base
+                rows = stdout.readlines()
+                ssl = str(rows[0])
 
-                    #cut off the beginning and end, not really needed.
-                    ssl = re.sub('openssl-', '', ssl)
-                    ssl = re.sub('.x86_64', '', ssl)
+                #cut off the beginning and end, not really needed.
+                ssl = re.sub('openssl-', '', ssl)
+                ssl = re.sub('.x86_64', '', ssl)
 
-                    #if existing value is the same, don't update
-                    if str(ssl) != str(server.ssl):
-                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+                #if existing value is the same, don't update
+                if str(ssl) != str(server.ssl):
+                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
 
 
 

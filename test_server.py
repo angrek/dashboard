@@ -15,7 +15,7 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer
+from server.models import AIXServer, LinuxServer
 import dashboard_logging
 
 django.setup()

@@ -28,41 +28,38 @@ def update_server():
 
     for server in server_list:
 
-        server_is_active=1
+        if test_server.ping(server):
 
-        if LinuxServer.objects.filter(name=server):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-            if test_server.ping(server):
+                command = 'lsb_release -a | grep Distributor'
+                stdin, stdout, stderr = client.exec_command(command)
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
-                    command = 'lsb_release -a | grep Distributor'
-                    stdin, stdout, stderr = client.exec_command(command)
-
-                    #need rstrip() because there are extra characters at the end
-                    os = stdout.readlines()[0].rstrip()
-                    os = re.sub('Distributor ID:', '', os)
-                    os = re.sub('\s*', '', os)
+                #need rstrip() because there are extra characters at the end
+                os = stdout.readlines()[0].rstrip()
+                os = re.sub('Distributor ID:', '', os)
+                os = re.sub('\s*', '', os)
 
 
-                    if os == 'RedHatEnterpriseServer':
-                        os = 'RHEL'
-                    else:
-                        os = 'Unknown'
+                if os == 'RedHatEnterpriseServer':
+                    os = 'RHEL'
+                else:
+                    os = 'Unknown'
 
 
-                    command = 'lsb_release -a | grep Release'
-                    stdin, stdout, stderr = client.exec_command(command)
+                command = 'lsb_release -a | grep Release'
+                stdin, stdout, stderr = client.exec_command(command)
 
-                    oslevel = stdout.readlines()[0].rstrip()
-                    oslevel = re.sub('Release:', '', oslevel)
-                    oslevel = re.sub('\s*', '', oslevel)
+                oslevel = stdout.readlines()[0].rstrip()
+                oslevel = re.sub('Release:', '', oslevel)
+                oslevel = re.sub('\s*', '', oslevel)
 
-                    #check existing value, if it exists, don't update
-                    if str(oslevel) != str(server.os_level) or str(os) != str(server.os):
-                        LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, os_level=oslevel, modified=timezone.now())
-                        change_message = 'Changed os_level to ' + +str(os) + ' ' + str(oslevel)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                #check existing value, if it exists, don't update
+                if str(oslevel) != str(server.os_level) or str(os) != str(server.os):
+                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, os_level=oslevel, modified=timezone.now())
+                    change_message = 'Changed os_level to ' + +str(os) + ' ' + str(oslevel)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

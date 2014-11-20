@@ -22,10 +22,10 @@ django.setup()
 
 def update_server():
     server_list = AIXServer.objects.all()
-    #just a quick way to on off test a server without the whole list
     #server_list = AIXServer.objects.filter(name='ustswebdb')
+
     for server in server_list:
-        server_is_active=1
+
         new_centrify = ''
 
         #these are hardcoded because
@@ -33,7 +33,7 @@ def update_server():
         server_exceptions = AIXServer.objects.filter(name__contains='vio')
 
         #Make sure the server is set to active and not an exception
-        if AIXServer.objects.filter(name=server) and str(server) not in server_exceptions:
+        if str(server) not in server_exceptions:
             
             if test_server.ping(server):
 

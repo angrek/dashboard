@@ -25,22 +25,20 @@ def update_server():
     #server_list = AIXServer.objects.filter(name='u3midcap2')
 
     for server in server_list:
-        server_is_active=1
-        if AIXServer.objects.filter(name=server):
 
-            if test_server.ping(server):
+        if test_server.ping(server):
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-                    stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
-                    netbackup_version = stdout.readlines()[0]
+                stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
+                netbackup_version = stdout.readlines()[0]
 
-                    #check existing value, if it exists, don't update
-                    if str(netbackup_version) != str(server.netbackup):
-                        AIXServer.objects.filter(name=server).update(netbackup=netbackup_version, modified=timezone.now())
-                        change_message = 'Changed netbackup to ' + str(netbackup_version)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                #check existing value, if it exists, don't update
+                if str(netbackup_version) != str(server.netbackup):
+                    AIXServer.objects.filter(name=server).update(netbackup=netbackup_version, modified=timezone.now())
+                    change_message = 'Changed netbackup to ' + str(netbackup_version)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

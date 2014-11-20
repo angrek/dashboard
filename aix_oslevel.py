@@ -26,31 +26,27 @@ def update_server():
 
     for server in server_list:
 
-        server_is_active=1
+        if test_server.ping(server):
 
-        if AIXServer.objects.filter(name=server):
+            client = SSHClient()
+            if test_server.ssh(server, client):
 
-            if test_server.ping(server):
+                #with the vio servers we want the ios.level rather than the os_level
+                vio_servers = AIXServer.objects.filter(name__contains='vio')
+                if server in vio_servers:
+                    command = 'cat /usr/ios/cli/ios.level'
+                else:
+                    command = 'oslevel -s'
+                stdin, stdout, stderr = client.exec_command(command)
 
-                client = SSHClient()
-                if test_server.ssh(server, client):
+                #need rstrip() because there are extra characters at the end
+                oslevel = stdout.readlines()[0].rstrip()
 
-                    #with the vio servers we want the ios.level rather than the os_level
-                    vio_servers = AIXServer.objects.filter(name__contains='vio')
-                    if server in vio_servers:
-                        command = 'cat /usr/ios/cli/ios.level'
-                    else:
-                        command = 'oslevel -s'
-                    stdin, stdout, stderr = client.exec_command(command)
-
-                    #need rstrip() because there are extra characters at the end
-                    oslevel = stdout.readlines()[0].rstrip()
-
-                    #check existing value, if it exists, don't update
-                    if str(oslevel) != str(server.os_level):
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
-                        change_message = 'Changed os_level to ' + str(oslevel)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                #check existing value, if it exists, don't update
+                if str(oslevel) != str(server.os_level):
+                    AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
+                    change_message = 'Changed os_level to ' + str(oslevel)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 
