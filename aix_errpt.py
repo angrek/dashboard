@@ -15,7 +15,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import AIXServer, Errpt
-import ping_server
+import test_server
 django.setup()
 
 
@@ -29,10 +29,8 @@ def update_server():
 
         #Make sure the server is set to active and not an exception
         if AIXServer.objects.filter(name=server, active=True, exception=False):
-            response = ping_server.ping(server)
             
-            #typically = is false, but that's what ping gives back for a positive
-            if response == 0:
+            if test_server.ping(server):
                 client = SSHClient()
                 client.load_system_host_keys()
 
@@ -63,11 +61,6 @@ def update_server():
                     Errpt.objects.get_or_create(name=server, report=report, modified=timezone.now())
                     change_message = 'Updated errpt.'
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-            else:
-                AIXServer.objects.filter(name=server).update(active=False)
-                print str(server) + ' not responding to ping, setting to inactive.'
-                AIXServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
-                LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
 
 
 

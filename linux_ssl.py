@@ -16,21 +16,22 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-import ping_server
+import test_server
 django.setup()
 
 
 def update_server():
     counter = 0
+
     server_list = LinuxServer.objects.all()
+
     for server in server_list:
         server_is_active = 1
 
-        if LinuxServer.objects.filter(name=server, active=True, exception=False):
+        if LinuxServer.objects.filter(name=server):
             
-            response = ping_server.ping(server)
-            #ping test
-            if response == 0:
+            if test_server.ping(server):
+
                 client = SSHClient()
                 client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -52,11 +53,6 @@ def update_server():
                 #if existing value is the same, don't update
                 if str(ssl) != str(server.ssl):
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
-            else:
-                LinuxServer.objects.filter(name=server).update(active=False, modified=timezone.now())
-                #print str(server) + ' not responding to ping, setting to inactive.'
-                LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
-
 
 
 

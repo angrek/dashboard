@@ -15,7 +15,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import AIXServer
-import ping_server
+import test_server
 django.setup()
 import re
 
@@ -33,8 +33,9 @@ def update_server():
         server_is_active=1
 
         if AIXServer.objects.filter(name=server, active=True, exception=False):
-            response = ping_server.ping(server)
-            if response == 0:
+
+            if test_server.ping(server):
+
                 #SSHClient.util.log_to_file('test.log')
                 client = SSHClient()
                 client.load_system_host_keys()

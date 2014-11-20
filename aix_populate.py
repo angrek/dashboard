@@ -18,7 +18,7 @@
 import os
 from ssh import SSHClient
 import paramiko
-import ping_server
+import test_server
 from django.utils import timezone
 from subprocess import call, check_output
 
@@ -95,9 +95,8 @@ def populate():
             #screws up our silencing of the ping and creates stdout ping response
             #to be printed.... what the hell man.... not really a FIXME, more of an FYI :\
             server = server.rstrip()
-            response = ping_server.ping(server)
 
-            if response == 0:
+            if test_server.ping(server):
                 #print "-Ping test is good"
                 #server is active, let's ssh to it
                 client = paramiko.SSHClient()

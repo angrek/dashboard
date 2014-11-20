@@ -19,7 +19,7 @@ from itertools import chain
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-import ping_server
+import test_server
 django.setup()
 import paramiko
 import getpass
@@ -48,9 +48,7 @@ def update_server():
         #removed exception because it should be an exception (should it filter exception=True???)
         if LinuxServer.objects.filter(name=server, active=True):
             
-            response = ping_server.ping(server)
-            #ping test
-            if response == 0:
+            if test_server.ping(server):
                 print "-Ping test is good"
 
                 all_ahead_flank = 0

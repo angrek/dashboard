@@ -15,7 +15,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import LinuxServer, Zone
-import ping_server
+import test_server
 django.setup()
 
 
@@ -28,16 +28,10 @@ def update_server():
         server_is_active=1
         new_centrify = ''
 
-        #these are hardcoded because
-        #none of the vio servers have Centrify installed on them
-        server_exceptions = LinuxServer.objects.filter(name__contains='vio')
+        if LinuxServer.objects.filter(name=server):
 
-        #Make sure the server is set to active and not an exception
-        if LinuxServer.objects.filter(name=server, active=True, exception=False) and str(server) not in server_exceptions:
-            response = ping_server.ping(server)
-            
-            #typically = is false, but that's what ping gives back for a positive
-            if response == 0:
+            if test_server.ping(server):
+
                 client = SSHClient()
                 client.load_system_host_keys()
 
@@ -79,13 +73,6 @@ def update_server():
 
                         LinuxServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
                     
-            else:
-                LinuxServer.objects.filter(name=server).update(active=False)
-                #print str(server) + ' not responding to ping, setting to inactive.'
-                LinuxServer.objects.filter(name=server, exception=False, active=True).update(modified=timezone.now())
-                LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
-
-
 
 
 #start execution

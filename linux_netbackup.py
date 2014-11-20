@@ -16,7 +16,7 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import re
-import ping_server
+import test_server
 django.setup()
 
 
@@ -27,11 +27,12 @@ def update_server():
     #server_list = LinuxServer.objects.filter(name='u3midcap2')
     for server in server_list:
         server_is_active=1
-        if LinuxServer.objects.filter(name=server, active=True, exception=False):
-            #The server looks good, so we're going to ping it to see if it's status has changed
-            response = ping_server.ping(server)
-            if response == 0:
-                LinuxServer.objects.filter(name=server).update(active=True)
+
+        if LinuxServer.objects.filter(name=server):
+
+            if test_server.ping(server):
+
+                #LinuxServer.objects.filter(name=server).update(active=True)
                 client = SSHClient()
                 client.load_system_host_keys()
                 try:
@@ -56,13 +57,6 @@ def update_server():
                     #FIXME - ok, we're going to create the manual log here, haven't worked it all out yet how I want to do it though
                     #We can do that or we can FK to the admin log...should we try to add our own columns?
                     #log = LinuxServer.objects.log(name=server 
-            else:
-                #server is labeled as good, but didn't respond to a ping so we'll change it's status
-                LinuxServer.objects.filter(name=server).update(active=False)
-                #print str(server) + ' not responding to ping, setting to inactive.'
-                LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
-
-                
 
 
 

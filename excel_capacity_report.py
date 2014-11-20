@@ -22,7 +22,6 @@ import django
 from dashboard import settings
 django.setup()
 
-import ping_server
 
 s = Style(font=Font(name='Calibri', size=11, bold=True))
 

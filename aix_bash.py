@@ -38,8 +38,7 @@ def update_server():
         #FIXME The thought here is that I don't care if it's active or an exception, I should be retesting it all anyway....
         #if AIXServer.objects.filter(name=server, active=True, exception=False):
         if AIXServer.objects.filter(name=server):
-            #response = ping_server.ping(server)
-            #if response == 0:
+
             if test_server.ping(server):
                 
                 #test SSH

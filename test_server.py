@@ -16,7 +16,6 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import AIXServer
-import ping_server
 import dashboard_logging
 
 django.setup()
