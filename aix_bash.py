@@ -35,6 +35,7 @@ def update_server():
         print str(counter) + ' - ' + str(server)
         server_is_active=1
 
+        #FIXME The thought here is that I don't care if it's active or an exception, I should be retesting it all anyway....
         #if AIXServer.objects.filter(name=server, active=True, exception=False):
         if AIXServer.objects.filter(name=server):
             #response = ping_server.ping(server)
