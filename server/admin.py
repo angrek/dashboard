@@ -16,7 +16,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level']
     list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception']
-    search_fields = ['name', 'owner', 'frame', 'ip_address', 'zone', 'os', 'os_level']
+    search_fields = ['name', 'owner', 'frame', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = AIXServerResource
