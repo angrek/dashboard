@@ -24,6 +24,10 @@ mail william.rehfield@wellcare.com -s aix_storage < 7.txt
 mail william.rehfield@wellcare.com -s aix_xcelys < 8.txt
 /home/wrehfiel/ENV/dashboard/aix_netbackup.py
 mail william.rehfield@wellcare.com -s aix_netbackup < 9.txt
+/home/wrehfiel/ENV/dashboard/aix_ssh.py
+mail william.rehfield@wellcare.com -s aix_ssh < 9.txt
+/home/wrehfiel/ENV/dashboard/aix_ssh_cent.py
+mail william.rehfield@wellcare.com -s aix_ssh_cent < 9.txt
 
 
 /home/wrehfiel/ENV/dashboard/linux_bash.py
