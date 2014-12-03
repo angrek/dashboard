@@ -23,7 +23,7 @@ django.setup()
 def update_server():
 
     server_list = AIXServer.objects.all()
-    #server_list = AIXServer.objects.filter(name__contains='uftsmidtier')
+    #server_list = AIXServer.objects.filter(name__contains='pinfipcapp')
     for server in server_list:
 
         if test_server.ping(server):
@@ -41,8 +41,8 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     ssh = temp2[2]
-                    print server
-                    print str(ssh)                    
+                    #print server
+                    #print str(ssh)                    
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.cent_ssh):
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(cent_ssh=ssh, modified=timezone.now())
