@@ -12,7 +12,7 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-
+from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -23,9 +23,10 @@ django.setup()
 def update_server():
 
     server_list = AIXServer.objects.all()
+    #server_list = AIXServer.objects.filter(name__contains='ufts')
     for server in server_list:
 
-        if server_test.ping(server):
+        if test_server.ping(server):
 
             client = SSHClient()
             if test_server.ssh(server, client):
@@ -40,7 +41,8 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     ssl = temp2[2]
-                    
+                    print server
+                    print str(ssl)                    
                     #if existing value is the same, don't update
                     if str(ssl) != str(server.ssl):
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
