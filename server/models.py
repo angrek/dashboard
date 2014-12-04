@@ -20,9 +20,19 @@ class Zone(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        verbose_name = "AD Zones"
+        verbose_name = "AD Zone"
         verbose_name_plural = "AD Zones"
         
+    def __unicode__(self):
+        return self.name
+
+class Frame(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True)
+
+    class meta:
+        verbose_name = "Frame"
+        verbose_name_plural = "Frames"
+
     def __unicode__(self):
         return self.name
 
@@ -30,7 +40,7 @@ class Zone(models.Model):
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
     owner = models.CharField(max_length=50, blank=True, null=True)
-    frame = models.CharField(max_length=30)    
+    frame = models.ForeignKey(Frame)   
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, LinuxServer, LinuxApplications, Errpt, VIOServer, Power7Inventory, Zone, Storage
+from server.models import AIXServer, AIXApplications, LinuxServer, LinuxApplications, Errpt, VIOServer, Power7Inventory, Zone, Storage, Frame
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
 from server.models import Power7InventoryResource
@@ -58,7 +58,7 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
     pass
 
 
-
+#FIXME put 'frames back into aixserver and vioserver classes
 #class VIOServerAdmin(admin.ModelAdmin):
 class VIOServerAdmin(ImportExportModelAdmin):
     #FIXME why was this pass here??
@@ -67,7 +67,7 @@ class VIOServerAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(name__contains='vio')
     save_on_top = True
     list_display = ['name', 'frame', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
-    list_filter = ['frame', 'os', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
+    list_filter = ['os', 'frame', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'log']
@@ -110,6 +110,9 @@ class ErrptAdmin(admin.ModelAdmin):
 class ZoneAdmin(admin.ModelAdmin):
     list_display = ['name',]
 
+class FrameAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+
 class StorageAdmin(admin.ModelAdmin):
     list_display = ['name', 'size']
 
@@ -130,5 +133,6 @@ admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
 admin.site.register(Zone, ZoneAdmin)
+admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
 #admin.site.register(CapacityPlanning, CapacityPlanningAdmin)
