@@ -37,7 +37,7 @@ def update_server():
                 stdin, stdout, stderr = client.exec_command('adinfo -v')
                 try:
                     centrify = stdout.readlines()[0]
-                    new_centrify = centrify[8:-2]
+                    new_centrify = centrify[19:-2]
                 except:
                     new_centrify = "Not Installed"
                     centrify_is_installed = 0
