@@ -20,6 +20,10 @@ class AIXServerAdmin(ImportExportModelAdmin):
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'frame', 'active', 'exception', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = AIXServerResource
+    #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
+    #there is a copy in the scripts directory so it gets saved into git as well
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
@@ -33,6 +37,8 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     readonly_fields = ['created', 'modified']
     fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
     resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
 
@@ -44,6 +50,8 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
     pass
 
@@ -55,6 +63,8 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
     readonly_fields = ['created', 'modified']
     fields = ['name', 'active', 'exception', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
     resource_class = LinuxServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
 
@@ -72,6 +82,8 @@ class VIOServerAdmin(ImportExportModelAdmin):
     readonly_fields = ['created', 'modified']
     fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'log']
     resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
 class Power7InventoryAdmin(ImportExportModelAdmin):
@@ -83,6 +95,8 @@ class Power7InventoryAdmin(ImportExportModelAdmin):
     fields = ('name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'cur_mem', 'max_mem')
 
     resource_class = Power7InventoryResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
 
@@ -103,25 +117,31 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         #returning false causes table to gray out in the admin page for some reason
         return True
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
+
+
 
 class ErrptAdmin(admin.ModelAdmin):
     list_display = ['name', 'modified', 'report']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
 
 class ZoneAdmin(admin.ModelAdmin):
     list_display = ['name',]
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
 
 class FrameAdmin(admin.ModelAdmin):
     list_display = ['name',]
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
 
 class StorageAdmin(admin.ModelAdmin):
     list_display = ['name', 'size']
-
-#class CapacityPlanningAdmin(admin.ModelAdmin):
-#    list_display = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
-#    list_filter = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
-#    search_fields = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
-#    save_on_top = True
-#    fields = ('name', 'os', 'ip_address', 'curr_procs', 'curr_mem', 'storage', 'database_name')
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
 
 
 admin.site.register(AIXServer, AIXServerAdmin)
@@ -135,4 +155,3 @@ admin.site.register(Errpt, ErrptAdmin)
 admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
-#admin.site.register(CapacityPlanning, CapacityPlanningAdmin)
