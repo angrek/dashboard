@@ -47,6 +47,9 @@ class AIXServer(models.Model):
     #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
 
+    #creating a meta model for the decom'd servers
+    decommissioned = models.NullBooleanField(default=False, blank=True)
+
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     #last_updated should be auto set by the scripts anytime it is CHANGED
     #this means the script will need to compare values and if something is changed
@@ -87,6 +90,12 @@ class AIXApplications(AIXServer):
         proxy=True
         verbose_name = "AIX Applications"
         verbose_name_plural = "AIX Applications"
+
+class DecommissionedAIXServer(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Decommissioned AIX Server"
+        verbose_name_plural = "Decommissioned AIX Servers"
 
 #Meta model for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):
