@@ -216,6 +216,7 @@ class LinuxServer(models.Model):
 
     #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
+    decommissioned = models.NullBooleanField(default=False, blank=True)
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     #last_updated should be auto set by the scripts anytime it is CHANGED
@@ -247,6 +248,12 @@ class LinuxServer(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.name)
+
+class DecommissionedLinuxServer(LinuxServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Decommissioned Linux Server"
+        verbose_name_plural = "Decommissioned Linux Servers"
 
 #Meta model to just show the application versions
 class LinuxApplications(LinuxServer):

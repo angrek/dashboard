@@ -1,5 +1,6 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, LinuxServer, LinuxApplications, Errpt, VIOServer, Power7Inventory, Zone, Storage, Frame
+from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Storage, Frame
+from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
 from server.models import Power7InventoryResource
@@ -62,13 +63,30 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
     pass
 
 class LinuxServerAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'active', 'exception', 'vmware_cluster', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
     list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    resource_class = LinuxServerResource
+    pass
+
+class DecommissionedLinuxServerAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=1)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'active', 'exception', 'vmware_cluster', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception']
+    search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -168,6 +186,7 @@ admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(DecommissionedAIXServer, DecommissionedAIXServerAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
+admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
