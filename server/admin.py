@@ -15,6 +15,15 @@ from import_export.admin import ImportExportModelAdmin
 class AIXServerAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
+
+    #FIXME
+    #Somehow this was supposed to color the cell orange but errors 'stack is not callable'
+    #def stack_color(self, obj):
+    #    if obj.stack() == 5:
+    #        return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack()
+    #    return obj.stack()
+    #stack_color.allow_tags = True
+
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
@@ -25,6 +34,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
+
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
