@@ -119,30 +119,28 @@ def populate():
                 client = paramiko.SSHClient()
                 client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                server_is_active=1
+                ssh_is_good=1
                 try:
                     client.connect(str(server).rstrip(), username="wrehfiel", password=password)
                 except:
                     ####can't log in, set it as an exception
-                    #b = AIXServer(name=server.rstrip(), frame=frame, os='AIX', exception=True)[0]
                     try:
                         AIXServer.objects.get(name=server.rstrip())
-                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame, ip_address=ip_address, os='AIX', exception=True, modified=timezone.now())
+                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame, ip_address=ip_address, exception=True, modified=timezone.now())
                         change_message = "Could not SSH to server. Set exception to True"
                         #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                     except:
                         zone = Zone.objects.get(name='Unsure')
                         AIXServer.objects.get_or_create(name=str(server).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, exception=True)
-                    server_is_active=0
+                    ssh_is_good = 0
                 client.close()
 
-                if server_is_active:
+                if ssh_is_good::
 
                     #server is good, let's add it to the database.
                     try:
                         AIXServer.objects.get(name=str(server).rstrip())
-                        #FIXME why am I setting the os if I am just updating??
-                        AIXServer.objects.filter(name=str(server).rstrip()).update(frame = frame, ip_address=ip_address, os='AIX', exception=False, modified=timezone.now())
+                        AIXServer.objects.filter(name=str(server).rstrip()).update(frame = frame, ip_address=ip_address, exception=False, modified=timezone.now())
 
                     except:
                         #print '4444444444444444444444444444444'
