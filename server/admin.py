@@ -11,22 +11,29 @@ from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 
 
+
 #class AIXServerAdmin(admin.ModelAdmin):
 class AIXServerAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
 
-    #FIXME
-    #Somehow this was supposed to color the cell orange but errors 'stack is not callable'
-    #def stack_color(self, obj):
-    #    if obj.stack() == 5:
-    #        return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack()
-    #    return obj.stack()
-    #stack_color.allow_tags = True
+    #This overrides the cell div and sets it to a color based on what stack a server is in
+    def stack_color(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+        else:
+            return obj.stack
+    stack_color.allow_tags = True
 
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'owner', 'stack_color', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
     list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__id', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified']
