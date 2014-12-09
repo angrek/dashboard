@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Storage, Frame
+from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
@@ -17,11 +17,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'frame', 'ip_address', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'owner', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
     list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
-    search_fields = ['name', 'owner', 'frame__id', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
+    search_fields = ['name', 'owner', 'frame__id', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'frame', 'active', 'exception', 'decommissioned','created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    fields = ['name', 'owner', 'stack', 'frame', 'active', 'exception', 'decommissioned','created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
@@ -34,11 +34,11 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     #def queryset(self, request):
     #    return self.model.objects.filter(name__contains='vio')
     save_on_top = True
-    list_display = ['name', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_display = ['name', 'stack', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     list_filter = ['active', 'exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     search_fields = ['name', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
+    fields = ['name', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -170,6 +170,11 @@ class ZoneAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class StackAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 class FrameAdmin(admin.ModelAdmin):
     list_display = ['name',]
     class Media:
@@ -192,5 +197,6 @@ admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
 admin.site.register(Zone, ZoneAdmin)
+admin.site.register(Stack, StackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)

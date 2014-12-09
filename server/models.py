@@ -36,6 +36,15 @@ class Frame(models.Model):
     def __unicode__(self):
         return self.name
 
+class Stack(models.Model):
+    name = models.CharField(max_length=15, blank=True, null=True)
+
+    class meta:
+        verbose_name = "Stack"
+        verbose_name_plural = "Stacks"
+
+    def __unicode__(self):
+        return self.name
 
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
@@ -49,6 +58,9 @@ class AIXServer(models.Model):
 
     #creating a meta model for the decom'd servers
     decommissioned = models.NullBooleanField(default=False, blank=True)
+
+    #need to see what color 'stack' they are in (sts, mts, fts, etc)
+    stack = models.ForeignKey(Stack)
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     #last_updated should be auto set by the scripts anytime it is CHANGED
