@@ -43,10 +43,9 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
-                    previous_version = str(server.bash)
+                    dashboard_logging.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+
                     AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
-                    change_message = 'Changed bash version from ' + previous_version + ' to ' + str(bash_version)
-                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

@@ -16,6 +16,7 @@ import django
 from dashboard import settings
 from server.models import AIXServer
 import test_server
+import dashboard_logging
 django.setup()
 
 
@@ -44,10 +45,8 @@ def update_server():
                 
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level):
-                    old_version = str(server.os_level)
+                    dashboard_logging.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
-                    change_message = 'Changed os_level from ' + old_version + ' to ' + str(oslevel)
-                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

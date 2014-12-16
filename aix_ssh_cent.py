@@ -17,6 +17,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 import test_server
+import dashboard_logging
 django.setup()
 
 
@@ -41,14 +42,11 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     ssh = temp2[2]
-                    #print server
-                    #print str(ssh)                    
+
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.cent_ssh):
-                        old_version = str(server.cent_ssh)
+                        dashboard_logging.log_change(str(server), 'Centrify SSH', str(server.cent_ssh), str(ssh))
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(cent_ssh=ssh, modified=timezone.now())
-                        change_message = 'Changed Centrify SSH version from ' + old_version + ' to ' + str(ssh)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

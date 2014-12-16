@@ -17,6 +17,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 import test_server
+import dashboard_logging
 django.setup()
 
 
@@ -47,10 +48,8 @@ def update_server():
                     #print str(emc_clar)                    
                     #if existing value is the same, don't update
                     if str(emc_clar) != str(server.emc_clar):
-                        old_version = str(server.emc_clar)
+                        dashboard_logging.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
                         AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
-                        change_message = 'Changed EMC_CLARIION version from ' + old_version + ' to ' + str(emc_clar)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
                 #get the emc_sym disks
@@ -67,10 +66,10 @@ def update_server():
                     #print str(emc_sym)                    
                     #if existing value is the same, don't update
                     if str(emc_sym) != str(server.emc_sym):
-                        old_version = str(server.emc_sym)
+
+                        dashboard_logging.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
+
                         AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
-                        change_message = 'Changed EMC_Symmetrix version from ' + old_version + ' to ' + str(emc_sym)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

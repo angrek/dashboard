@@ -16,6 +16,7 @@ import django
 from dashboard import settings
 from server.models import LinuxServer, Zone
 import test_server
+import dashboard_logging
 django.setup()
 
 
@@ -44,10 +45,8 @@ def update_server():
 
                 #if it's the same version, we don't need to update the record
                 if str(new_centrify) != str(server.centrify):
-                    old_version = str(server.centrify)
+                    dashboard_logging.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
-                    change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
                 #Using the centrify script here to pull the Active Directory Zone
                 if centrify_is_installed:
