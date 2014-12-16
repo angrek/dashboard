@@ -57,8 +57,10 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level) or str(os) != str(server.os):
+                    old_os = str(server.os)
+                    old_oslevel = str(server.os_level)                        
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, os_level=oslevel, modified=timezone.now())
-                    change_message = 'Changed os_level to ' + +str(os) + ' ' + str(oslevel)
+                    change_message = 'Changed os_level from ' + old_os + ' ' + old_oslevel + ' to ' + str(os) + ' ' + str(oslevel)
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

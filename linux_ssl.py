@@ -12,7 +12,7 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-
+from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -22,8 +22,8 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.all()
-    server_list = LinuxServer.objects.filter(name='p1ecmapp14-v6')
+    server_list = LinuxServer.objects.all()
+    #server_list = LinuxServer.objects.filter(name='p1ecmapp14-v6')
 
     for server in server_list:
             
@@ -43,7 +43,10 @@ def update_server():
 
                 #if existing value is the same, don't update
                 if str(ssl) != str(server.ssl):
+                    old_version = str(server.ssl)
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+                    change_message = 'Changed SSL version from ' + old_version + ' to ' + str(server.ssl)
+                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 
