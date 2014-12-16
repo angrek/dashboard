@@ -30,10 +30,10 @@ def update_server():
         #counter += 1
         #print str(counter) + ' - ' + str(server)
 
-        if test_server.ping(server, client):
+        if test_server.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server):
+            if test_server.ssh(server, client):
 
                 command = 'lslpp -L | grep -i imper'
                 stdin, stdout, stderr = client.exec_command(command)
@@ -46,14 +46,16 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
+                        old_version = str(server.imperva)
                         LinuxServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                        change_message = 'Changed imperva version to ' + str(imperva_version)
+                        change_message = 'Changed imperva version from ' + old_version + ' to ' + str(imperva_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                 except:
                     imperva_version = 'Not installed'
                     if str(imperva_version) != str(server.imperva):
+                        old_version = str(server.imperva)
                         LinuxServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                        change_message = 'Changed imperva version to ' + str(imperva_version)
+                        change_message = 'Changed imperva version from ' + old_version + ' to ' + str(imperva_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
