@@ -41,12 +41,13 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     ssh = temp2[2]
-                    print server
-                    print str(ssh)                    
+
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.aix_ssh):
+
+                        old_version = str(server.aix_ssh)
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(aix_ssh=ssh, modified=timezone.now())
-                        change_message = 'Changed AIX SSH version to ' + str(ssh)
+                        change_message = 'Changed AIX SSH version from ' + old_version + ' to ' + str(ssh)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

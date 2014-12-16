@@ -45,8 +45,9 @@ def update_server():
                     #print str(ssh)                    
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.cent_ssh):
+                        old_version = str(server.cent_ssh)
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(cent_ssh=ssh, modified=timezone.now())
-                        change_message = 'Changed Centrify SSH version to ' + str(ssh)
+                        change_message = 'Changed Centrify SSH version from ' + old_version + ' to ' + str(ssh)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

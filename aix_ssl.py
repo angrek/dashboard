@@ -45,8 +45,9 @@ def update_server():
                     print str(ssl)                    
                     #if existing value is the same, don't update
                     if str(ssl) != str(server.ssl):
+                        old_version = str(server.ssl)
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
-                        change_message = 'Changed SSL version to ' + str(ssl)
+                        change_message = 'Changed SSL version from ' + old_version + ' to ' + str(ssl)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
