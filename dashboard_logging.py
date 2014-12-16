@@ -32,16 +32,13 @@ def failed_ping(server, os):
             #FIXME I need a check here otherwise it isn't really a change, it's updating the same value
             LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='Ping failed, changed to inactive.')
 
+def log_change(server, app, old_version, new_version):
+    change_message = 'Changed ' + app + ' from ' + old_version + ' to ' + new_version
+    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2,
+ change_message=change_message)
 
 
 
-
-def ping(server, os):
-    response = os.system("ping -c 1 " + str(server) + "> /dev/null 2>&1")
-
-    return response
-
-#ping(server)
 
 
 
