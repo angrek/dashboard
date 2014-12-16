@@ -38,6 +38,8 @@ def update_server():
                 command = 'lslpp -L | grep -i imper'
                 stdin, stdout, stderr = client.exec_command(command)
                 test = stdout.readlines()
+
+                #I think this is split differently because of the problem with the command output. I'll have to test. FIXME
                 try:
                     output = test[0].rstrip()
                     imperva_version = ' '.join(output.split())
@@ -45,15 +47,17 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
+                        old_version = str(server.imperva)
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                        change_message = 'Changed imperva version to ' + str(imperva_version)
+                        change_message = 'Changed imperva version from ' + old_version + ' to ' + str(imperva_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
                 except:
                     imperva_version = 'Not installed'
                     if str(imperva_version) != str(server.imperva):
+                        old_version = str(server.imperva)
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                        change_message = 'Changed imperva version to ' + str(imperva_version)
+                        change_message = 'Changed imperva version from ' + old_version + ' to ' + str(imperva_version)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

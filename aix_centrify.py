@@ -56,14 +56,18 @@ def update_server():
                         change_message = 'Changed Centrify version from ' + old_version + ' to ' + str(new_centrify) + '.' 
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
                     if centrify_is_installed:
+
                         #Since we're using adinfo to find the zone, it fits that it should be here in the centrify script
                         stdin, stdout, stderr = client.exec_command('adinfo | grep Zone')
-                        #print stdout.readlines()[0]
                         x = stdout.readlines()[0].split("/")
                         zone_tmp = x[4].rstrip()
                         zone = Zone.objects.get(name=zone_tmp)
-
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
+                        old_zone = str(server.zone)
+                        if str(old_zone) != str(zone):
+                            AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
+                            change_message = 'Changed AD zone from ' + str(old_zone) + ' to ' + str(zone)
+                            LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                            
                         
 
 

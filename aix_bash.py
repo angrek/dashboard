@@ -24,7 +24,7 @@ django.setup()
 def update_server():
     server_list = AIXServer.objects.all()
     #FIXME quick way of testing a few servers
-    #server_list = AIXServer.objects.filter(name='d0welap')
+    #server_list = AIXServer.objects.filter(name='dltsodsdb')
     #server_list = AIXServer.objects.filter(name__contains='vio')
 
     counter = 0
@@ -43,8 +43,9 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
+                    previous_version = str(server.bash)
                     AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
-                    change_message = 'Changed bash version to ' + str(bash_version)
+                    change_message = 'Changed bash version from ' + previous_version + ' to ' + str(bash_version)
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

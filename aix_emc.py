@@ -42,13 +42,14 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     emc_clar = temp2[2]
-                    print server
-                    print 'emc_clar'
-                    print str(emc_clar)                    
+                    #print server
+                    #print 'emc_clar'
+                    #print str(emc_clar)                    
                     #if existing value is the same, don't update
                     if str(emc_clar) != str(server.emc_clar):
+                        old_version = str(server.emc_clar)
                         AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
-                        change_message = 'Changed EMC_CLARIION version to ' + str(emc_clar)
+                        change_message = 'Changed EMC_CLARIION version from ' + old_version + ' to ' + str(emc_clar)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
@@ -61,13 +62,14 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     emc_sym = temp2[1]
-                    print server
-                    print 'emc_sym'
-                    print str(emc_sym)                    
+                    #print server
+                    #print 'emc_sym'
+                    #print str(emc_sym)                    
                     #if existing value is the same, don't update
                     if str(emc_sym) != str(server.emc_sym):
+                        old_version = str(server.emc_sym)
                         AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
-                        change_message = 'Changed EMC_Symmetrix version to ' + str(emc_sym)
+                        change_message = 'Changed EMC_Symmetrix version from ' + old_version + ' to ' + str(emc_sym)
                         LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 

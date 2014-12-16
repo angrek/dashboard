@@ -25,7 +25,7 @@ def update_server():
     #server_list = AIXServer.objects.filter(name__contains='vio')
 
     for server in server_list:
-        print server
+        
         if test_server.ping(server):
 
             client = SSHClient()
@@ -41,11 +41,12 @@ def update_server():
 
                 #need rstrip() because there are extra characters at the end
                 oslevel = stdout.readlines()[0].rstrip()
-                print oslevel
+                
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level):
+                    old_version = str(server.os_level)
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
-                    change_message = 'Changed os_level to ' + str(oslevel)
+                    change_message = 'Changed os_level from ' + old_version + ' to ' + str(oslevel)
                     LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
