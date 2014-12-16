@@ -48,10 +48,23 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
 class AIXApplicationsAdmin(ImportExportModelAdmin):
-    #def queryset(self, request):
-    #    return self.model.objects.filter(name__contains='vio')
+    
+    #This overrides the cell div and sets it to a color based on what stack a server is in
+    def stack_color(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+        else:
+            return obj.stack
+    stack_color.allow_tags = True
+
     save_on_top = True
-    list_display = ['name', 'stack', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_display = ['name', 'stack_color', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     list_filter = ['active', 'exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     search_fields = ['name', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
