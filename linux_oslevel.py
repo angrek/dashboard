@@ -11,7 +11,6 @@ import os
 import re
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -22,9 +21,7 @@ django.setup()
 
 def update_server():
     server_list = LinuxServer.objects.all()
-    #FIXME quick way of testing a few servers
     #server_list = LinuxServer.objects.filter(name='d0mwcdb')
-    #server_list = LinuxServer.objects.filter(name__contains='vio')
 
     for server in server_list:
 
@@ -56,17 +53,14 @@ def update_server():
                 oslevel = re.sub('\s*', '', oslevel)
 
                 #check existing value, if it exists, don't update
-                if str(oslevel) != str(server.os_level) or str(os) != str(server.os):
-                    old_os = str(server.os)
-                    old_oslevel = str(server.os_level)                        
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, os_level=oslevel, modified=timezone.now())
-                    change_message = 'Changed os_level from ' + old_os + ' ' + old_oslevel + ' to ' + str(os) + ' ' + str(oslevel)
-                    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                if str(os) != str(server.os):
+                    dashboard_logging.log_change(str(server), 'OS', str(server.os), str(os))
+                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, modified=timezone.now())
+                if str(oslevel) != str(server.os_level):
+                    dashboard_logging.log_change(str(server), 'OS Level', str(server.os_level), str(os))
+                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
 
 
-
-
-#start execution
 if __name__ == '__main__':
     print "Checking OS versions..."
     start_time = timezone.now()

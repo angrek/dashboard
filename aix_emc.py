@@ -12,7 +12,6 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -43,9 +42,7 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     emc_clar = temp2[2]
-                    #print server
-                    #print 'emc_clar'
-                    #print str(emc_clar)                    
+
                     #if existing value is the same, don't update
                     if str(emc_clar) != str(server.emc_clar):
                         dashboard_logging.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))

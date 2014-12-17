@@ -10,7 +10,6 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -23,8 +22,8 @@ django.setup()
 
 def update_server():
     server_list = LinuxServer.objects.all()
-    #just a quick way to on off test a server without the whole list
     #server_list = LinuxServer.objects.filter(name='ustswebdb')
+
     for server in server_list:
 
         new_centrify = ''

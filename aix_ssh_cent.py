@@ -12,7 +12,6 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -52,7 +51,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking AIX SSH versions..."
+    print "Checking Centrify SSH versions..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     from server.models import AIXServer

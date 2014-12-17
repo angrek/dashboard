@@ -12,7 +12,6 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -38,7 +37,7 @@ def update_server():
                 rows = stdout.readlines()
                 ssl = str(rows[0])
 
-                #cut off the beginning and end, not really needed.
+                #cut off the beginning and end, not really needed and saves space on the spreadsheet view.
                 ssl = re.sub('openssl-', '', ssl)
                 ssl = re.sub('.x86_64', '', ssl)
 

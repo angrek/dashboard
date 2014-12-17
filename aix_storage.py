@@ -10,7 +10,6 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -37,8 +36,6 @@ def update_server():
             if test_server.ssh(server, client):
 
                 stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')
-
-                #we have to do errpt differently due to the way it is handled by stdout
 
                 for line in stdout:
                     print line.rstrip()

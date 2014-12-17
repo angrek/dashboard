@@ -10,7 +10,6 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -49,16 +48,13 @@ def update_server():
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
                         dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
-
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
                 except:
                     imperva_version = 'Not installed'
                     if str(imperva_version) != str(server.imperva):
-                        old_version = str(server.imperva)
+                        dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-                        change_message = 'Changed imperva version from ' + old_version + ' to ' + str(imperva_version)
-                        LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

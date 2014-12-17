@@ -12,7 +12,6 @@ import re
 from ssh import SSHClient
 import paramiko
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -46,7 +45,6 @@ def update_server():
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.aix_ssh):
                         dashboard_logging.log_change(str(server), 'AIX SSH', str(server.aix_ssh), str(ssh))
-
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(aix_ssh=ssh, modified=timezone.now())
 
 

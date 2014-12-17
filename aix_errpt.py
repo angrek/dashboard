@@ -23,7 +23,7 @@ django.setup()
 def update_server():
     #right now we are just getting these for the VIO servers
     server_list = AIXServer.objects.filter(name__contains='vio')
-    #server_list = AIXServer.objects.filter(name__contains='p1vio01')
+
     for server in server_list:
 
         if test_server.ping(server):
@@ -42,7 +42,7 @@ def update_server():
                 #we don't care about the old record and we'll just add another
                 Errpt.objects.get_or_create(name=server, report=report, modified=timezone.now())
                 change_message = 'Updated errpt.'
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
+                LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

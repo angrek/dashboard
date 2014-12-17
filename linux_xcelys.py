@@ -10,7 +10,6 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -40,7 +39,7 @@ def update_server():
                  
                 #check existing value, if it exists, don't update
                 if str(xcelys_version) != str(server.xcelys):
-                    dashboard_logging.log_change(str(server), 'bash', str(server.xcelys), str(xcelys_version))
+                    dashboard_logging.log_change(str(server), 'Xcelys', str(server.xcelys), str(xcelys_version))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
 
 

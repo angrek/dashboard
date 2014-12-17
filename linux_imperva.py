@@ -10,7 +10,6 @@
 import os
 from ssh import SSHClient
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
@@ -23,13 +22,10 @@ import re
 
 def update_server():
     server_list = LinuxServer.objects.all()
-    #FIXME quick way of testing a few servers
     #server_list = LinuxServer.objects.filter(name='d1bwadb')
     #server_list = LinuxServer.objects.filter(name__contains='db')
-    counter = 0
+
     for server in server_list:
-        #counter += 1
-        #print str(counter) + ' - ' + str(server)
 
         if test_server.ping(server):
 
