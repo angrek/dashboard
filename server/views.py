@@ -10,6 +10,17 @@ def index(request):
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+def stacks(request):
+    red_servers = AIXServer.objects.filter(stack__name = 'Red').order_by('name')
+    yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow').order_by('name')
+    green_servers = AIXServer.objects.filter(stack__name = 'Green').order_by('name')
+    orange_servers = AIXServer.objects.filter(stack__name = 'Orange').order_by('name')
+    #server_list = AIXServer.objects.filter(stack__name ='Red')
+    context = {'red_servers' : red_servers,
+        'yellow_servers': yellow_servers,
+        'green_servers': green_servers,
+        'orange_servers': orange_servers}
+    return render(request, 'server/stacks.html', context)
 
 
 def detail(request, aixserver_name):

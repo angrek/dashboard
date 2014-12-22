@@ -96,6 +96,7 @@ class AIXServer(models.Model):
     def __unicode__(self):
         return '%s' % (self.name)
 
+
 #Meta model to split off the AIX applications in the admin
 class AIXApplications(AIXServer):
     class Meta:
