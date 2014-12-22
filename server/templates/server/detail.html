@@ -1,1 +1,27 @@
-{{ server }}
+<h1>{{ server }}</h1>
+
+<ul>
+    <li>Server owner: {{ server.owner }}</li>
+    <li>Frame: {{ server.frame }}</li>
+    <li>Active: {{ server.active }}</li>
+    <li>Exception: {{ server.exception }}</li>
+    <li>Decommissioned: {{ server.decommissioned }}</li>
+    <li>Stack: {{ server.stack }}</li>
+    <li>Created: {{ server.created }}</li>
+    <li>Last Modified: {{ server.modified }}</li>
+    <li>IP: {{ server.ip_address }}</li>
+    <li>Zone: {{ server.zone }}</li>
+    <li>OS: {{ server.os }}</li>
+    <li>OS Level: {{ server.os_level }}</li>
+    <li>Centrify: {{ server.centrify }}</li>
+    <li>AIX SSH: {{ server.aix_ssh }}</li>
+    <li>Centrify SSH: {{ server.cent_ssh }}</li>
+    <li>Xcelys: {{ server.xcelys }}</li>
+    <li>Bash: {{ server.bash }}</li>
+    <li>SSL: {{ server.ssl }}</li>
+    <li>Java: {{ server.java }}</li>
+    <li>Imperva: {{ server.imperva }}</li>
+    <li>Netbackup: {{ server.netbackup }}</li>
+    <li>EMC Clariion: {{ server.emc_clar }}</li>
+    <li>EMC Sym: {{ server.emc_sym }}</li>
+</ul>
