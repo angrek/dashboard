@@ -1,0 +1,11 @@
+
+{% if first_ten_servers %}
+    <ul>
+    {% for server in first_ten_servers %} 
+        <li><a href="/server/{{ server.name }}/">{{ server.name }}
+</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Server is available.</p>
+{% endif %}

@@ -11,9 +11,11 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    #url(r'^server/', include(admin.site.urls)),
-    #url(r'^todo/', include(admin.site.urls)),
+
+    url(r'^server/', include('server.urls')),
+
     url(r'^todo/', include('todo.urls')),
+
     url(r'^favicon\.ico$', RedirectView.as_view(url=settings.MEDIA_URL + 'images/favicon.ico')),
 
     url(r'^$', hello),
