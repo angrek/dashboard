@@ -5,11 +5,17 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from server.models import AIXServer, LinuxServer
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+     
+@login_required
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+@login_required
 def stacks(request):
     red_servers = AIXServer.objects.filter(stack__name = 'Red').order_by('name')
     yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow').order_by('name')
