@@ -16,6 +16,7 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import test_server
+import dashboard_logging
 django.setup()
 
 
@@ -57,7 +58,7 @@ def update_server():
                     dashboard_logging.log_change(str(server), 'OS', str(server.os), str(os))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, modified=timezone.now())
                 if str(oslevel) != str(server.os_level):
-                    dashboard_logging.log_change(str(server), 'OS Level', str(server.os_level), str(os))
+                    dashboard_logging.log_change(str(server), 'OS Level', str(server.os_level), str(oslevel))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
 
 
