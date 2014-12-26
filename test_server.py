@@ -52,7 +52,7 @@ def ssh(server, client):
     client.load_system_host_keys()
 
     try:
-        client.connect(str(server), username="wrehfiel")
+        client.connect(str(server), username="wrehfiel", timeout=10)
         if server.exception == True:
             server.exception = False
             server.save()
