@@ -207,7 +207,7 @@ class Power7Inventory(models.Model):
         verbose_name_plural = "Power7 Inventory"
 
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
 #Meta model to use for exporting into Excel and other formats
 class Power7InventoryResource(resources.ModelResource):
