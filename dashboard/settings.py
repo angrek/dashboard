@@ -117,6 +117,7 @@ STATICFILES_DIRS = (
     os.path.join(
         os.path.dirname(__file__),
         'static',
+        '/home/wrehfiel/ENV/dashboard/server/static',
     ),
 )
 

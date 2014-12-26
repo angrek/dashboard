@@ -28,6 +28,10 @@ def stacks(request):
         'orange_servers': orange_servers}
     return render(request, 'server/stacks.html', context)
 
+def pie(request):
+    red_servers = AIXServer.objects.filter(stack__name = 'Red').order_by('name')
+    context = {'red_servers' : red_servers}
+    return render(request, 'server/pie.htm', context)
 
 def detail(request, aixserver_name):
     #try:
