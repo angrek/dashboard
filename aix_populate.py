@@ -17,7 +17,7 @@
 
 import os
 from ssh import SSHClient
-import paramiko
+#import paramiko
 import test_server
 from django.utils import timezone
 from subprocess import call, check_output
@@ -63,7 +63,8 @@ def populate():
         frame = Frame.objects.get(name=frame.rstrip())
 
         #load ssh keys
-        client = paramiko.SSHClient()
+        #client = paramiko.SSHClient()
+        client = SSHClient()
         client.load_system_host_keys()
 
 
@@ -80,7 +81,9 @@ def populate():
         
         counter = 0
 
-        for server_name in server_list:
+        server_list2 = ('upar2diamdb', 'upar2cesdb01', 'upar2midtier')
+        for server_name in server_list2:
+            print server_name
             update = 0
             counter += 1
             #for troubleshooting - please leave
@@ -97,71 +100,30 @@ def populate():
             except:
                 ip_address = '0.0.0.0'
 
-            #quick ping test
             #FIXME - apparently without the rstrip, it adds /n to the end, which
             #screws up our silencing of the ping and creates stdout ping response
             #to be printed.... what the hell man.... not really a FIXME, more of an FYI :\
             #server = server.rstrip()
             zone = Zone.objects.get(name='Unsure')
 
-            #need to convert the server name to a database instance
+
             try:
                 server = AIXServer.objects.get(name=server_name.rstrip())
-                update = 1
             except:
                 #the created object is not the same, so we create it and then get the instance
-                server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, zone=zone, stack_id=1)
+                server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=False,  stack_id=1)
                 server = AIXServer.objects.get(name=server_name.rstrip())
             
 
             if test_server.ping(server):
-                server = str(server).rstrip()
 
-                #server is active, let's ssh to it
-                client = paramiko.SSHClient()
-                client.load_system_host_keys()
-                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh_is_good=1
-                try:
-                    client.connect(str(server).rstrip(), username="wrehfiel", password=password)
-                except:
-                    ####can't log in, set it as an exception
-                    if update:
-                        AIXServer.objects.get(name=server.rstrip())
-                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame, ip_address=ip_address, exception=True, modified=timezone.now())
-                        change_message = "Could not SSH to server. Set exception to True"
-                        #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-                    else:
-                        zone = Zone.objects.get(name='Unsure')
-                        AIXServer.objects.get_or_create(name=str(server).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, exception=True, stack_id=1)
-                    ssh_is_good = 0
-                client.close()
-
-                if ssh_is_good:
-
-                    #server is good, let's add it to the database.
-                    if update:
-                        AIXServer.objects.get(name=str(server).rstrip())
-                        AIXServer.objects.filter(name=str(server).rstrip()).update(frame = frame, ip_address=ip_address, exception=False, modified=timezone.now())
-
-                    else:
-                        #print '4444444444444444444444444444444'
-                        zone = Zone.objects.get(name='Unsure')
-                        AIXServer.objects.get_or_create(name=str(server).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, exception=False, stack_id=1)
+                print "ping good" 
+                client2 = SSHClient()
 
 
-            else:
-                #server is inactive, let's flag it
-                if update:
-                    AIXServer.objects.get(name=str(server).rstrip())
-                    AIXServer.objects.filter(name=str(server).rstrip()).update(frame=frame, ip_address=ip_address, os='AIX', active=False, modified=timezone.now())
-                    change_message = "Server is now inactive. Set active to False"
-                    #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-
-                else:
-                    zone = Zone.objects.get(name='Unsure')
-                    AIXServer.objects.get_or_create(name=str(server).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=False, stack_id=1)
-
+                if test_server.ssh(server, client2):
+                    print "Check for wpars here"
+                client2.close()
 
 
 
