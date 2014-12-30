@@ -122,7 +122,9 @@ def populate():
 
 
                 if test_server.ssh(server, client2):
+                    #Check for wpars here
                     print "Check for wpars here"
+
                 client2.close()
 
 
