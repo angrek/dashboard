@@ -42,7 +42,7 @@ class PersonalTodoAdmin(admin.ModelAdmin):
         qs = super(PersonalTodoAdmin, self).get_queryset(request)
         #if request.user.is_superuser:
         #    return qs
-        return qs.filter(assigned_to=request.user)
+        return qs.filter(assigned_to=request.user, completed=False)
 
 admin.site.register(List)
 admin.site.register(Comment)
