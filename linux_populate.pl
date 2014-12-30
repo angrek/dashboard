@@ -49,7 +49,7 @@ if ($cluster_name =~ /Non-Prod/){
     $service_url = "https://vcenterprod01/sdk/vimService";
 }
 
-i#print $cluster_name;
+print $cluster_name;
 ########## Login to the VMware Infrastrucure Web Service
 Vim::login(service_url => $service_url, user_name => $username, password => $password);
 
