@@ -37,7 +37,7 @@ def update_server():
     #server_list_aix = AIXServer.objects.filter(active=True)
     #server_list = AIXServer.objects.filter(active=True, exception=True).exclude(name='t8sandbox')
     #server_list = AIXServer.objects.filter(active=True)
-    server_list = AIXServer.objects.filter(name='upar2midtier')
+    server_list = AIXServer.objects.filter(name='p1fwadb')
     #server_list_linux = LinuxServer.objects.filter(active=True)
     #server_list = list(chain(server_list_aix, server_list_linux))
 

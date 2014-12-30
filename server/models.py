@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from import_export import resources
+from import_export import resources, fields
 
 # Create your models here.
 
@@ -112,8 +112,10 @@ class DecommissionedAIXServer(AIXServer):
 
 #Meta model for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):
+
     class Meta:
         model = AIXServer
+        fields = ('name', 'owner', 'stack', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym')
 
 #Meta model of AIX Server to just show VIO servers
 class VIOServer(AIXServer):
