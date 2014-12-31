@@ -81,8 +81,8 @@ def populate():
         
         counter = 0
 
-        server_list2 = ('upar2diamdb', 'upar2cesdb01', 'upar2midtier')
-        for server_name in server_list2:
+        #server_list2 = ('upar2diamdb', 'upar2cesdb01', 'upar2midtier')
+        for server_name in server_list:
             print server_name
             update = 0
             counter += 1
