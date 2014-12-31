@@ -82,6 +82,15 @@ class PersonalTodo(Item):
         verbose_name = "Personal Todo List"
         verbose_name_plural = "Personal Todo List"
 
+class BugList(Item):
+    class Meta:
+        proxy=True
+        verbose_name = "Bug List"
+        verbose_name_plural = "Bug List"
+
+    def __unicode__(self):
+        return self.name
+
 class Comment(models.Model):
     """
     Not using Django's built-in comments because we want to be able to save

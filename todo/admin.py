@@ -1,5 +1,5 @@
 from django.contrib import admin
-from todo.models import Item, ItemCompleted, User, List, Comment, PersonalTodo
+from todo.models import Item, ItemCompleted, User, List, Comment, PersonalTodo, BugList
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -44,8 +44,22 @@ class PersonalTodoAdmin(admin.ModelAdmin):
         #    return qs
         return qs.filter(assigned_to=request.user, completed=False)
 
+class BugListAdmin(admin.ModelAdmin):
+    list_display = ('title', 'list', 'priority', 'created_by', 'assigned_to', 'completed', 'due_date')
+    list_editable = ('list', 'priority', 'completed', 'assigned_to', 'due_date')
+    list_filter = ('list', 'completed', 'priority', 'assigned_to', 'due_date')
+    readonly_fields = ('created_by',)
+    ordering = ('completed', 'priority',)
+    search_fields = ('title',)
+    save_on_top = True
+
+    def get_queryset(self, request):
+        return self.model.objects.filter(list__name='Bugs', completed=False)
+
+
+
 admin.site.register(List)
-admin.site.register(Comment)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(PersonalTodo, PersonalTodoAdmin)
 admin.site.register(ItemCompleted, ItemCompletedAdmin)
+admin.site.register(BugList, BugListAdmin)
