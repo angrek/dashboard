@@ -36,7 +36,7 @@ def update_server():
     #Part 2 - revisiting what is or isn't an exception later, might be changing the field
     #server_list_aix = AIXServer.objects.filter(active=True)
     #server_list = AIXServer.objects.filter(active=True, exception=True).exclude(name='t8sandbox')
-    server_list = AIXServer.objects.filter(active=True)
+    server_list = AIXServer.objects.filter(active=True).exclude(name="t9sandbox")
     #server_list = AIXServer.objects.filter(name='p1fwadb')
     #server_list_linux = LinuxServer.objects.filter(active=True)
     #server_list = list(chain(server_list_aix, server_list_linux))

@@ -85,8 +85,6 @@ def populate():
 
         for server_name in server_list:
             #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key
-            if server_name == "t9sandbox":
-                continue
             print server_name
             update = 0
             counter += 1
