@@ -106,6 +106,9 @@ class Relationships(models.Model):
     parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
     child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
 
+    def __unicode__(self):
+            return '%s - %s' % (self.parent_lpar, self.child_wpar)
+
 
 #Meta model to split off the AIX applications in the admin
 class AIXApplications(AIXServer):

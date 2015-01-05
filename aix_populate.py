@@ -28,7 +28,7 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, Zone, Frame
+from server.models import AIXServer, Zone, Frame, Stack, Relationships
 #import logging
 django.setup()
 
@@ -53,10 +53,11 @@ def populate():
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
+    #FIXME
+    #for frame in frames:
     for frame in frames:
         #the output is throwing newlines at the end of the names for some reason
         #hence the use of rstrip below
-        #print frame.rstrip()
 
         #If the frame doesn't exist, create it
         Frame.objects.get_or_create(name=frame.rstrip())
@@ -80,9 +81,12 @@ def populate():
         client.close()
         
         counter = 0
+        #server_list2 = ('dstsmidtier', 'd1softdb')
 
-        #server_list2 = ('upar2diamdb', 'upar2cesdb01', 'upar2midtier')
         for server_name in server_list:
+            #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key
+            if server_name == "t9sandbox":
+                continue
             print server_name
             update = 0
             counter += 1
@@ -100,10 +104,6 @@ def populate():
             except:
                 ip_address = '0.0.0.0'
 
-            #FIXME - apparently without the rstrip, it adds /n to the end, which
-            #screws up our silencing of the ping and creates stdout ping response
-            #to be printed.... what the hell man.... not really a FIXME, more of an FYI :\
-            #server = server.rstrip()
             zone = Zone.objects.get(name='Unsure')
 
 
@@ -113,6 +113,8 @@ def populate():
                 #the created object is not the same, so we create it and then get the instance
                 server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=False,  stack_id=1)
                 server = AIXServer.objects.get(name=server_name.rstrip())
+                change_message = "Added LPAR " + server_name.rstrip() + "."
+                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
             
 
             if test_server.ping(server):
@@ -124,7 +126,55 @@ def populate():
                 if test_server.ssh(server, client2):
                     #Check for wpars here
                     print "Check for wpars here"
+                    command = "sudo lswpar | grep -v WPAR | grep -v -"
+                    stdin, stdout, stderr = client2.exec_command(command)
+                    print server
+                    #print 'stdout - ' + str(stdout)
+                    #FIXME we can do an 'if stderr' mail ....
+                    #print 'stderr - ' + str(stderr)
+                    for line in stderr:
+                        print line
+                    #wpar_list = stdout.readlines()[0].rstrip()
+                    wpar_list = stdout.readlines()
+                    if wpar_list:
+                        for wpar in wpar_list:
+                            print '----'
+                            print wpar.split(" ")[0].rstrip()
+                            
+                            wpar_name = wpar.split(" ")[0].rstrip()
+                            ns_command = 'nslookup ' + wpar_name + ' | grep Address | grep -v "#" '
 
+                            try:
+                                ip_address = check_output(ns_command, shell=True)
+                                ip_address = ip_address[9:].rstrip()
+                            except:
+                                ip_address = '0.0.0.0'
+
+
+                            #We have all of our information for the wpar, let's put it in the database
+                            try:
+                                temp = AIXServer.objects.get(name=wpar_name)
+                                print 'one'
+                            except:
+
+                                #Here we are inheriting some of the parent LPAR objects into the WPAR
+                                temp = AIXServer.objects.get_or_create(name=wpar_name, owner=server.owner, frame=server.frame, ip_address=ip_address, os='AIX', zone=server.zone, active=True, exception=False,  stack=server.stack)
+                                change_message = "Added WPAR " + wpar_name + "."
+                                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
+
+                            #Now we'll try and check if the LPAR<->WPAR relationship exists, or create it
+                            try:
+                                temp = Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
+                            except:
+                                child_wpar = AIXServer.objects.get(name=wpar_name)
+                                temp = Relationships.objects.create(parent_lpar=server, child_wpar=child_wpar)
+                            
+
+                            
+                    else:
+                        print "No wpars."
+
+                            
                 client2.close()
 
 
