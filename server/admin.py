@@ -4,12 +4,17 @@ from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxSer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
 from server.models import Power7InventoryResource
+from server.models import Relationships
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 
+class RelationshipsInline(admin.TabularInline):
+    model = Relationships
+    fk_name = 'parent_lpar'
+    extra = 2
 
 
 #class AIXServerAdmin(admin.ModelAdmin):
@@ -38,6 +43,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'owner', 'frame__id', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'stack', 'frame', 'active', 'exception', 'decommissioned','created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    inlines = (RelationshipsInline,)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
@@ -230,3 +236,4 @@ admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Stack, StackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
+admin.site.register(Relationships)

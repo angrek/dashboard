@@ -31,12 +31,12 @@ password = getpass.getpass()
 
 def update_server():
     counter = 0
-    server_list = AIXServer.objects.all()
+    #server_list = AIXServer.objects.all()
     #the below exception is for my account's inability to ssh in (service account in the future)
     #Part 2 - revisiting what is or isn't an exception later, might be changing the field
     #server_list_aix = AIXServer.objects.filter(active=True)
     #server_list_aix = AIXServer.objects.filter(name='blah')
-    #server_list = LinuxServer.objects.filter(active=True)
+    server_list = LinuxServer.objects.filter(active=True)
     #server_list = list(chain(server_list_aix, server_list_linux))
 
     for server in server_list:
@@ -58,7 +58,7 @@ def update_server():
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             try:
-                client.connect(str(server), username=username, password=password)
+                client.connect(str(server), username=username, password=password, timeout=7)
             except:
                 print 'SSH HAS FAILED. BREAKING LOOP HERE'
                 continue
@@ -75,7 +75,7 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True)
+                client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True, timeout=7)
                 command = 'mkdir /home/' + username + '/.ssh;chmod 700 /home/' + username + '/.ssh'
                 sdtin, stdout, stderr = client.exec_command(command)
                 #dont' think I really need to grab stdout here
@@ -89,7 +89,7 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                client.connect(str(server), username=username, password=password)
+                client.connect(str(server), username=username, password=password, timeout=7)
                 command = '[ -e /home/' + username + '/.ssh/authorized_keys ] && echo 1 || echo 0'
                 sdtin, stdout, stderr = client.exec_command(command)
                 #dont' think I really need to grab stdout here
@@ -110,7 +110,7 @@ def update_server():
                 #just testing why it's not getting here...
                 #transport.load_system_host_keys()
                 #transport.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                transport.connect(username = username , password=password)
+                transport.connect(username=username, password=password)
 
                 sftp = paramiko.SFTPClient.from_transport(transport)
                 local = '/home/' + username + '/.ssh/id_rsa.pub'
@@ -121,7 +121,7 @@ def update_server():
                 
                 #we've transferred it, but we need to rename the file now
                 #the paramiko sftp won't rename it (or I haven't figured it out yet -Boomer)
-                client.connect(str(server), username=username, password=password)
+                client.connect(str(server), username=username, password=password, timeout=7)
                 command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
                 sdtin, stdout, stderr = client.exec_command(command)
                 print '-Key transferred and renamed'

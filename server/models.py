@@ -85,6 +85,11 @@ class AIXServer(models.Model):
     emc_clar = models.CharField(max_length=20, blank=True, null=True)
     emc_sym = models.CharField(max_length=20, blank=True, null=True)
     log = models.TextField(blank=True, null=True)
+    relationship = models.ManyToManyField('self',
+        through='Relationships',
+        symmetrical=False,
+        related_name='related_to')
+
 
     class Meta:
         #unique_together = ('id', 'name', 'frame')
@@ -95,6 +100,11 @@ class AIXServer(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.name)
+
+#This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
+class Relationships(models.Model):
+    parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
+    child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
 
 
 #Meta model to split off the AIX applications in the admin
