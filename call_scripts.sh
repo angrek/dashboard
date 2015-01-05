@@ -8,6 +8,8 @@ cd /home/wrehfiel/ENV/dashboard
 export DJANGO_SETTINGS_MODULE=dashboard.settings
 /home/wrehfiel/ENV/dashboard/aix_bash.py
 mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_populate.py
+/home/wrehfiel/ENV/dashboard/aix_bash.py
 /home/wrehfiel/ENV/dashboard/aix_centrify.py
 /home/wrehfiel/ENV/dashboard/aix_errpt.py
 /home/wrehfiel/ENV/dashboard/aix_imperva.py
