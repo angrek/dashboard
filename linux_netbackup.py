@@ -16,6 +16,7 @@ from dashboard import settings
 from server.models import LinuxServer
 import re
 import test_server
+import dashboard_logging
 django.setup()
 
 
