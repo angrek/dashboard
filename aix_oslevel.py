@@ -31,13 +31,13 @@ def update_server():
 
             client = SSHClient()
             if test_server.ssh(server, client):
-
+                print server.name
                 #with the vio servers we want the ios.level rather than the os_level
                 vio_servers = AIXServer.objects.filter(name__contains='vio')
                 if server in vio_servers:
                     command = 'cat /usr/ios/cli/ios.level'
                 else:
-                    command = 'oslevel -s'
+                    command = 'sudo oslevel -s'
                 stdin, stdout, stderr = client.exec_command(command)
 
                 #need rstrip() because there are extra characters at the end
