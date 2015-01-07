@@ -1,0 +1,14 @@
+
+
+<h1>Wellcare AIX WPARs</h1>
+<br>
+<h3>All</h3>
+    <ul>
+    {% if relationships %} 
+        {% for relationship  in relationships %} 
+                <li>{{ relationship.parent_lpar }} -- {{ relationship.child_wpar }}
+                <li><a href="/server/{{ key.name }}/">{{ key.name }}</a></li>
+        {% endfor %}
+    {% endif %}
+    </ul>
+
