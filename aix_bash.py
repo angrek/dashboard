@@ -22,7 +22,6 @@ django.setup()
 
 def update_server():
     server_list = AIXServer.objects.all()
-    #FIXME quick way of testing a few servers
     #server_list = AIXServer.objects.filter(name='dltsodsdb')
     #server_list = AIXServer.objects.filter(name__contains='vio')
 

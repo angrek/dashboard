@@ -39,7 +39,6 @@ def update_server():
                 stdin, stdout, stderr = client.exec_command(command)
                 test = stdout.readlines()
 
-                #I think this is split differently because of the problem with the command output. I'll have to test. FIXME
                 try:
                     output = test[0].rstrip()
                     imperva_version = ' '.join(output.split())

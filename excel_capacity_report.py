@@ -141,7 +141,6 @@ def get_server_data():
     #server_list = AIXServer.objects.filter(name__contains='vio')
     for server in linux_server_list:
 
-        #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
 
         t = LinuxServer.objects.get(name=server)

@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve SSL versions on the servers and drop them into Django dashboard
+# Script to set up SSH keys on the linux servers
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -31,9 +31,6 @@ password = getpass.getpass()
 
 def update_server():
     counter = 0
-    #server_list = AIXServer.objects.all()
-    #the below exception is for my account's inability to ssh in (service account in the future)
-    #Part 2 - revisiting what is or isn't an exception later, might be changing the field
     #server_list_aix = AIXServer.objects.filter(active=True)
     #server_list_aix = AIXServer.objects.filter(name='blah')
     server_list = LinuxServer.objects.filter(active=True)
@@ -42,12 +39,8 @@ def update_server():
     for server in server_list:
         server_is_active = 1
 
-        #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
         print 'Working on server ' + str(counter) + " - " + str(server)
-        #removed exception because it should be an exception (should it filter exception=True???)
-        #if LinuxServer.objects.filter(name=str(server)):
-        #    print 'help'
             
         if test_server.ping(server):
             print "-Ping test is good"

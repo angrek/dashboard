@@ -48,7 +48,6 @@ def update_server():
     for server in server_list:
         server_is_active = 1
 
-        #FIXME just remove this, this was just so I knew how much longer it was running
         counter = counter + 1
         print 'Working on server ' + str(counter) + " - " + str(server)
         #removed exception because it should be an exception (should it filter exception=True???)

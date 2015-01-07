@@ -172,7 +172,6 @@ foreach my $host (@$host_views) {
             #printf '%3.3s', $vm->summary->config->numCpu;
 
             #should really get this directly from the OS anyway.
-            #FIXME commenting this out for a little bit since it takes up so much screen real estate
             #print $vm->guest->guestFullName;
             #print "\n";
 

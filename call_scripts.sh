@@ -15,7 +15,7 @@ mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_imperva.py
 /home/wrehfiel/ENV/dashboard/aix_oslevel.py
 /home/wrehfiel/ENV/dashboard/aix_ssl.py
-/home/wrehfiel/ENV/dashboard/aix_storage.py
+#/home/wrehfiel/ENV/dashboard/aix_storage.py
 /home/wrehfiel/ENV/dashboard/aix_xcelys.py
 /home/wrehfiel/ENV/dashboard/aix_netbackup.py
 /home/wrehfiel/ENV/dashboard/aix_ssh.py

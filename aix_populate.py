@@ -53,8 +53,7 @@ def populate():
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
-    #FIXME
-    #for frame in frames:
+
     for frame in frames:
         #the output is throwing newlines at the end of the names for some reason
         #hence the use of rstrip below
@@ -84,7 +83,7 @@ def populate():
         #server_list2 = ('dstsmidtier', 'd1softdb')
 
         for server_name in server_list:
-            #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key
+            #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key, needs error checking!
             print server_name
             update = 0
             counter += 1

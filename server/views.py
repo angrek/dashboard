@@ -3,10 +3,11 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponse
-from server.models import AIXServer, LinuxServer
+from server.models import AIXServer, LinuxServer, Relationships
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.template import RequestContext
 
      
 @login_required
@@ -27,6 +28,14 @@ def stacks(request):
         'green_servers': green_servers,
         'orange_servers': orange_servers}
     return render(request, 'server/stacks.html', context)
+
+
+def wpars(request):
+    context = RequestContext(request)
+    relationship_list = Relationships.objects.all()
+    context = {'relationships': relationship_list}
+    return render(request, 'server/wpars.html', context)
+
 
 def pie(request):
     red_servers = AIXServer.objects.filter(stack__name = 'Red').order_by('name')
