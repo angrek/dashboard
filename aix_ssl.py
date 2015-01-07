@@ -16,12 +16,13 @@ from django.utils import timezone
 import django
 from dashboard import settings
 import test_server
+import dashboard_logging
 django.setup()
 
 
 def update_server():
 
-    server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.filter(decommissioned=False)
     #server_list = AIXServer.objects.filter(name__contains='ufts')
     for server in server_list:
 
@@ -43,7 +44,7 @@ def update_server():
                     #if existing value is the same, don't update
                     if str(ssl) != str(server.ssl):
                         dashboard_logging.log_change(str(server), 'SSL', str(server.ssl), str(ssl))
-                        AIXServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+                        AIXServer.objects.filter(name=server).update(ssl=ssl, modified=timezone.now())
 
 
 #start execution
