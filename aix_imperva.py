@@ -22,7 +22,8 @@ import re
 
 def update_server():
 
-    server_list = AIXServer.objects.all()
+#    server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.filter(decommissioned=False)
     #server_list = AIXServer.objects.filter(name='d1bwadb')
     #server_list = ['d1vio01', 'd1vio01']
     #server_list = AIXServer.objects.filter(name__contains='db')
@@ -50,7 +51,7 @@ def update_server():
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
                 except:
-                    imperva_version = 'Not installed'
+                    imperva_version = 'None'
                     if str(imperva_version) != str(server.imperva):
                         dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())

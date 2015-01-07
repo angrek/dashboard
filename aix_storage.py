@@ -21,12 +21,12 @@ django.setup()
 
 def update_server():
     #FIXME t9sandbox is DECOMMED UNTIL TIMEOUT IS FIXED!!!!!!!!!!!
-    server_list = AIXServer.objects.all().exclude(name__contains='vio')
+    server_list = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio')
     #server_list = AIXServer.objects.filter(name__contains='p1vio01')
     #server_list = AIXServer.objects.filter(name__contains='auto').exclude(name__contains='vio')
-    server_count = AIXServer.objects.all().exclude(name__contains='vio').count()
+    server_count = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio').count()
     counter  = 1
-    for server in server_list:
+    for server in server_list[:15]:
         print "---------------------------------------"
         print "server " + str(counter) + " of " + str(server_count) + " ->" + str(server)
         counter += 1

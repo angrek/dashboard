@@ -21,7 +21,8 @@ import re
 
 
 def update_server():
-    server_list = LinuxServer.objects.all()
+    #server_list = LinuxServer.objects.all()
+    server_list = LinuxServer.objects.filter(decommissioned=False)
     #server_list = LinuxServer.objects.filter(name='d1bwadb')
     #server_list = LinuxServer.objects.filter(name__contains='db')
 

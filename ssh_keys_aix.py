@@ -40,7 +40,7 @@ def update_server():
     #server_list = AIXServer.objects.all()
     #the below exception is for my account's inability to ssh in (service account in the future)
     #Part 2 - revisiting what is or isn't an exception later, might be changing the field
-    server_list = AIXServer.objects.filter(active=True)
+    server_list = AIXServer.objects.filter(active=True, decommissioned=False)
     #server_list = AIXServer.objects.filter(active=True, exception=True).exclude(name='t8sandbox')
     #server_list = AIXServer.objects.filter(name='u0obiess')
     #server_list = list(chain(server_list_aix, server_list_linux))

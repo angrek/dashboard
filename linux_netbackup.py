@@ -20,7 +20,8 @@ django.setup()
 
 
 def update_server():
-    server_list = LinuxServer.objects.all()
+    #server_list = LinuxServer.objects.all()
+    server_list = LinuxServer.objects.filter(decommissioned=False)
     #server_list = LinuxServer.objects.filter(name='u3midcap2')
 
     for server in server_list:

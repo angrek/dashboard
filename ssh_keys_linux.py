@@ -33,7 +33,7 @@ def update_server():
     counter = 0
     #server_list_aix = AIXServer.objects.filter(active=True)
     #server_list_aix = AIXServer.objects.filter(name='blah')
-    server_list = LinuxServer.objects.filter(active=True)
+    server_list = LinuxServer.objects.filter(active=True, decommissioned=False)
     #server_list = list(chain(server_list_aix, server_list_linux))
 
     for server in server_list:
