@@ -26,7 +26,7 @@ def update_server():
     #server_list = AIXServer.objects.filter(name__contains='auto').exclude(name__contains='vio')
     server_count = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio').count()
     counter  = 1
-    for server in server_list[:15]:
+    for server in server_list:
         print "---------------------------------------"
         print "server " + str(counter) + " of " + str(server_count) + " ->" + str(server)
         counter += 1

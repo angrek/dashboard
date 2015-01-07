@@ -35,7 +35,7 @@ def update_server():
 
             client = SSHClient()
             if test_server.ssh(server, client):
-
+                print server.name
                 command = 'lslpp -L | grep -i imper'
                 stdin, stdout, stderr = client.exec_command(command)
                 test = stdout.readlines()
@@ -44,6 +44,7 @@ def update_server():
                     output = test[0].rstrip()
                     imperva_version = ' '.join(output.split())
                     imperva_version = imperva_version.split(" ")[1].rstrip()
+                    print imperva_version
 
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
@@ -52,6 +53,7 @@ def update_server():
 
                 except:
                     imperva_version = 'None'
+                    print imperva_version
                     if str(imperva_version) != str(server.imperva):
                         dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
