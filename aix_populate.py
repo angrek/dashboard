@@ -123,7 +123,7 @@ def populate():
                 if utilities.ssh(server, client2):
                     #Check for wpars here
                     print "Check for wpars here"
-                    command = "sudo lswpar | grep -v WPAR | grep -v -"
+                    command = "dzdo lswpar | grep -v WPAR | grep -v -"
                     stdin, stdout, stderr = client2.exec_command(command)
                     print server
                     #print 'stdout - ' + str(stdout)

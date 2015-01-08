@@ -38,7 +38,7 @@ def update_server():
             if utilities.ssh(server, client):
                 print 'ssh good'
 
-                stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')
+                stdin, stdout, stderr = client.exec_command('dzdo /scripts/dashboard_disksize.sh')
                 try:
                     if stderr.readlines()[0]:
                         print "ERROR!"

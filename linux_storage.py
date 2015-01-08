@@ -36,7 +36,7 @@ def update_server():
             client = SSHClient()
 
             if utilities.ssh(server, client): 
-                command = 'sudo /sbin/fdisk -l | grep Disk'
+                command = 'dzdo /sbin/fdisk -l | grep Disk'
                 stdin, stdout, stderr = client.exec_command(command)
                 print stdout
                 size = stdout.readlines()
