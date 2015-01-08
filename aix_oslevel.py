@@ -37,7 +37,7 @@ def update_server():
                 if server in vio_servers:
                     command = 'cat /usr/ios/cli/ios.level'
                 else:
-                    command = 'sudo oslevel -s'
+                    command = 'dzdo oslevel -s'
                 stdin, stdout, stderr = client.exec_command(command)
 
                 #need rstrip() because there are extra characters at the end
