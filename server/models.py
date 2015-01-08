@@ -48,7 +48,7 @@ class Stack(models.Model):
 
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
-    owner = models.CharField(max_length=50, blank=True, null=True)
+    owner = models.CharField(max_length=50, blank=True, null=True, default='None')
     frame = models.ForeignKey(Frame)   
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
@@ -69,21 +69,21 @@ class AIXServer(models.Model):
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     #I'm not sure why we might need the IP but whatever, just in case..
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
     zone = models.ForeignKey(Zone)
-    os = models.CharField(max_length=10, blank=True, null=True)
-    os_level = models.CharField(max_length=20, blank=True, null=True)
-    centrify = models.CharField(max_length=35, blank=True, null=True)
-    aix_ssh = models.CharField(max_length=25, blank=True, null=True)
-    cent_ssh = models.CharField(max_length=25, blank=True, null=True)
-    xcelys = models.CharField(max_length=35, blank=True, null=True)
-    bash = models.CharField(max_length=25, blank=True, null=True)
-    ssl = models.CharField(max_length=20, blank=True, null=True)
-    java = models.CharField(max_length=20, blank=True, null=True)
-    imperva = models.CharField(max_length=15, blank=True, null=True)
-    netbackup = models.CharField(max_length=35, blank=True, null=True)
-    emc_clar = models.CharField(max_length=20, blank=True, null=True)
-    emc_sym = models.CharField(max_length=20, blank=True, null=True)
+    os = models.CharField(max_length=10, blank=True, null=True, default='None')
+    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
+    aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
+    cent_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
+    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
+    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    java = models.CharField(max_length=20, blank=True, null=True, default='None')
+    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+    netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
+    emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
+    emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
     log = models.TextField(blank=True, null=True)
     relationship = models.ManyToManyField('self',
         through='Relationships',
@@ -237,7 +237,7 @@ def get_default_zone():
 
 class LinuxServer(models.Model):
     name = models.CharField(max_length=40, unique=True)
-    owner = models.CharField(max_length=30, blank=True, null=True)
+    owner = models.CharField(max_length=30, blank=True, null=True, default='None')
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
@@ -253,20 +253,20 @@ class LinuxServer(models.Model):
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     #I'm not sure why we might need the IP but whatever, just in case..
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
     zone = models.ForeignKey(Zone)
-    os = models.CharField(max_length=50, blank=True, null=True)
-    os_level = models.CharField(max_length=20, blank=True, null=True)
+    os = models.CharField(max_length=50, blank=True, null=True, default='None')
+    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
     memory = models.IntegerField(max_length=10, blank=True, null=True)
     cpu = models.IntegerField(max_length=3, blank=True, null=True)
     storage = models.IntegerField(max_length=10, blank=True, null=True)
-    centrify = models.CharField(max_length=35, blank=True, null=True)
-    xcelys = models.CharField(max_length=35, blank=True, null=True)
-    bash = models.CharField(max_length=25, blank=True, null=True)
-    ssl = models.CharField(max_length=20, blank=True, null=True)
-    java = models.CharField(max_length=20, blank=True, null=True)
-    imperva = models.CharField(max_length=15, blank=True, null=True)
-    netbackup = models.CharField(max_length=40, blank=True, null=True)
+    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
+    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
+    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    java = models.CharField(max_length=20, blank=True, null=True, default='None')
+    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+    netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
     log = models.TextField(blank=True, null=True)
 
     class Meta:
