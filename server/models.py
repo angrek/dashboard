@@ -128,7 +128,7 @@ class AIXServerResource(resources.ModelResource):
 
     class Meta:
         model = AIXServer
-        fields = ('name', 'owner', 'stack', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym')
+        #fields = ('name', 'owner', 'stack', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym')
 
 #Meta model of AIX Server to just show VIO servers
 class VIOServer(AIXServer):
