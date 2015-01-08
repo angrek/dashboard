@@ -18,7 +18,7 @@ from django.utils import timezone
 import django
 from dashboard import settings
 from server.models import AIXServer, Errpt
-import test_server
+import utilities
 django.setup()
 
 
@@ -30,10 +30,10 @@ def update_server():
     total_devices  = 0
     for server in server_list:
 
-        if test_server.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
                 stdin, stdout, stderr = client.exec_command('lspv | wc -l')
                 temp = stdout.readlines()[0].rstrip()
                 devices = int(temp)

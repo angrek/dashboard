@@ -14,7 +14,7 @@ from django.utils import timezone
 import django
 from dashboard import settings
 from server.models import LinuxServer, Zone
-import test_server
+import utilities
 import dashboard_logging
 django.setup()
 
@@ -29,10 +29,10 @@ def update_server():
 
         new_centrify = ''
 
-        if test_server.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
 
                 centrify_is_installed = 1
                 stdin, stdout, stderr = client.exec_command('adinfo -v')

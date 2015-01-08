@@ -15,7 +15,7 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-import test_server
+import utilities
 import dashboard_logging
 django.setup()
 
@@ -27,10 +27,10 @@ def update_server():
     #server_list = AIXServer.objects.filter(name__contains='ufts')
     for server in server_list:
 
-        if test_server.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
 
                 #get the emc_clariion version
                 stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i EMC.CLARIION.fcp | uniq')

@@ -15,7 +15,7 @@ import django
 from dashboard import settings
 from server.models import AIXServer,LinuxServer
 import re
-import test_server
+import utilites
 import dashboard_logging
 django.setup()
 
@@ -27,10 +27,10 @@ def update_server():
 
     for server in server_list:
 
-        if test_server.ping(server):
+        if utilites.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilites.ssh(server, client):
 
                 stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
                 temp_xcelys_version = stdout.readlines()[0]

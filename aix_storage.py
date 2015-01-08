@@ -14,7 +14,7 @@ from django.utils import timezone
 import django
 from dashboard import settings
 from server.models import AIXServer, Storage
-import test_server
+import utilities
 django.setup()
 
 
@@ -31,11 +31,11 @@ def update_server():
         print "server " + str(counter) + " of " + str(server_count) + " ->" + str(server)
         counter += 1
             
-        if test_server.ping(server):
+        if utilities.ping(server):
             print 'ping good'
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
                 print 'ssh good'
 
                 stdin, stdout, stderr = client.exec_command('sudo /scripts/dashboard_disksize.sh')

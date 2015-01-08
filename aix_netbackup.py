@@ -15,7 +15,7 @@ import django
 from dashboard import settings
 from server.models import AIXServer
 import re
-import test_server
+import utilities
 import dashboard_logging
 django.setup()
 
@@ -27,10 +27,10 @@ def update_server():
 
     for server in server_list:
 
-        if test_server.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
 
                 stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
                 netbackup_version = stdout.readlines()[0]

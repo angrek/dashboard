@@ -15,7 +15,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import LinuxServer
-import test_server
+import utilities
 django.setup()
 
 
@@ -31,11 +31,11 @@ def update_server():
         #counter += 1
         #print str(counter) + ' - ' + str(server)
 
-        if test_server.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
 
-            if test_server.ssh(server, client): 
+            if utilities.ssh(server, client): 
                 command = 'sudo /sbin/fdisk -l | grep Disk'
                 stdin, stdout, stderr = client.exec_command(command)
                 print stdout

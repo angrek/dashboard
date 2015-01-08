@@ -18,7 +18,7 @@
 import os
 from ssh import SSHClient
 #import paramiko
-import test_server
+import utilities
 from django.utils import timezone
 from subprocess import call, check_output
 
@@ -114,13 +114,13 @@ def populate():
                 LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
             
 
-            if test_server.ping(server):
+            if utilities.ping(server):
 
                 print "ping good" 
                 client2 = SSHClient()
 
 
-                if test_server.ssh(server, client2):
+                if utilities.ssh(server, client2):
                     #Check for wpars here
                     print "Check for wpars here"
                     command = "sudo lswpar | grep -v WPAR | grep -v -"

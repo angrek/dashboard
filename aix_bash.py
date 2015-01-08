@@ -14,7 +14,7 @@ from django.utils import timezone
 import django
 from dashboard import settings
 from server.models import AIXServer
-import test_server
+import utilities
 import dashboard_logging
 
 django.setup()
@@ -28,10 +28,10 @@ def update_server():
     counter = 0
     for server in server_list:
 
-        if test_server.ping(server):
+        if utilities.ping(server):
             
             client = SSHClient()
-            if test_server.ssh(server, client):
+            if utilities.ssh(server, client):
 
                 command = 'rpm -qa | grep bash |grep -v doc'
                 stdin, stdout, stderr = client.exec_command(command)
