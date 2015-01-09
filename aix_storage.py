@@ -55,8 +55,8 @@ def update_server():
                 
                 #FIXME need logging to show that we added thes
                 
-                if Storage.objects.get(name=server):
-                    print '1'
+                try:
+                    Storage.objects.get(name=server)
                     print str(Storage.objects.get(name=server).size).rstrip()
                     print line.rstrip()
                     if str(Storage.objects.get(name=server).size).rstrip() == line.rstrip():
@@ -65,7 +65,7 @@ def update_server():
                     else:
                         print 'Value exists, size different, updating'
                         Storage.objects.filter(name=server).update(size=line.rstrip())
-                else:
+                except:
                     Storage.objects.get_or_create(name=server, size=line.rstrip())
                     print "Value didn't exist, creating"
 

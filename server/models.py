@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from import_export import resources, fields
+from django.contrib.admin.models import LogEntry
 
 # Create your models here.
 
@@ -50,25 +51,14 @@ class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
     owner = models.CharField(max_length=50, blank=True, null=True, default='None')
     frame = models.ForeignKey(Frame)   
-    #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
-
     #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
-
-    #creating a meta model for the decom'd servers
     decommissioned = models.NullBooleanField(default=False, blank=True)
-
     #need to see what color 'stack' they are in (sts, mts, fts, etc)
     stack = models.ForeignKey(Stack)
-
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    #last_updated should be auto set by the scripts anytime it is CHANGED
-    #this means the script will need to compare values and if something is changed
-    #it should change this and add both to the log
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-    #I'm not sure why we might need the IP but whatever, just in case..
     ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=10, blank=True, null=True, default='None')
@@ -84,15 +74,15 @@ class AIXServer(models.Model):
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
-    log = models.TextField(blank=True, null=True)
     relationship = models.ManyToManyField('self',
         through='Relationships',
         symmetrical=False,
         related_name='related_to')
+    def get_history(self):
+        return LogEntry.objects.filter(object_repr=self.name)
 
 
     class Meta:
-        #unique_together = ('id', 'name', 'frame')
         verbose_name = "AIX Server"
         verbose_name_plural = "AIX Servers"
         ordering = ["name"]
@@ -136,6 +126,13 @@ class VIOServer(AIXServer):
         proxy=True
         verbose_name = "VIO Server"
         verbose_name_plural = "VIO Servers"
+
+class AIXLog(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX Log"
+        verbose_name_plural = "AIX Logs"
+
 
 #Model for AIX error reports
 class Errpt(models.Model):

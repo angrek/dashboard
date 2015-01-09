@@ -4,10 +4,11 @@ from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxSer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
 from server.models import Power7InventoryResource
-from server.models import Relationships
+from server.models import Relationships, AIXLog
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
+#from django.contrib.contentypes.generic import GenericTabularInline
 
 # Register your models here.
 
@@ -16,6 +17,25 @@ class RelationshipsInline(admin.TabularInline):
     fk_name = 'parent_lpar'
     extra = 2
 
+class AIXLogAdmin(admin.TabularInline):
+#    model = AIXServer
+    def get_queryset(self, request):
+        return self.model.objects.get_history()
+
+#class VIOServerAdmin(ImportExportModelAdmin):
+#    def get_queryset(self, request):
+#            return self.model.objects.filter(name__contains='vio')
+#                save_on_top = True
+#                    list_display = ['name', 'frame', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
+#                        list_filter = ['os', 'frame', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
+#                            search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
+#                                readonly_fields = ['created', 'modified']
+#                                    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl',
+#                                    'java']
+#                                        resource_class = AIXServerResource
+#                                            class Media:
+#                                                    js = ['/static/admin/js/list_filter_collapse.js']
+#                                                        pass
 
 #class AIXServerAdmin(admin.ModelAdmin):
 class AIXServerAdmin(ImportExportModelAdmin):
@@ -42,8 +62,8 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_filter = ['owner', 'frame', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__id', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'stack', 'frame', 'active', 'exception', 'decommissioned','created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
-    inlines = (RelationshipsInline,)
+    fields = ['name', 'owner', 'stack', 'frame', 'active', 'exception', 'decommissioned','created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
@@ -90,7 +110,7 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
     list_filter = ['owner', 'frame', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__id', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'frame', 'active', 'exception', 'decommissioned', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    fields = ['name', 'owner', 'frame', 'active', 'exception', 'decommissioned', 'created', 'modified', 'zone', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     resource_class = AIXServerResource
    #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
    #there is a copy in the scripts directory so it gets saved into git as well
@@ -107,7 +127,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'owner', 'vmware_cluster', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -122,7 +142,7 @@ class DecommissionedLinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'owner', 'vmware_cluster', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'log']
+    fields = ['name', 'owner', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -141,11 +161,7 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
     pass
 
 
-#FIXME put 'frames back into aixserver and vioserver classes
-#class VIOServerAdmin(admin.ModelAdmin):
 class VIOServerAdmin(ImportExportModelAdmin):
-    #FIXME why was this pass here??
-    #pass
     def get_queryset(self, request):
         return self.model.objects.filter(name__contains='vio')
     save_on_top = True
@@ -153,7 +169,7 @@ class VIOServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'frame', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'log']
+    fields = ['name', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -171,7 +187,6 @@ class Power7InventoryAdmin(ImportExportModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
-
 
 
 
@@ -237,3 +252,4 @@ admin.site.register(Stack, StackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
 admin.site.register(Relationships)
+#admin.site.register(AIXLog, AIXLogAdmin)

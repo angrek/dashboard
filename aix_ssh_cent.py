@@ -15,7 +15,7 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-import utilites
+import utilities
 import dashboard_logging
 django.setup()
 
@@ -27,10 +27,10 @@ def update_server():
     #server_list = AIXServer.objects.filter(name__contains='pinfipcapp')
     for server in server_list:
 
-        if utilites.ping(server):
+        if utilities.ping(server):
 
             client = SSHClient()
-            if utilites.ssh(server, client):
+            if utilities.ssh(server, client):
 
                 stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i CentrifyDC.openssh | uniq')
                 #this is going to pull 4 different parts of ssl, we just need the base
