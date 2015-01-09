@@ -38,7 +38,8 @@ def update_server():
 
                 #need to cut the string down
                 xcelys_version = temp_xcelys_version[36:-16]
-                 
+                if xcelys_version is '':
+                    xcelys_version = 'None'
                 #check existing value, if it exists, don't update
                 if str(xcelys_version) != str(server.xcelys):
                     dashboard_logging.log_change(str(server), 'Xcelys', str(server.xcelys), str(xcelys_version))

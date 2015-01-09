@@ -54,6 +54,8 @@ def populate():
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
 
+    #temp_frames = ['795A-9119-FHB-SN023D965']
+
     for frame in frames:
         #the output is throwing newlines at the end of the names for some reason
         #hence the use of rstrip below
@@ -69,7 +71,7 @@ def populate():
 
 
         #we've already established a connection, but should put in error checking
-        #FIXME
+        #FIXME needs error checking
         client.connect('p1hmc', username="wrehfiel", password=password)
 
         #for each frame, let's grab the LPARS now
@@ -80,7 +82,6 @@ def populate():
         client.close()
         
         counter = 0
-        #server_list2 = ('dstsmidtier', 'd1softdb')
 
         for server_name in server_list:
             #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key, needs error checking!
@@ -134,11 +135,12 @@ def populate():
                     #wpar_list = stdout.readlines()[0].rstrip()
                     wpar_list = stdout.readlines()
                     if wpar_list:
+                        print '-------------------'
                         for wpar in wpar_list:
-                            print '----'
-                            print wpar.split(" ")[0].rstrip()
+                            t= wpar.split()
+                            wpar_name = t[3].rstrip()
+                            print wpar_name
                             
-                            wpar_name = wpar.split(" ")[0].rstrip()
                             ns_command = 'nslookup ' + wpar_name + ' | grep Address | grep -v "#" '
 
                             try:
@@ -151,7 +153,6 @@ def populate():
                             #We have all of our information for the wpar, let's put it in the database
                             try:
                                 temp = AIXServer.objects.get(name=wpar_name)
-                                print 'one'
                             except:
 
                                 #Here we are inheriting some of the parent LPAR objects into the WPAR
@@ -161,10 +162,10 @@ def populate():
 
                             #Now we'll try and check if the LPAR<->WPAR relationship exists, or create it
                             try:
-                                temp = Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
+                                Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
                             except:
                                 child_wpar = AIXServer.objects.get(name=wpar_name)
-                                temp = Relationships.objects.create(parent_lpar=server, child_wpar=child_wpar)
+                                Relationships.objects.get_or_create(parent_lpar=server, child_wpar=child_wpar)
                             
 
                             
