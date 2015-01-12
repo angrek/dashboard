@@ -74,7 +74,8 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
 class AIXApplicationsAdmin(ImportExportModelAdmin):
-    
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
     #This overrides the cell div and sets it to a color based on what stack a server is in
     def stack_color(self, obj):
         if str(obj.stack) == 'Orange':

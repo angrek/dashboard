@@ -42,7 +42,7 @@ def update_server():
     #Part 2 - revisiting what is or isn't an exception later, might be changing the field
     server_list = AIXServer.objects.filter(active=True, decommissioned=False)
     #server_list = AIXServer.objects.filter(active=True, exception=True).exclude(name='t8sandbox')
-    #server_list = AIXServer.objects.filter(name='u0obiess')
+    #server_list = AIXServer.objects.filter(name='upar2midcs')
     #server_list = list(chain(server_list_aix, server_list_linux))
 
     for server in server_list:
