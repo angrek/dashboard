@@ -110,8 +110,8 @@ class AIXApplications(AIXServer):
 class DecommissionedAIXServer(AIXServer):
     class Meta:
         proxy=True
-        verbose_name = "Decommissioned AIX Server"
-        verbose_name_plural = "Decommissioned AIX Servers"
+        verbose_name = "AIX Decommissioned Server"
+        verbose_name_plural = "AIX Decommissioned Servers"
 
 #Meta model for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):
@@ -277,8 +277,8 @@ class LinuxServer(models.Model):
 class DecommissionedLinuxServer(LinuxServer):
     class Meta:
         proxy=True
-        verbose_name = "Decommissioned Linux Server"
-        verbose_name_plural = "Decommissioned Linux Servers"
+        verbose_name = "Linux Decommissioned Server"
+        verbose_name_plural = "Linux Decommissioned Servers"
 
 #Meta model to just show the application versions
 class LinuxApplications(LinuxServer):
