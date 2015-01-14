@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame
+from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
@@ -237,6 +237,13 @@ class StorageAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class AIXMksysbAdmin(admin.ModelAdmin):
+    list_display = ['name', 'date', 'exists', 'duplicates']
+    list_filter = ['date', 'exists', 'duplicates']
+    search_field = ['name', 'date', 'exists', 'duplicates']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
@@ -253,4 +260,4 @@ admin.site.register(Stack, StackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
 admin.site.register(Relationships)
-#admin.site.register(AIXLog, AIXLogAdmin)
+admin.site.register(AIXMksysb, AIXMksysbAdmin)

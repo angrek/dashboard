@@ -8,8 +8,9 @@ cd /home/wrehfiel/ENV/dashboard
 export DJANGO_SETTINGS_MODULE=dashboard.settings
 mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
 mail robert.blayet@wellcare.com -s 'starting aix scripts' < 1.txt
-mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
-/home/wrehfiel/ENV/dashboard/aix_populate.py
+#FIXME AIX POPULATE IS OFF!!!!!!!!!!!!
+#mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
+#/home/wrehfiel/ENV/dashboard/aix_populate.py
 mail william.rehfield@wellcare.com -s 'starting aix bash' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_bash.py
 mail william.rehfield@wellcare.com -s 'starting aix centrify' < 1.txt

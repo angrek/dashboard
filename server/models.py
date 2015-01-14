@@ -147,6 +147,20 @@ class Errpt(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
+class AIXMksysb(models.Model):
+    name = models.ForeignKey(AIXServer)
+    date = models.DateField("Date", default=datetime.date.today)
+    exists = models.NullBooleanField(default=False)
+    duplicates = models.NullBooleanField(default=False)
+
+    class Meta:
+        verbose_name = "AIX Mksysb"
+        verbose_name_plural = "AIX Mksysb"
+
+    def __unicode__(self):
+        return unicode(self.name)
+    
+
 #Poorly thought out model that only contains storage for AIX servers. Sigh.
 class Storage(models.Model):
     name = models.ForeignKey(AIXServer)

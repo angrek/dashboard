@@ -107,6 +107,8 @@ def populate():
 
             try:
                 server = AIXServer.objects.get(name=server_name.rstrip())
+                if server.frame != frame:
+                    AIXserver.objects.filter(name=server_name.rstrip()).update(frame=frame)
             except:
                 #the created object is not the same, so we create it and then get the instance
                 server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=False,  stack_id=1)
