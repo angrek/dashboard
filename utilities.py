@@ -19,6 +19,9 @@ import django
 from dashboard import settings
 from server.models import AIXServer, LinuxServer
 import dashboard_logging
+import smtplib
+from email.mime.text import MIMEText
+import email.utils
 
 django.setup()
 
@@ -70,7 +73,15 @@ def ssh(server, client):
     return response
 
 
-
+def send_email(subject, message):
+    print 'test'
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = email.utils.formataddr(('Boomer', "boomer\@wellcare.com"))
+    msg['To'] = email.utils.formataddr(('Boomer', "boomer\@wellcare.com"))
+    server = smtplib.SMTP('mail')
+    server.sendmail("boomer@wellcare.com", "boomer@wellcare.com",msg.as_string())
+    print 'email sent'
 
 
 

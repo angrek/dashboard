@@ -22,20 +22,6 @@ from  datetime import datetime, date, timedelta
 import datetime
 django.setup()
 
-#Email stuff
-import smtplib
-from email.mime.text import MIMEText
-import email.utils
-
-def send_email(subject, message):
-    msg = MIMEText(message)
-    msg['Subject'] = subject
-    msg['From'] = email.utils.formataddr(('Boomer', "william.rehfield\@wellcare.com"))
-    msg['To'] = email.utils.formataddr(('Boomer', "william.rehfield\@wellcare.com"))
-    server = smtplib.SMTP('mail')
-    server.sendmail("william.rehfield@wellcare.com", "william.rehfield@wellcare.com",msg.as_string())
-
-
 
 def get_a_good_server():
     #I'm banking that five servers won't be missing the /mksysb directory all at the same time....
@@ -162,8 +148,8 @@ def update_server():
             if re.match('..:..', timestamp, flags=0):
                 #This means the timestamp is within the last 6 months
                 our_month = datetime.date.today().month
-                print 'our month .' + str(our_month) + '.'
-                print 'temp month .' + str(temp_month) + '.'
+                #print 'our month .' + str(our_month) + '.'
+                #print 'temp month .' + str(temp_month) + '.'
                 if int(temp_month) <= int(our_month):
                     year = '2015'
                 else:
@@ -197,25 +183,27 @@ def update_server():
     get_dir_lists(main_directory_list, count)
     get_dir_lists(vios_directory_list, count)
     get_dir_lists(wpars_directory_list, count)
-    print old_dict
+    print datetime.date.today().strftime("%A")
+    print len(datetime.date.today().strftime("%A"))
 
-    if datetime.date.today().strftime("%A") == 'Monday':
+    if datetime.date.today().strftime("%A") == 'Wednesday':
+        print 'ok, it gets this far'
         sorted = old_dict.items()
         sorted.sort()
         message = ''
         for x,y in sorted:
             message = message + x + ' - ' + y + ' \n'
 
-        send_email('Old Mksysb files', message)
+        utilities.send_email('Old Mksysb files', message)
 
-    print 'today----------------------'
-    print todays_list
-    print 'yesterday-------------------------'
-    print yesterdays_list
-    print 'day_before_yesterday-----------------'
-    print day_before_yesterdays_list
-    print 'OLD-------------------------'
-    print old_list
+    #print 'today----------------------'
+    #print todays_list
+    #print 'yesterday-------------------------'
+    #print yesterdays_list
+    #print 'day_before_yesterday-----------------'
+    #print day_before_yesterdays_list
+    #print 'OLD-------------------------'
+    #print old_list
     print 'COUNT======================'
     print count
     print
