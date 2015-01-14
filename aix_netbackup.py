@@ -33,7 +33,7 @@ def update_server():
             if utilities.ssh(server, client):
 
                 stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
-                netbackup_version = stdout.readlines()[0]
+                netbackup_version = stdout.readlines()[0].rstrip()
 
                 #check existing value, if it exists, don't update
                 if str(netbackup_version) != str(server.netbackup):
