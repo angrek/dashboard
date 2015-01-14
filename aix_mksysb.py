@@ -26,7 +26,6 @@ django.setup()
 def get_a_good_server():
     #I'm banking that five servers won't be missing the /mksysb directory all at the same time....
     server_list = AIXServer.objects.filter(active=True, decommissioned=False)[:5]
-    print server_list
     success = 0
     
     for server in server_list:
@@ -35,15 +34,13 @@ def get_a_good_server():
             if utilities.ssh(server, client):
                 stdin, stdout, stderr = client.exec_command(' [ -d /mksysb/WPARS ] && echo 1 || echo 0')
                 test = stdout.readlines()
-                print test[0]
                 if int(test[0]):
-                    print 'got it'
                     success = 1
                     break
     if not success:
-        print 'None of the servers have a /mksysbWPAR directory'
-        #FIXME We're going to want an email that five servers failed the mksysb dir find
-        #FIXME and then break out of the script
+        subject = 'None of the servers have a /mksysbWPAR directory'
+        print subject
+        utilities.send_email(subject, server_list)
         sys.exit()
     else:
         return server
@@ -52,40 +49,31 @@ def get_a_good_server():
 def update_server():
     count = 0
     base_server = get_a_good_server()
-    print "we're good " + base_server.name
 
     main_server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-    #print main_server_list
-    print '------------------'
-    print 'vio servers'
     vio_server_list = AIXServer.objects.filter(active=True, decommissioned=False, name__contains='vio')
-    #vio_server_dict = dict([(obj.name, obj) for obj in vio_server_list])
     vio_server_list = [obj.name for obj in vio_server_list]
-    #print vio_server_list
-    print '---------------------'
-    print 'wpars'
     #get the list of wpars from relationships and put it in a list
     wpar_list = Relationships.objects.all()
     wpar_server_list = [obj.child_wpar_id for obj in wpar_list]
-    #print wpar_server_list
-    print '-----------------------'
 
 
     #get the dir listing for /mksysb
-    main_command = 'ssh ' + base_server.name + ' ls -lp /mksysb | grep mksysb | grep -v old | grep -v gz | grep -v /'
+    main_command = 'ssh ' + base_server.name + ' ls -lp /mksysb | grep mksysb | grep -v /'
     p = Popen(main_command, shell=True, stdout=PIPE)
     p.wait()
     main_directory_list = p.stdout.readlines()
 
     #get the dir listing for /mksysb/VIOS
-    main_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/VIOS | grep mksysb | grep -v old | grep -v gz | grep -v /'
-    p = Popen(main_command, shell=True, stdout=PIPE)
+    vios_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/VIOS | grep -v log | grep -v total | grep -v /'
+    p = Popen(vios_command, shell=True, stdout=PIPE)
     p.wait()
     vios_directory_list = p.stdout.readlines()
+    print vios_directory_list
 
     #get the dir listing for /mksysb/WPARS
-    main_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/WPARS | grep mksysb | grep -v old | grep -v gz | grep -v /'
-    p = Popen(main_command, shell=True, stdout=PIPE)
+    wpars_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/WPARS | grep bak | grep -v /'
+    p = Popen(wpars_command, shell=True, stdout=PIPE)
     p.wait()
     wpars_directory_list = p.stdout.readlines()
 
@@ -121,7 +109,7 @@ def update_server():
             #yesterday = str(datetime.date.today() - timedelta(1))
             #day_before_yesterday =str(datetime.date.today() - timedelta(2))
 
-            #pretending it's Monday
+            #FIXME pretending it's Monday
             today = str(datetime.date.today() - timedelta(2))
             yesterday = str(datetime.date.today() - timedelta(3))
             day_before_yesterday =str(datetime.date.today() - timedelta(4))
@@ -183,9 +171,9 @@ def update_server():
     get_dir_lists(main_directory_list, count)
     get_dir_lists(vios_directory_list, count)
     get_dir_lists(wpars_directory_list, count)
-    print datetime.date.today().strftime("%A")
-    print len(datetime.date.today().strftime("%A"))
 
+    #we really only need this list on Monday morning for Sunday fails
+    #FIXME CHange email to Monday
     if datetime.date.today().strftime("%A") == 'Wednesday':
         print 'ok, it gets this far'
         sorted = old_dict.items()

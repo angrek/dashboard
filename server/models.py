@@ -99,6 +99,10 @@ class Relationships(models.Model):
     def __unicode__(self):
             return '%s - %s' % (self.parent_lpar, self.child_wpar)
 
+    class Meta:
+        verbose_name = "Relationships"
+        verbose_name_plural = "Relationships"
+
 
 #Meta model to split off the AIX applications in the admin
 class AIXApplications(AIXServer):

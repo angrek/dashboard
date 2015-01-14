@@ -74,14 +74,12 @@ def ssh(server, client):
 
 
 def send_email(subject, message):
-    print 'test'
     msg = MIMEText(message)
     msg['Subject'] = subject
     msg['From'] = email.utils.formataddr(('Boomer', "boomer\@wellcare.com"))
     msg['To'] = email.utils.formataddr(('Boomer', "boomer\@wellcare.com"))
     server = smtplib.SMTP('mail')
     server.sendmail("boomer@wellcare.com", "boomer@wellcare.com",msg.as_string())
-    print 'email sent'
 
 
 
