@@ -23,16 +23,16 @@ import datetime
 django.setup()
 
 
-def get_a_good_server():
+def get_a_good_server(zone):
     #I'm banking that five servers won't be missing the /mksysb directory all at the same time....
-    server_list = AIXServer.objects.filter(active=True, decommissioned=False)[:5]
+    server_list = AIXServer.objects.filter(active=True, decommissioned=False, zone=zone)[:5]
     success = 0
     
     for server in server_list:
         if utilities.ping(server):
             client = SSHClient()
             if utilities.ssh(server, client):
-                stdin, stdout, stderr = client.exec_command(' [ -d /mksysb/WPARS ] && echo 1 || echo 0')
+                stdin, stdout, stderr = client.exec_command(' [ -d /mksysb/ ] && echo 1 || echo 0')
                 test = stdout.readlines()
                 if int(test[0]):
                     success = 1
@@ -48,36 +48,40 @@ def get_a_good_server():
 
 def update_server():
     count = 0
-    base_server = get_a_good_server()
+    zone=1
+    nonprod_base_server = get_a_good_server(zone)
+    zone=2
+    prod_base_server = get_a_good_server(zone)
 
     main_server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-    vio_server_list = AIXServer.objects.filter(active=True, decommissioned=False, name__contains='vio')
-    vio_server_list = [obj.name for obj in vio_server_list]
-    #get the list of wpars from relationships and put it in a list
-    wpar_list = Relationships.objects.all()
-    wpar_server_list = [obj.child_wpar_id for obj in wpar_list]
 
+    #PRODUCTION
+    #get the dir listing for /mksysb
+    main_command = 'ssh ' + prod_base_server.name + ' ls -lp /mksysb | grep mksysb | grep -v /'
+    p = Popen(main_command, shell=True, stdout=PIPE)
+    p.wait()
+    prod_main_directory_list = p.stdout.readlines()
 
     #get the dir listing for /mksysb
-    main_command = 'ssh ' + base_server.name + ' ls -lp /mksysb | grep mksysb | grep -v /'
+    main_command = 'ssh ' + nonprod_base_server.name + ' ls -lp /mksysb | grep mksysb | grep -v /'
     p = Popen(main_command, shell=True, stdout=PIPE)
     p.wait()
     main_directory_list = p.stdout.readlines()
 
     #get the dir listing for /mksysb/VIOS
-    vios_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/VIOS | grep -v log | grep -v total | grep -v /'
+    vios_command = 'ssh ' + nonprod_base_server.name + ' ls -lp /mksysb/VIOS | grep -v log | grep -v total | grep -v /'
     p = Popen(vios_command, shell=True, stdout=PIPE)
     p.wait()
     vios_directory_list = p.stdout.readlines()
-    print vios_directory_list
+    #print vios_directory_list
 
     #get the dir listing for /mksysb/WPARS
-    wpars_command = 'ssh ' + base_server.name + ' ls -lp /mksysb/WPARS | grep bak | grep -v /'
+    wpars_command = 'ssh ' + nonprod_base_server.name + ' ls -lp /mksysb/WPARS | grep bak | grep -v /'
     p = Popen(wpars_command, shell=True, stdout=PIPE)
     p.wait()
     wpars_directory_list = p.stdout.readlines()
 
-
+    main_directory_list += prod_main_directory_list
 
 
 
@@ -165,17 +169,17 @@ def update_server():
                 old_list.append(filename.split('.')[0])
                 count += 1
                 old_dict[filename.split('.')[0]] = datestamp
-        print 'count = ' + str(count)    
+        #print 'count = ' + str(count)    
 
     #lets get the all the lists now
     get_dir_lists(main_directory_list, count)
     get_dir_lists(vios_directory_list, count)
     get_dir_lists(wpars_directory_list, count)
+    all_directory_list = main_directory_list + vios_directory_list + wpars_directory_list
 
     #we really only need this list on Monday morning for Sunday fails
     #FIXME CHange email to Monday
     if datetime.date.today().strftime("%A") == 'Wednesday':
-        print 'ok, it gets this far'
         sorted = old_dict.items()
         sorted.sort()
         message = ''
@@ -192,32 +196,31 @@ def update_server():
     #print day_before_yesterdays_list
     #print 'OLD-------------------------'
     #print old_list
-    print 'COUNT======================'
-    print count
-    print
+    #print 'COUNT======================'
+    #print count
+    #print
     #print timestamp 
     #FIXME - for now I'm leaving out the timestamp but may want it later in the model
 
 
-    #wpar_command = 'ssh ' + base_server.name + ' ls -p /mksysb/WPARS | grep -v /'
-    #p = Popen(wpar_command, shell=True, stdout=PIPE)
-    #p.wait()
-    #wpar_directory_list = p.stdout.readlines()
-
-    #vios_command = 'ssh ' + base_server.name + ' ls -p /mksysb/VIOS | grep -v /'
-    #p = Popen(vios_command, shell=True, stdout=PIPE)
-    #p.wait()
-    #vios_directory_list = p.stdout.readlines()
-
-    #print main_directory_list
-    #print '------------------------------'
-    #print wpar_directory_list
-    #print '------------------------------'
-    #print vios_directory_list
-    #print '-----------------------------'
 
     #main_server_list = []
-    #for server in main_server_list:
+    for server in main_server_list:
+        success = 0
+        for entry in all_directory_list:
+            test = entry.rstrip().split()
+            filename = test[8].split('.')[0]
+            #print server.name
+            #print filename
+            if server.name == filename:
+                print server.name + ' is good'
+                success = 1
+                continue
+        if success == 0:
+            print server.name + 'FAILED!!!!!!!!!'
+
+    #print main_directory_list
+
     #    
     #    if re.match('vio', server.name):
     #    if server.name in vio_server_list:
