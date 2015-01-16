@@ -27,14 +27,16 @@ import getpass
 #this will get the username of the person logged in and then prompt them for their password
 username = getpass.getuser()
 print "You are logged in as " + username
-password = getpass.getpass()
+if username == 'wrehfie':
+    f = open("/home/wrehfiel/.ssh/p", "r")
+    password = str(f.read().rstrip())
+    f.close
+else:
+    password = getpass.getpass()
 
 def update_server():
     counter = 0
-    #server_list_aix = AIXServer.objects.filter(active=True)
-    #server_list_aix = AIXServer.objects.filter(name='blah')
     server_list = LinuxServer.objects.filter(active=True, decommissioned=False)
-    #server_list = list(chain(server_list_aix, server_list_linux))
 
     for server in server_list:
         server_is_active = 1
@@ -83,27 +85,27 @@ def update_server():
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
                 client.connect(str(server), username=username, password=password, timeout=7)
-                command = '[ -e /home/' + username + '/.ssh/authorized_keys ] && echo 1 || echo 0'
+                command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
                 sdtin, stdout, stderr = client.exec_command(command)
-                #dont' think I really need to grab stdout here
-                key_file_exists = stdout.readlines()
-                #print key_file_exists[0].rstrip()
-                client.close()
-                if key_file_exists[0].rstrip() == '0':
-                    print '-Authorized keys file does not exist'
-                    all_ahead_flank = 1
+                if stdout.readlines()[0].rstrip():
+                    print '-Authorized keys file exists'
+                    continue
                 else:
-                    print '-Authorized keys file does exist'
+                    print '-Authorized keys file does NOT exist'
+                    all_ahead_flank = 1
+
+                client.close()
                 
-            #print 'all ahead flank?' + str(all_ahead_flank)
             if all_ahead_flank:
                 print '-Transferring key'
-                #now we ftp our key over
+                #now we sftp our key over
                 transport = paramiko.Transport((str(server), 22))
-                #just testing why it's not getting here...
-                #transport.load_system_host_keys()
-                #transport.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                transport.connect(username=username, password=password)
+
+                try:
+                    transport.connect(username=username, password=password)
+                except:
+                    #FIXME if the try isn't working, thisi isn't getting printed out
+                    continue
 
                 sftp = paramiko.SFTPClient.from_transport(transport)
                 local = '/home/' + username + '/.ssh/id_rsa.pub'
@@ -119,8 +121,6 @@ def update_server():
                 sdtin, stdout, stderr = client.exec_command(command)
                 print '-Key transferred and renamed'
                 client.close()
-            else:
-                print '-Key already exists, you should be good to go!'
         else:
                 print '-Server is unreachable by ping!!!!!!!!!!'
 

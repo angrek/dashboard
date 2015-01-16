@@ -34,6 +34,7 @@ while (<FILE>){
 }
 
 
+#@clusters = ('Savvis Prod UCS-Linux');
 @clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
             'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
             'Savvis Prod UCS-SANMGMT');
@@ -90,7 +91,13 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-        if (($vm->guest->guestFamily) eq 'linuxGuest'){
+        #if (($vm->name) eq 'p1dbmon'){
+            print "\nName--->", $vm->name;
+            print "\nguestFamily--->", $vm->guest->guestFamily;
+            print "\nguestFullName->", $vm->guest->guestFullName;
+            print "\nguestState---->", $vm-guest-guestState;
+        #}
+        if (($vm->guest->guestFamily) eq 'linuxGuest') || (($vm-name) eq 'p1dbmon'){
 
 
             $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);

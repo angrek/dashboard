@@ -37,104 +37,93 @@ else:
 
 def update_server():
     counter = 0
-    #server_list = AIXServer.objects.all()
-    #the below exception is for my account's inability to ssh in (service account in the future)
-    #Part 2 - revisiting what is or isn't an exception later, might be changing the field
     server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-    #server_list = AIXServer.objects.filter(active=True, exception=True).exclude(name='t8sandbox')
-    #server_list = AIXServer.objects.filter(name='upar2midcs')
-    #server_list = list(chain(server_list_aix, server_list_linux))
 
     for server in server_list:
         server_is_active = 1
 
         counter = counter + 1
         print 'Working on server ' + str(counter) + " - " + str(server)
-        #removed exception because it should be an exception (should it filter exception=True???)
-        if AIXServer.objects.filter(name=server):
             
-            if utilities.ping(server):
-                print "-Ping test is good"
+        if utilities.ping(server):
+            print "-Ping test is good"
 
-                all_ahead_flank = 0
+            all_ahead_flank = 0
 
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            try:
+                client.connect(str(server), username=username, password=password)
+            except:
+                print 'SSH HAS FAILED. BREAKING LOOP HERE'
+                continue
+            command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
+            #command = 'ls /home'
+            sdtin, stdout, stderr = client.exec_command(command)
+            directory_exists = stdout.readlines()
+            client.close()
+            #print "stdout!"
+            #print directory_exists[0].rstrip()
+            if directory_exists[0].rstrip() == '0':
+                print '-Ssh directory does not exist. Creating'
+                #directory does not exist so we need to create it
                 client = paramiko.SSHClient()
-                client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                try:
-                    client.connect(str(server), username=username, password=password)
-                except:
-                    print 'SSH HAS FAILED. BREAKING LOOP HERE'
-                    continue
-                command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
-                #command = 'ls /home'
+                client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+                client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True)
+                command = 'mkdir /home/' + username + '/.ssh;chmod 700 /home/' + username + '/.ssh'
                 sdtin, stdout, stderr = client.exec_command(command)
-                directory_exists = stdout.readlines()
+                #dont' think I really need to grab stdout here
+                #test = stdout.readlines()
                 client.close()
-                #print "stdout!"
-                #print directory_exists[0].rstrip()
-                if directory_exists[0].rstrip() == '0':
-                    print '-Ssh directory does not exist. Creating'
-                    #directory does not exist so we need to create it
-                    client = paramiko.SSHClient()
-                    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                    client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True)
-                    command = 'mkdir /home/' + username + '/.ssh;chmod 700 /home/' + username + '/.ssh'
-                    sdtin, stdout, stderr = client.exec_command(command)
-                    #dont' think I really need to grab stdout here
-                    #test = stdout.readlines()
-                    client.close()
-                    all_ahead_flank = 1
-                    print '-Directory created'
-                else:
-                    print '-Checking for authorized_keys'
-                    #if the directory exists, test if authorized_keys exists
-                    client = paramiko.SSHClient()
-                    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                    client.connect(str(server), username=username, password=password)
-                    command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
-                    sdtin, stdout, stderr = client.exec_command(command)
-                    if  stdout.readlines()[0].rstrip():
-                        print '-Authorized keys file exists'
-                        continue
-                    else:
-                        print '-Authorized keys file does not exist'
-                        all_ahead_flank = 1
-
-                    client.close()
-
-                    
-                #print 'all ahead flank?' + str(all_ahead_flank)
-                if all_ahead_flank:
-                    print '-Transferring key'
-                    #now we ftp our key over
-                    transport = paramiko.Transport((str(server), 22))
-                    #transport.load_system_host_keys()
-                    #transport.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-                    try:
-                        transport.connect(username = username , password=password)
-                    except:
-                        #FIXME if the try isn't working, this isn't getting printed out
-                        "Print Connection is timing out for some reason............"
-                        continue
-                    sftp = paramiko.SFTPClient.from_transport(transport)
-                    local = '/home/' + username + '/.ssh/id_rsa.pub'
-                    remote = '/home/' + username + '/.ssh/authorized_keys'
-                    sftp.put(remote, local)
-                    sftp.close()
-                    transport.close()
-                    
-                    #we've transferred it, but we need to rename the file now
-                    #the paramiko sftp won't rename it (or I haven't figured it out yet -Boomer)
-                    client.connect(str(server), username=username, password=password)
-                    command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
-                    sdtin, stdout, stderr = client.exec_command(command)
-                    print '-Key transferred and renamed'
-                    client.close()
+                all_ahead_flank = 1
+                print '-Directory created'
             else:
+                print '-Checking for authorized_keys'
+                #if the directory exists, test if authorized_keys exists
+                client = paramiko.SSHClient()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+                client.connect(str(server), username=username, password=password)
+                command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
+                sdtin, stdout, stderr = client.exec_command(command)
+                if  stdout.readlines()[0].rstrip():
+                    print '-Authorized keys file exists'
+                    continue
+                else:
+                    print '-Authorized keys file does not exist'
+                    all_ahead_flank = 1
+
+                client.close()
+
+            if all_ahead_flank:
+                print '-Transferring key'
+                #now we sftp our key over
+                transport = paramiko.Transport((str(server), 22))
+
+                try:
+                    transport.connect(username = username , password=password)
+                except:
+                    #FIXME if the try isn't working, this isn't getting printed out
+                    "Print Connection is timing out for some reason............"
+                    continue
+
+                sftp = paramiko.SFTPClient.from_transport(transport)
+                local = '/home/' + username + '/.ssh/id_rsa.pub'
+                remote = '/home/' + username + '/.ssh/authorized_keys'
+                sftp.put(remote, local)
+                sftp.close()
+                transport.close()
+                
+                #we've transferred it, but we need to rename the file now
+                #the paramiko sftp won't rename it (or I haven't figured it out yet -Boomer)
+                client.connect(str(server), username=username, password=password)
+                command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
+                sdtin, stdout, stderr = client.exec_command(command)
+                print '-Key transferred and renamed'
+                client.close()
+        else:
                 print '-Server is unreachable by ping!!!!!!!!!!'
 
 
