@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to set up SSH keys on the linux servers
+# Script to retrieve SSL versions on the servers and drop them into Django dashboard
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -23,20 +23,86 @@ import utilities
 django.setup()
 import paramiko
 import getpass
+import argparse
+import textwrap
+from subprocess import *
+import sys
+
+#command line arguments and usage
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    description=textwrap.dedent('''\
+
+    Set your SSH keys across active AIX and UNIX servers.
+
+    You must use either the --aix or --linux arguments, or both.
+
+    Example:
+    ./ssh_keys.py --aix all                   #All AIX servers
+    ./ssh_keys.py --aix server1               #One to many servers here
+    ./ssh_keys.py --linux all                 #All Linux servers
+    ./ssh_keys.py --linux 'server1, server2'  #One to many servers.
+                                              #NOTE apostrophes enclose multiple servers.
+    ./ssh_keys.py --linux all --aix server1   #You can mix the lists
+    ./ssh_keys.py --linux all --aix all       #Transfer keys to all of the servers
+
+    Note: If you wish this to run automatically without being prompted for a
+    password, you can put your password into a file named 'p' in
+    /home/username/.ssh/p     Lock this file down to 700 permissions.
+    '''))
+
+parser.add_argument('--aix', help="Only transfer SSH keys to AIX servers.")
+parser.add_argument('--linux', help="Only transfer SSH keys to Linux servers.")
+args = parser.parse_args()
+
+#must specify arguments
+if not args.aix and args.aix:
+    print ''
+    parser.print_help()
+    sys.exit()
+
 
 #this will get the username of the person logged in and then prompt them for their password
+#unless they have it in a file named p in their .ssh dir. See Usage.
 username = getpass.getuser()
 print "You are logged in as " + username
-if username == 'wrehfiel':
-    f = open("/home/wrehfiel/.ssh/p", "r")
+command = '[ -e /home/' + username + '/.ssh/p ] && echo 1 || echo 0'
+
+file_exists = int(Popen(command, shell=True, stdout=PIPE).stdout.readlines()[0])
+if file_exists:
+    path = '/home/' + username + '/.ssh/p'
+    f = open(path, "r")
     password = str(f.read().rstrip())
     f.close
 else:
     password = getpass.getpass()
 
+
 def update_server():
+    print args.aix
+    print args.linux
+
+    #Parse the arguments and create a merge server list
+    if args.aix:
+        print "We're here"
+        if args.aix == 'all':
+            print 'All'
+            server_list = AIXServer.objects.filter(active=True, decommissioned=False)
+            print server_list
+        else:
+            tmp_list = [args.aix]
+            print 'hmmm' 
+            print tmp_list
+            server_list = AIXServer.objects.filter(name=tmp_list)
+            print server_list
+            print '2'
+           
+    if args.linux:
+        print 'yes'
+    sys.exit()
     counter = 0
-    server_list = LinuxServer.objects.filter(active=True, decommissioned=False)
+    #server_list = AIXServer.objects.filter(active=True, decommissioned=False)
+    #server_list = AIXServer.objects.filter(active=True, decommissioned=False)
 
     for server in server_list:
         server_is_active = 1
@@ -53,7 +119,7 @@ def update_server():
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             try:
-                client.connect(str(server), username=username, password=password, timeout=7)
+                client.connect(str(server), username=username, password=password)
             except:
                 print 'SSH HAS FAILED. BREAKING LOOP HERE'
                 continue
@@ -70,7 +136,7 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True, timeout=7)
+                client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True)
                 command = 'mkdir /home/' + username + '/.ssh;chmod 700 /home/' + username + '/.ssh'
                 sdtin, stdout, stderr = client.exec_command(command)
                 #dont' think I really need to grab stdout here
@@ -84,27 +150,28 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                client.connect(str(server), username=username, password=password, timeout=7)
-                command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
+                client.connect(str(server), username=username, password=password)
+                command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
                 sdtin, stdout, stderr = client.exec_command(command)
-                if stdout.readlines()[0].rstrip():
+                if  stdout.readlines()[0].rstrip():
                     print '-Authorized keys file exists'
                     continue
                 else:
-                    print '-Authorized keys file does NOT exist'
+                    print '-Authorized keys file does not exist'
                     all_ahead_flank = 1
 
                 client.close()
-                
+
             if all_ahead_flank:
                 print '-Transferring key'
                 #now we sftp our key over
                 transport = paramiko.Transport((str(server), 22))
 
                 try:
-                    transport.connect(username=username, password=password)
+                    transport.connect(username = username , password=password)
                 except:
-                    #FIXME if the try isn't working, thisi isn't getting printed out
+                    #FIXME if the try isn't working, this isn't getting printed out
+                    "Print Connection is timing out for some reason............"
                     continue
 
                 sftp = paramiko.SFTPClient.from_transport(transport)
@@ -116,16 +183,13 @@ def update_server():
                 
                 #we've transferred it, but we need to rename the file now
                 #the paramiko sftp won't rename it (or I haven't figured it out yet -Boomer)
-                client.connect(str(server), username=username, password=password, timeout=7)
+                client.connect(str(server), username=username, password=password)
                 command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
                 sdtin, stdout, stderr = client.exec_command(command)
                 print '-Key transferred and renamed'
                 client.close()
         else:
                 print '-Server is unreachable by ping!!!!!!!!!!'
-
-
-
 
 
 #start execution
