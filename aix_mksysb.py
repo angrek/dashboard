@@ -86,7 +86,6 @@ def update_server():
 
 
     #these are lists of mksysb entries from the directories of good mksysbs to add
-    day_before_yesterdays_list = []
     yesterdays_list = [] 
     todays_list = [] 
     old_list = []
@@ -108,15 +107,12 @@ def update_server():
             filename = test[8]
            
             #These are the good ones
-            #FIXME - take out day_before_yesterday, just for testing!!
             #today = str(datetime.date.today())
             #yesterday = str(datetime.date.today() - timedelta(1))
-            #day_before_yesterday =str(datetime.date.today() - timedelta(2))
 
             #FIXME pretending it's Monday
-            today = str(datetime.date.today() - timedelta(2))
-            yesterday = str(datetime.date.today() - timedelta(3))
-            day_before_yesterday =str(datetime.date.today() - timedelta(4))
+            today = str(datetime.date.today())
+            yesterday = str(datetime.date.today() - timedelta(1))
 
 
             #month from ls is in text and we need to convert it for the timestamp
@@ -162,9 +158,6 @@ def update_server():
             elif datestamp == yesterday:
                 yesterdays_list.append(filename.split('.')[0])
                 count += 1
-            elif datestamp == day_before_yesterday:
-                day_before_yesterdays_list.append(filename.split('.')[0])
-                count += 1
             else:
                 old_list.append(filename.split('.')[0])
                 count += 1
@@ -179,7 +172,7 @@ def update_server():
 
     #we really only need this list on Monday morning for Sunday fails
     #FIXME CHange email to Monday
-    if datetime.date.today().strftime("%A") == 'Wednesday':
+    if datetime.date.today().strftime("%A") == 'Monday':
         sorted = old_dict.items()
         sorted.sort()
         message = ''
@@ -192,8 +185,6 @@ def update_server():
     #print todays_list
     #print 'yesterday-------------------------'
     #print yesterdays_list
-    #print 'day_before_yesterday-----------------'
-    #print day_before_yesterdays_list
     #print 'OLD-------------------------'
     #print old_list
     #print 'COUNT======================'
