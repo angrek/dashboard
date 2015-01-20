@@ -100,8 +100,8 @@ class Relationships(models.Model):
             return '%s - %s' % (self.parent_lpar, self.child_wpar)
 
     class Meta:
-        verbose_name = "Relationships"
-        verbose_name_plural = "Relationships"
+        verbose_name = "AIX LPAR-WPAR Relationships"
+        verbose_name_plural = "AIX LPAR-WPAR Relationships"
 
 
 #Meta model to split off the AIX applications in the admin
