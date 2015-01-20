@@ -132,11 +132,10 @@ foreach my $host (@$host_views) {
 
             if ($ip_address == ''){
                 $ipaddress = "0.0.0.0";
-                $exception = 1;
-            }else{
-                $exception = 0;
-            }
 
+            #setting exception to true. The SSH keys script runs after this script
+            #and should pick it up, transfer keys, and then the first script will switch the exception.
+            $exception = 1;
 
 
 

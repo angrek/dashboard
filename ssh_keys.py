@@ -81,34 +81,46 @@ else:
 def update_server():
     print args.aix
     print args.linux
+    server_list = []
 
+    #Because exceptions are set based on my username running the scripts
+    #If another person uses this, his key may be bad even through the
+    #exception is False
+    if username == 'wrehfiel':
+        exception = True
+    else:
+        exception = False
     #Parse the arguments and create a merge server list
     if args.aix:
-        print "We're here"
+        print "aix is a go"
         if args.aix == 'all':
             print 'All'
-            server_list = AIXServer.objects.filter(active=True, decommissioned=False)
+            server_list += AIXServer.objects.filter(active=True, exception=True, decommissioned=False)
             print server_list
         else:
-            tmp_list = [args.aix]
-            print 'hmmm' 
-            print tmp_list
-            server_list = AIXServer.objects.filter(name=tmp_list)
+            for server in [args.aix]:
+                server_list += AIXServer.objects.filter(name=server)
             print server_list
-            print '2'
            
     if args.linux:
-        print 'yes'
-    sys.exit()
+        print 'linux is a go'
+        if args.linux == 'all':
+            print 'Linux All'
+            server_list += LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
+            print server_list
+        else:
+            for server in [args.linux]:
+                server_list += LinuxServer.objects.filter(name=server)
+            print server_list
+           
+    #sys.exit()
     counter = 0
-    #server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-    #server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-
+    total = len(server_list)
     for server in server_list:
         server_is_active = 1
 
         counter = counter + 1
-        print 'Working on server ' + str(counter) + " - " + str(server)
+        print 'Working on server ' + str(counter) + "/" + str(total) + " - " + str(server)
             
         if utilities.ping(server):
             print "-Ping test is good"
@@ -121,8 +133,36 @@ def update_server():
             try:
                 client.connect(str(server), username=username, password=password)
             except:
-                print 'SSH HAS FAILED. BREAKING LOOP HERE'
-                continue
+                print 'SSH HAS FAILED'
+                print 'Removing key from known_hosts'
+                known_hosts = '/home/' + username + '/.ssh/known_hosts'
+                file = open(known_hosts)
+                lines = file.readlines()
+                file.close
+                #now reopen it in write mode
+                file = open(known_hosts, "w")
+                for line in lines:
+                    if re.search(server.name, line):
+                        print "Found name " + server.name + " entry."
+                        file.write(line)
+                    if re.search(server.ip_address, line):
+                        print "Found IP " + server.ip_address + " entry."
+                        file.write(line)
+                file.close()
+                print 'Trying SSH again'
+                #Now lets try to use SSH again
+                client = paramiko.SSHClient()
+                client.load_system_host_keys()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                print server.ip_address
+                #FIXME the below box still isn't working??
+                try:
+                    client.connect(str(server), username=username, password=password)
+                    print "Ok, removing the entry worked."
+                except:
+                    "SSH STILL NOT WORKING!!!!!!!!!!!!!!!!!!!!!!"
+                    continue
+
             command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
             #command = 'ls /home'
             sdtin, stdout, stderr = client.exec_command(command)

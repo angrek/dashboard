@@ -22,6 +22,7 @@ import dashboard_logging
 import smtplib
 from email.mime.text import MIMEText
 import email.utils
+import paramiko
 
 django.setup()
 
@@ -53,9 +54,9 @@ def ping(server):
 
 #test ssh... duh
 def ssh(server, client):
-
+    print server.name
     client.load_system_host_keys()
-
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         client.connect(str(server), username="wrehfiel", timeout=10)
         if server.exception == True:

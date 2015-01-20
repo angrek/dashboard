@@ -111,7 +111,8 @@ def populate():
                     AIXserver.objects.filter(name=server_name.rstrip()).update(frame=frame)
             except:
                 #the created object is not the same, so we create it and then get the instance
-                server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=False,  stack_id=1)
+                #setting exception to True so the ssh keys script will pick it up and transfer keys
+                server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=True,  stack_id=1)
                 server = AIXServer.objects.get(name=server_name.rstrip())
                 change_message = "Added LPAR " + server_name.rstrip() + "."
                 LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
@@ -158,7 +159,7 @@ def populate():
                             except:
 
                                 #Here we are inheriting some of the parent LPAR objects into the WPAR
-                                temp = AIXServer.objects.get_or_create(name=wpar_name, owner=server.owner, frame=server.frame, ip_address=ip_address, os='AIX', zone=server.zone, active=True, exception=False,  stack=server.stack)
+                                temp = AIXServer.objects.get_or_create(name=wpar_name, owner=server.owner, frame=server.frame, ip_address=ip_address, os='AIX', zone=server.zone, active=True, exception=True,  stack=server.stack)
                                 change_message = "Added WPAR " + wpar_name + "."
                                 LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
 
