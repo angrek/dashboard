@@ -34,14 +34,10 @@ while (<FILE>){
 }
 
 
-#@clusters = ('Savvis Prod UCS-Linux');
+#@clusters = ('Savvis Non-Prod UCS-Linux');
 @clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
             'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
             'Savvis Prod UCS-SANMGMT');
-#@clusters = ('Savvis Non-Prod UCS-DMZ');
-##my $cluster_name = "Savvis Non-Prod UCS-Linux";
-#my $cluster_name = "Savvis Non-Prod UCS-DMZ";
-@bad_servers = ();
 
 foreach $cluster_name(@clusters){
 
@@ -92,14 +88,34 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-        #if (($vm->name) eq 'p1dbmon'){
+        #if ($vm->name eq 'u2esbapp'){
+            print "\n==============================================";
             print "\nName--->", $vm->name;
             print "\nguestFamily--->", $vm->guest->guestFamily;
             print "\nguestFullName->", $vm->guest->guestFullName;
-            print "\nguestState---->", $vm-guest-guestState;
+            print "\nguestState---->", $vm->guest->guestState;
+            #print "\ntest---->", $vm->config->guestID;
+            $devices = $vm->config->hardware->device;
+            @device_list = ('VirtualE1000', 'VirtualE1000e', 'VirtualIPCNet32', 'VirtualVmxnet2', 'VirtualVmxnet3', 'Flexible');
+            foreach $device (@$devices){
+                #print "\n====>", $device;
+                for ( @device_list){
+                    if (ref $device eq $_ ){
+                        $adapter = $_;
+                        $adapter =~ s/Virtual//;
+                        print "\nAdapterType--->", $_;
+                        print "\n new adapter->", $adapter;
+                        print "\n";
+                        #print "\nAdapterType--->", $device->key, "*********************";
+                        #print "\nDevice: ", $device[0];
+                        #print "\n -->", $_;
+                    }
+                }
+            }
+                
         #}
-
-        if (($vm->guest->guestFamily) eq 'linuxGuest') || (($vm-name) eq 'p1dbmon'){
+        #if (($vm->guest->guestFamily eq 'linuxGuest') || ($vm-name eq 'p1dbmon')){
+        if ($vm->guest->guestFamily eq 'linuxGuest') {
 
 
             $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
@@ -134,10 +150,11 @@ foreach my $host (@$host_views) {
 
             if ($ip_address == ''){
                 $ipaddress = "0.0.0.0";
+                $exception = 1;
+            }else{
+                $exception = 0;
+            }
 
-            #setting exception to true. The SSH keys script runs after this script
-            #and should pick it up, transfer keys, and then the first script will switch the exception.
-            $exception = 1;
 
 
 
@@ -146,6 +163,7 @@ foreach my $host (@$host_views) {
             $sth = $dbh->prepare (qq{insert into server_linuxserver (
                 name,
                 vmware_cluster,
+                adapter,
                 active,
                 exception,
                 created,
@@ -154,8 +172,8 @@ foreach my $host (@$host_views) {
                 zone_id,
                 memory,
                 cpu)
-                VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", active=$active, exception=$exception, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, $cluster_name, $active, $exception, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
+                VALUES (?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", active=$active, exception=$exception, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, $cluster_name, "$adapter", $active, $exception, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
