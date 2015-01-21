@@ -92,6 +92,7 @@ foreach my $host (@$host_views) {
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
         #if ($vm->name eq 'u2esbapp'){
+            print "\n==============================================";
             print "\nName--->", $vm->name;
             print "\nguestFamily--->", $vm->guest->guestFamily;
             print "\nguestFullName->", $vm->guest->guestFullName;
@@ -103,7 +104,8 @@ foreach my $host (@$host_views) {
                 #print "\n====>", $device;
                 for ( @device_list){
                     if (ref $device eq $_ ){
-                        print "\nAdapterType--->", $_, "*********************";
+                        print "\nAdapterType--->", $_;
+                        print "\n";
                         #print "\nAdapterType--->", $device->key, "*********************";
                         #print "\nDevice: ", $device[0];
                         #print "\n -->", $_;

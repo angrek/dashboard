@@ -254,6 +254,7 @@ class LinuxServer(models.Model):
     name = models.CharField(max_length=40, unique=True)
     owner = models.CharField(max_length=30, blank=True, null=True, default='None')
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
+    adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
     #active will let us keep historical data of past servers if needed
     active = models.NullBooleanField(default=True, blank=True)
 
