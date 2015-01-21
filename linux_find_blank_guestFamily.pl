@@ -24,7 +24,7 @@ use DBI;
 
 ########## Set your username and password and define where the VMware Web Service can be located
 $username = 'AD\wrehfiel';
-
+#@bad_servers = ();
 
 open (FILE,  "/home/wrehfiel/.ssh/p");
 #@lines = <FILE>;
@@ -41,7 +41,6 @@ while (<FILE>){
 #@clusters = ('Savvis Non-Prod UCS-DMZ');
 ##my $cluster_name = "Savvis Non-Prod UCS-Linux";
 #my $cluster_name = "Savvis Non-Prod UCS-DMZ";
-@bad_servers = ();
 
 foreach $cluster_name(@clusters){
 
@@ -92,14 +91,20 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-        #if (($vm->name) eq 'p1dbmon'){
-            print "\nName--->", $vm->name;
-            print "\nguestFamily--->", $vm->guest->guestFamily;
-            print "\nguestFullName->", $vm->guest->guestFullName;
-            print "\nguestState---->", $vm-guest-guestState;
-        #}
+        print "==============================================================";
+        print "\nName--->", $vm->name;
+        print "\nguestFamily--->", $vm->guest->guestFamily;
+        print "\nguestFullName->", $vm->guest->guestFullName;
+        print "\nguestState---->", $vm-guest-guestState;
+        print "\nCluster name-->", $cluster_name;
+        print "\nHost --------->", $host;
 
-        if (($vm->guest->guestFamily) eq 'linuxGuest') || (($vm-name) eq 'p1dbmon'){
+        if (($vm->guest->guestFamily) eq ''){
+            push (@bad_servers, $vm->name);
+        } 
+
+        #FIXME broken for testing! FIX NOW!
+        if ((($vm->guest->guestFamily) eq 'linuxGueist') || (($vm-name) eq 'p1dbmon')){
 
 
             $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
@@ -134,6 +139,7 @@ foreach my $host (@$host_views) {
 
             if ($ip_address == ''){
                 $ipaddress = "0.0.0.0";
+            }
 
             #setting exception to true. The SSH keys script runs after this script
             #and should pick it up, transfer keys, and then the first script will switch the exception.
@@ -162,27 +168,6 @@ foreach my $host (@$host_views) {
 
             $vmcounter++;
 
-            #just put this here because it's easy to see all of the values while troubleshooting
-            #print "| ";
-            #printf '%3.3s', $vmcounter;
-            #print ": ";
-            #printf '%23.23s', $host->name;
-            #print " | ";
-            #printf '%26.26s', $vm->name;
-            #print " | ";
-            #printf $vm->config.guestFullName;
-            #printf '%12.12s', $vm->guest->guestFamily;
-            #print " | ";
-            #printf '%11.11s', $vm->guest->guestState;
-            #print " | ";
-            #printf '%10.10s', $vm->runtime->maxMemoryUsage;
-            #print " | ";
-            #printf '%3.3s', $vm->summary->config->numCpu;
-
-            #should really get this directly from the OS anyway.
-            #print $vm->guest->guestFullName;
-            #print "\n";
-
             #LEAVE THIS HERE TO SEE VALUES FOR THE FUTURE
             #Dumper command to get all of the possible data we can pull out of ESX 
             #if ($vmcounter == 5){
@@ -192,14 +177,12 @@ foreach my $host (@$host_views) {
         } 
     }
 
-  $hostcounter++;
+    $hostcounter++;
+}
 }
 
-########## Print the table footer
-#print "|--------------------------------------------------------------------------|\n";
-#print "| Found " . $vmcounter . " Virtual Machines on " . $hostcounter . " ESX Host(s) in " . $cluster_view->name . "\n";
-#print "|--------------------------------------------------------------------------|\n";
-#print "\n";
-
 Vim::logout();
+print "Bad servers:";
+foreach $baddy(@bad_servers){
+    print "\n$baddy";
 }
