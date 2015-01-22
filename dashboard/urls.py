@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 from dashboard.views import hello
+from django.contrib.admin.sites import AdminSite
 
 urlpatterns = patterns('',
     # Examples:
@@ -12,6 +13,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^/admin/', include(admin.site.urls)),
 
     url(r'^server/', include('server.urls')),
 
@@ -26,9 +28,6 @@ urlpatterns = patterns('',
 
 )
 
-#if settings.DEBUG:
-#    urlpatterns += patterns(
-#            'django.view.static',
-#            (r'media/(?P<path>.*)',
-#            'serve',
-#            {'document_root': settings.MEDIA_ROOT}),)
+admin.site.site_header = 'Lizardfish - The Unix Information Dashboard'
+admin.site.site_title = 'Lizardfish - The Unix Information Dashboard'
+admin.site.index_title = 'Lizardfish - The Unix Information Dashboard'
