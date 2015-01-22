@@ -18,10 +18,10 @@ def index(request):
 
 @login_required
 def stacks(request):
-    red_servers = AIXServer.objects.filter(stack__name = 'Red').order_by('name')
-    yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow').order_by('name')
-    green_servers = AIXServer.objects.filter(stack__name = 'Green').order_by('name')
-    orange_servers = AIXServer.objects.filter(stack__name = 'Orange').order_by('name')
+    red_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
+    yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
+    green_servers = AIXServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
+    orange_servers = AIXServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
     #server_list = AIXServer.objects.filter(stack__name ='Red')
     context = {'red_servers' : red_servers,
         'yellow_servers': yellow_servers,
@@ -48,7 +48,9 @@ def detail(request, aixserver_name):
     #except:
     #    raise Http404
     server = get_object_or_404(AIXServer, pk=aixserver_name)
-    return render(request, 'server/detail.html', {'server': server})
+    frame = get_object_or_404(AIXServer, pk=aixserver_name).frame
+    frame_short_name = str(frame)[:3] + '-' + str(frame)[-5:]
+    return render(request, 'server/detail.html', {'server': server, 'frame_short_name': frame_short_name})
 
 
 
