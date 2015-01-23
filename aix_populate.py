@@ -54,7 +54,8 @@ def populate():
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
 
-    #temp_frames = ['795A-9119-FHB-SN023D965']
+    #frames = ['795A-9119-FHB-SN023D965']
+    #frames = ['795B-9119-FHB-SN02764FR']
 
     for frame in frames:
         #the output is throwing newlines at the end of the names for some reason
@@ -110,6 +111,8 @@ def populate():
                 if server.frame != frame:
                     AIXserver.objects.filter(name=server_name.rstrip()).update(frame=frame)
             except:
+                print server_name.rstrip()
+                print len(server_name.rstrip())
                 #the created object is not the same, so we create it and then get the instance
                 #setting exception to True so the ssh keys script will pick it up and transfer keys
                 server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=True,  stack_id=1)
@@ -157,7 +160,6 @@ def populate():
                             try:
                                 temp = AIXServer.objects.get(name=wpar_name)
                             except:
-
                                 #Here we are inheriting some of the parent LPAR objects into the WPAR
                                 temp = AIXServer.objects.get_or_create(name=wpar_name, owner=server.owner, frame=server.frame, ip_address=ip_address, os='AIX', zone=server.zone, active=True, exception=True,  stack=server.stack)
                                 change_message = "Added WPAR " + wpar_name + "."

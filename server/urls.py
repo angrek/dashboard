@@ -6,7 +6,12 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^stacks/$', views.stacks, name='stacks'),
     url(r'^wpars/$', views.wpars, name='wpars'),
-    url(r'^pie/$', views.pie, name='pie'),
+    #url(r'^pie_ssh/$', views.pie_ssh, name='pie_ssh'),
+    #url(r'^3d_pie/aix_ssh|cent_ssh/$', views.pie_ssh, name='pie_ssh'),
+    url(r'^pie_3d/(?P<string>(.*)+)/$', views.pie_3d, name='pie_3d'),
+
+    #Can I do something like this? This is what I need....
+    #url(r'^3d_pie/<historical_today>/<service>/$', views.pie_ssh, name='pie_ssh'),
 
     url(r'^(?P<aixserver_name>(.*)+)/$', views.detail, name='detail'),
 
