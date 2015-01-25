@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve Imperva versions and drop them into Django dashboard
+# Script to retrieve Imperva versions
 #
 # Boomer Rehfield - 10/30/2014
 #
@@ -15,7 +15,6 @@ import django
 from dashboard import settings
 from server.models import AIXServer
 import utilities
-import dashboard_logging
 django.setup()
 import re
 
@@ -48,14 +47,14 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
-                        dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
+                        utilities.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
                 except:
                     imperva_version = 'None'
                     print imperva_version
                     if str(imperva_version) != str(server.imperva):
-                        dashboard_logging.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
+                        utilities.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
 

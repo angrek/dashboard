@@ -15,7 +15,6 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -44,7 +43,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
-                    dashboard_logging.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+                    utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())
 
 

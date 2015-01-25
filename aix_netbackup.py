@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve netbackup version and drop them into Django dashboard
+# Script to retrieve netbackup versions
 #
 # Boomer Rehfield - 11/18//2014
 #
@@ -16,7 +16,6 @@ from dashboard import settings
 from server.models import AIXServer
 import re
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -37,7 +36,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(netbackup_version) != str(server.netbackup):
-                    dashboard_logging.log_change(str(server), 'NetBackup', str(server.netbackup), str(netbackup_version))
+                    utilities.log_change(str(server), 'NetBackup', str(server.netbackup), str(netbackup_version))
                     AIXServer.objects.filter(name=server).update(netbackup=netbackup_version, modified=timezone.now())
 
 

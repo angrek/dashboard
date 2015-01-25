@@ -18,7 +18,6 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import AIXServer, LinuxServer
-import dashboard_logging
 import smtplib
 from email.mime.text import MIMEText
 import email.utils
@@ -83,7 +82,9 @@ def send_email(subject, message):
     server.sendmail("boomer@wellcare.com", "boomer@wellcare.com",msg.as_string())
 
 
-
+def log_change(server, app, old_version, new_version):
+    change_message = 'Changed ' + app + ' from ' + old_version + ' to ' + new_version
+    LogEntry.objects.create(action_time='2014-08-25 20:00:00', user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 

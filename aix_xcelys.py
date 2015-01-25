@@ -16,7 +16,6 @@ from dashboard import settings
 from server.models import AIXServer
 import re
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -42,7 +41,7 @@ def update_server():
                     xcelys_version = 'None'
                 #check existing value, if it exists, don't update
                 if str(xcelys_version) != str(server.xcelys):
-                    dashboard_logging.log_change(str(server), 'Xcelys', str(server.xcelys), str(xcelys_version))
+                    utilities.log_change(str(server), 'Xcelys', str(server.xcelys), str(xcelys_version))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
 
 

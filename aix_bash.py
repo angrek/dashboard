@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve bash versions and drop them into Django dashboard
+# Script to retrieve bash versions 
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -15,7 +15,6 @@ import django
 from dashboard import settings
 from server.models import AIXServer
 import utilities
-import dashboard_logging
 
 django.setup()
 
@@ -39,7 +38,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
-                    dashboard_logging.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+                    utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
 
                     AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
 

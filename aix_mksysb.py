@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to make sure our mksysb's are up to date and put them into the dashboard
+# Script to make sure our mksysb's are up to date
 #
 # Boomer Rehfield - 1/13/2015
 #
@@ -17,7 +17,6 @@ import django
 from dashboard import settings
 from server.models import AIXServer, Relationships
 import utilities
-import dashboard_logging
 from  datetime import datetime, date, timedelta
 import datetime
 django.setup()

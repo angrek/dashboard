@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve SSL versions on the servers and drop them into Django dashboard
+# Script to retrieve the Centrify versions of SSH on the servers
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -16,7 +16,6 @@ from django.utils import timezone
 import django
 from dashboard import settings
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -45,7 +44,7 @@ def update_server():
 
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.cent_ssh):
-                        dashboard_logging.log_change(str(server), 'Centrify SSH', str(server.cent_ssh), str(ssh))
+                        utilitiess.log_change(str(server), 'Centrify SSH', str(server.cent_ssh), str(ssh))
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(cent_ssh=ssh, modified=timezone.now())
 
 

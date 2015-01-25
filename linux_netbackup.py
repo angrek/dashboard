@@ -16,7 +16,6 @@ from dashboard import settings
 from server.models import LinuxServer
 import re
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -38,7 +37,7 @@ def update_server():
                  
                 #check existing value, if it exists, don't update
                 if str(netbackup_version) != str(server.netbackup):
-                    dashboard_logging.log_change(str(server), 'NetBackup', str(server.netbackup), str(netbackup_version))
+                    utilities.log_change(str(server), 'NetBackup', str(server.netbackup), str(netbackup_version))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(netbackup=netbackup_version, modified=timezone.now())
 
 

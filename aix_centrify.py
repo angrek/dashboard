@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get centrify version and drop it into Django dashboard
+# Script to get centrify version
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -15,7 +15,6 @@ import django
 from dashboard import settings
 from server.models import AIXServer, Zone
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -52,7 +51,7 @@ def update_server():
 
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
-                        dashboard_logging.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
+                        utilities.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
 
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
                     if centrify_is_installed:
@@ -64,7 +63,7 @@ def update_server():
                         zone = Zone.objects.get(name=zone_tmp)
                         old_zone = str(server.zone)
                         if str(old_zone) != str(zone):
-                            dashboard_logging.log_change(str(server), 'Zone', str(old_zone), str(zone))
+                            utilities.log_change(str(server), 'Zone', str(old_zone), str(zone))
                             AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
                             
                         

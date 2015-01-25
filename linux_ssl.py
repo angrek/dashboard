@@ -16,7 +16,7 @@ from django.utils import timezone
 import django
 from dashboard import settings
 import utilities
-import dashboard_logging
+import utilities
 django.setup()
 
 
@@ -44,7 +44,7 @@ def update_server():
 
                 #if existing value is the same, don't update
                 if str(ssl) != str(server.ssl):
-                    dashboard_logging.log_change(str(server), 'SSL', str(server.ssl), str(ssl))
+                    utilities.log_change(str(server), 'SSL', str(server.ssl), str(ssl))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
 
 

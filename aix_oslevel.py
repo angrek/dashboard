@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve OS levels and drop them into Django dashboard
+# Script to retrieve AIX OS levels
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -15,7 +15,6 @@ import django
 from dashboard import settings
 from server.models import AIXServer
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -45,7 +44,7 @@ def update_server():
                 
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level):
-                    dashboard_logging.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
+                    utilities.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
 
 

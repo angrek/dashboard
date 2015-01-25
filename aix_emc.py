@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve EMC versions on the servers and drop them into Django dashboard
+# Script to retrieve EMC versions on the servers 
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -16,7 +16,6 @@ from django.utils import timezone
 import django
 from dashboard import settings
 import utilities
-import dashboard_logging
 django.setup()
 
 
@@ -46,7 +45,7 @@ def update_server():
 
                     #if existing value is the same, don't update
                     if str(emc_clar) != str(server.emc_clar):
-                        dashboard_logging.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
+                        utilities.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
                         AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
 
 
@@ -59,13 +58,10 @@ def update_server():
                     p = re.compile(r' +')
                     temp2 = p.split(temp)
                     emc_sym = temp2[1]
-                    #print server
-                    #print 'emc_sym'
-                    #print str(emc_sym)                    
-                    #if existing value is the same, don't update
+
                     if str(emc_sym) != str(server.emc_sym):
 
-                        dashboard_logging.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
+                        utilities.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
 
                         AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
 
