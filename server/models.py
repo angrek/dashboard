@@ -171,8 +171,8 @@ class Storage(models.Model):
     size = models.IntegerField(max_length=10, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Storage"
-        verbose_name_plural = "Storage"
+        verbose_name = "AIX Storage"
+        verbose_name_plural = "AIX Storage"
     
     def __unicode__(self):
         return unicode(self.name)
