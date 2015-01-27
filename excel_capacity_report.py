@@ -10,6 +10,7 @@
 
 import os
 import re
+from subprocess import call
 from ssh import SSHClient
 from openpyxl import Workbook
 from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
@@ -82,7 +83,7 @@ def get_server_data():
 #starting line = 3
     line = 3
     counter = 0
-    server_list = AIXServer.objects.all()
+    server_list = AIXServer.objects.filter(active=True, decommissioned=False)
     #shortening this just to speed up testing
     #server_list = AIXServer.objects.filter(name__contains='vio')
     for server in server_list:
@@ -101,7 +102,7 @@ def get_server_data():
         except:
             pass
 
-        print str(counter) + ',' + str(server) + ',AIX,VM,' + t.ip_address.rstrip() + ',' + str(r.curr_mem) + ',,' + str(p.size) + ',' + str(r.curr_procs)
+        print str(counter) + ',' + str(server) + ',AIX,VM,' + server.ip_address.rstrip() + ',' + str(r.curr_mem) + ',,' + str(p.size) + ',' + str(r.curr_procs)
 
         cell = 'A' + str(line)
         ws1[cell] = str(server)
@@ -113,7 +114,7 @@ def get_server_data():
         ws1[cell] = 'VM'
 
         cell = 'D' + str(line)
-        ws1[cell] = t.ip_address.rstrip()
+        ws1[cell] = server.ip_address.rstrip()
 
         cell = 'E' + str(line)
         ws1[cell] = r.curr_mem
@@ -122,7 +123,7 @@ def get_server_data():
         ws1[cell] = ''
 
         cell = 'G' + str(line)
-        ws1[cell] = str(p.size)
+        ws1[cell] = p.size
 
         cell = 'H' + str(line)
         ws1[cell] = r.curr_procs
@@ -131,6 +132,7 @@ def get_server_data():
 
         #AIXServer.objects.filter(name=server).update(active=False, modified=timezone.now())
         line += 1
+        aix_line = line
 
 
     #################STARTING LINUX SECTION############################
@@ -193,31 +195,77 @@ def get_server_data():
 
     #total
     cell = 'A' + str(line + 1)
-    ws1[cell] = 'Total'
+    aix_cell = 'A' +str(aix_line + 1)
+    ws1[aix_cell] = 'Total'
     ws2[cell] = 'Total'
-    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
     cell = 'E' + str(line + 1)
+    aix_cell = 'E' + str(aix_line + 1)
     sum = "=SUM(E3:E" + str((line - 1)) + ")"
-    ws1[cell] = sum
+    aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
+    print aix_sum
+    print sum
+    ws1[aix_cell] = aix_sum
     ws2[cell] = sum
-    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
     cell = 'G' + str(line + 1)
+    aix_cell = 'G' + str(aix_line + 1)
     sum = "=SUM(G3:G" + str((line - 1)) + ")"
-    ws1[cell] = sum
+    aix_sum = "=SUM(G3:G" + str((aix_line - 1)) + ")"
+    print aix_cell
+    print aix_sum
+    ws1[aix_cell] = aix_sum
     ws2[cell] = sum
-    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
     cell = 'H' + str(line + 1)
+    aix_cell = 'H' + str(aix_line + 1)
     sum = "=SUM(H3:H" + str((line - 1)) + ")"
-    ws1[cell] = sum
+    aix_sum = "=SUM(H3:H" + str((aix_line - 1)) + ")"
+    ws1[aix_cell] = aix_sum
     ws2[cell] = sum
-    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+#create le pretty headers
+    cell = 'A' + str(aix_line + 3)
+    ws1[cell] = 'Host Name'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'B' + str(aix_line + 3)
+    ws1[cell] = 'OS'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'C' + str(aix_line + 3)
+    ws1[cell] = 'Physical/VM'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'D' + str(aix_line + 3)
+    ws1[cell] = 'IP'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'E' + str(aix_line + 3)
+    ws1[cell] = 'Mem(MB)'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'F' + str(aix_line + 3)
+    ws1[cell] = 'Database Name'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'G' + str(aix_line + 3)
+    ws1[cell] = 'Storage'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    cell = 'H' + str(aix_line + 3)
+    ws1[cell] = 'CPU Cores'
+    ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+
+    #ws2['A1'] = 'Host Name'
+    #ws2['B1'] = 'OS'
+    #ws2['C1'] = 'Physical/VM'
+    #ws2['D1'] = 'IP'
+    #ws2['E1'] = 'Mem(MB)'
+    #ws2['F1'] = 'Database Name'
+    #ws2['G1'] = 'Storage'
+    #ws2['H1'] = 'CPU Cores'
 
     #need to put the timestamp in the filename
     now = timezone.now()
@@ -230,6 +278,8 @@ def get_server_data():
     c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
+    command = 'echo "Unix Configuration Report" | mutt -a "' + filename + '" -s "Unix Configuration Report" -- boomer@wellcare.com'
+    os.system(command)
 
 
 
