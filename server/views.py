@@ -13,13 +13,11 @@ from django.template import RequestContext, Context
 import json
 from django.http import JsonResponse
      
-@login_required
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
-@login_required
 def stacks(request):
     red_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
     yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
