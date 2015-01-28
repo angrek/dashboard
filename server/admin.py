@@ -5,6 +5,7 @@ from server.models import AIXServerResource
 from server.models import LinuxServerResource
 from server.models import Power7InventoryResource
 from server.models import Relationships, AIXLog
+from server.models import HistoricalAIXData
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
@@ -115,6 +116,21 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
     resource_class = AIXServerResource
    #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
    #there is a copy in the scripts directory so it gets saved into git as well
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
+
+class HistoricalAIXDataAdmin(ImportExportModelAdmin):
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
+    list_filter = ['date', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
+    search_fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
+    fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'ip_address', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
+    resource_class = AIXServerResource
+    #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
+    #there is a copy in the scripts directory so it gets saved into git as well
+
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
@@ -247,6 +263,7 @@ class AIXMksysbAdmin(admin.ModelAdmin):
 
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
+admin.site.register(HistoricalAIXData, HistoricalAIXDataAdmin)
 admin.site.register(DecommissionedAIXServer, DecommissionedAIXServerAdmin)
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(LinuxApplications, LinuxApplicationsAdmin)

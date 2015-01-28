@@ -91,6 +91,40 @@ class AIXServer(models.Model):
     def __unicode__(self):
         return '%s' % (self.name)
 
+class HistoricalAIXData(models.Model):
+    date = models.DateField("Date", default=datetime.date.today)
+    name = models.ForeignKey(AIXServer)
+    frame = models.ForeignKey(Frame)   
+    active = models.NullBooleanField(default=True, blank=True)
+    #exceptions will be servers we don't want to gather data on - manually set
+    exception = models.NullBooleanField(default=False, blank=True)
+    decommissioned = models.NullBooleanField(default=False, blank=True)
+    #need to see what color 'stack' they are in (sts, mts, fts, etc)
+    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
+    zone = models.ForeignKey(Zone)
+    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
+    aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
+    cent_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
+    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
+    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    java = models.CharField(max_length=20, blank=True, null=True, default='None')
+    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+    netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
+    emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
+
+    class Meta:
+        verbose_name = "Historical AIX Data"
+        verbose_name_plural = "Historical AIX Data"
+        ordering = ["name"]
+
+
+    def __unicode__(self):
+        return '%s' % (self.name)
+
+
+
 #This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
 class Relationships(models.Model):
     parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
