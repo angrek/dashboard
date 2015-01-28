@@ -123,10 +123,10 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
 class HistoricalAIXDataAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
-    list_filter = ['date', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
-    search_fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
-    fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'ip_address', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar']
+    list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym']
+    list_filter = ['date', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym']
+    search_fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym']
+    fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'ip_address', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym']
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well

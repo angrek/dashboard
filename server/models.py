@@ -100,6 +100,7 @@ class HistoricalAIXData(models.Model):
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
     #need to see what color 'stack' they are in (sts, mts, fts, etc)
+    created = models.DateTimeField(blank=True, null=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
     zone = models.ForeignKey(Zone)
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -113,11 +114,13 @@ class HistoricalAIXData(models.Model):
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
+    emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
 
     class Meta:
         verbose_name = "Historical AIX Data"
         verbose_name_plural = "Historical AIX Data"
         ordering = ["name"]
+        unique_together = ("date", "name")
 
 
     def __unicode__(self):
