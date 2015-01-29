@@ -211,7 +211,7 @@ def update_server():
                     transport.connect(username = username , password=password)
                 except:
                     #FIXME if the try isn't working, this isn't getting printed out
-                    "Print Connection is timing out for some reason............"
+                    Print "Connection is timing out for some reason............"
                     continue
 
                 sftp = paramiko.SFTPClient.from_transport(transport)

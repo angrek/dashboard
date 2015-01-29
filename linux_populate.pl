@@ -150,13 +150,13 @@ foreach my $host (@$host_views) {
 
             if ($ip_address == ''){
                 $ipaddress = "0.0.0.0";
-                $exception = 1;
-            }else{
-                $exception = 0;
             }
 
+            $exception = 1;
 
 
+            #NOTE: We do not update active or exception because we don't look at that here or perform the tests.
+            #Update the other fields and let those 2 ride from the previous day/test and let the other scripts test those.
 
             $dbh = DBI->connect('DBI:mysql:dashboard', 'wrehfiel', '') || die "Could not connect to database: $DBI::errstr";
             $rv=$dbh->do("lock table server_linuxserver write");
@@ -172,7 +172,7 @@ foreach my $host (@$host_views) {
                 zone_id,
                 memory,
                 cpu)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", active=$active, exception=$exception, modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+                VALUES (?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
             $sth->execute($server_name, $cluster_name, "$adapter", $active, $exception, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
