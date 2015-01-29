@@ -21,14 +21,12 @@ django.setup()
 
 def update_server():
     server_list = AIXServer.objects.all()
-    #server_list = AIXServer.objects.filter(name='dltsodsdb')
-    #server_list = AIXServer.objects.filter(name__contains='vio')
 
     for server in server_list:
-        #date = datetime.date.today()
-        date = datetime.date.today() - datetime.timedelta(days=1)
+        date = datetime.date.today()
+        #this was only here for testing but leaving it for some reason...?
+        #date = datetime.date.today() - datetime.timedelta(days=1)
         
-        #print date
         #We only want one entry per day here
         HistoricalAIXData.objects.get_or_create(date=date, name=server, frame=server.frame, active=server.active, exception=server.exception, decommissioned=server.decommissioned, created=server.created, ip_address=server.ip_address, zone=server.zone, os_level=server.os_level, centrify=server.centrify, aix_ssh=server.aix_ssh, cent_ssh=server.cent_ssh, xcelys=server.xcelys, bash=server.bash, ssl=server.ssl, java=server.java, imperva=server.imperva, netbackup=server.netbackup, emc_clar=server.emc_clar, emc_sym=server.emc_sym)
 

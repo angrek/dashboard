@@ -119,7 +119,7 @@ class HistoricalAIXData(models.Model):
     class Meta:
         verbose_name = "Historical AIX Data"
         verbose_name_plural = "Historical AIX Data"
-        ordering = ["name"]
+        ordering = ["date"]
         unique_together = ("date", "name")
 
 
