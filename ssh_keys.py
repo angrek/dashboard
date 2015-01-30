@@ -192,8 +192,10 @@ def update_server():
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
                 client.connect(str(server), username=username, password=password)
                 command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
+                print command
                 sdtin, stdout, stderr = client.exec_command(command)
-                if  stdout.readlines()[0].rstrip():
+                #print stdout.readlines()[0].rstrip()
+                if  stdout.readlines()[0].rstrip() == 1:
                     print '-Authorized keys file exists'
                     continue
                 else:
@@ -211,7 +213,7 @@ def update_server():
                     transport.connect(username = username , password=password)
                 except:
                     #FIXME if the try isn't working, this isn't getting printed out
-                    Print "Connection is timing out for some reason............"
+                    print "Connection is timing out for some reason............"
                     continue
 
                 sftp = paramiko.SFTPClient.from_transport(transport)
