@@ -82,6 +82,13 @@ class AIXServer(models.Model):
     def get_history(self):
         return LogEntry.objects.filter(object_repr=self.name)
 
+    #this is to put an image link in the admin to each server's ganglia page
+    def image_tag(self):
+        frame_short_name = str(self.frame)[:3] + '-' + str(self.frame)[-5:]
+        link = '<a href="http://p795agmon/?r=hour&cs=&ce=&m=cpu_used_report&s=by+name&c=' + frame_short_name + '&h=' + self.name + '.wellcare.com&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4"><img src="http://p1rhrep/g2.jpg" title="Ganglia Page"></a>'
+        return u'%s' % link
+    image_tag.short_description = 'G'
+    image_tag.allow_tags = True
 
     class Meta:
         verbose_name = "AIX Server"
