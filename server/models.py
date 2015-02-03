@@ -63,6 +63,7 @@ class AIXServer(models.Model):
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=10, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    powerha = models.CharField(max_length=20, blank=True, null=True, default='None')
     centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
     aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
     cent_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
@@ -153,6 +154,12 @@ class DecommissionedAIXServer(AIXServer):
         proxy=True
         verbose_name = "AIX Decommissioned Server"
         verbose_name_plural = "AIX Decommissioned Servers"
+
+class AIXPowerHA(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX PowerHA Systems"
+        verbose_name_plural = "AIX PowerHA Systems"
 
 #Meta model for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb
+from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import AIXServerResource
 from server.models import LinuxServerResource
@@ -101,6 +101,37 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
+
+#class AIXApplicationsAdmin(admin.ModelAdmin):
+class AIXPowerHAAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0).exclude(powerha="None")
+    #This overrides the cell div and sets it to a color based on what stack a server is in
+    def stack_color(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+        else:
+            return obj.stack
+    stack_color.allow_tags = True
+
+    save_on_top = True
+    list_display = ['name', 'owner', 'stack_color', 'active','exception', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_filter = ['active', 'exception', 'owner', 'stack', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup']
+    resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
+
+
 
 #class AIXServerAdmin(admin.ModelAdmin):
 class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
@@ -278,3 +309,4 @@ admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
 admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
+admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
