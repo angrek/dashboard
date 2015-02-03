@@ -15,7 +15,7 @@
 #
 #########################################################################
 
-import os
+import os, sys
 from ssh import SSHClient
 #import paramiko
 import utilities
@@ -44,26 +44,40 @@ def populate():
     #do I need a ping test for p1hmc?? lol
     client = SSHClient()
     client.load_system_host_keys()
-    
+
     try:
-        client.connect('p1hmc', username="wrehfiel", password=password)
+        client.connect('phmc01', username="wrehfiel", password=password)
+        hmc = 'phmc01'
     except:
-        print 'SSH to p1hmc has failed!'
+        print 'SSH to phmc01 has failed!'
         print '*************HAVE YOU CHANGED YOUR PASSWORD RECENTLY??***********'
+        print 'Trying phmc02........'
+        try:
+            client.connect('phmc02', username="wrehfiel", password=password)
+            hmc = 'phmc02'
+        except:
+            print 'SSH to phmc02 has failed!'
+            print '*************HAVE YOU CHANGED YOUR PASSWORD RECENTLY??***********'
+            print "Cannot contact either HMC, ABORTING."
+            sys.exit()
+    
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
     #frames = stdout.readlines()[0]
     frames = stdout.readlines()
-
+    print "Frames:"
+    print frames
     #frames = ['795A-9119-FHB-SN023D965']
-    #frames = ['795B-9119-FHB-SN02764FR']
+    frames = ['824A-8286-42A-SN21950BV']
 
     for frame in frames:
-        #the output is throwing newlines at the end of the names for some reason
-        #hence the use of rstrip below
+
+        #rstrip() worked on the old HMC's but not the new ones??
+        frame = frame.splitlines()
+        frame = ''.join(frame)
 
         #If the frame doesn't exist, create it
-        Frame.objects.get_or_create(name=frame.rstrip())
-        frame = Frame.objects.get(name=frame.rstrip())
+        Frame.objects.get_or_create(name=frame)
+        frame = Frame.objects.get(name=frame)
 
         #load ssh keys
         #client = paramiko.SSHClient()
@@ -73,7 +87,7 @@ def populate():
 
         #we've already established a connection, but should put in error checking
         #FIXME needs error checking
-        client.connect('p1hmc', username="wrehfiel", password=password)
+        client.connect(hmc , username="wrehfiel", password=password)
 
         #for each frame, let's grab the LPARS now
         command = 'lssyscfg -m ' + str(frame) + ' -r lpar -F name'
@@ -86,7 +100,7 @@ def populate():
 
         for server_name in server_list:
             #FIXME server is being stupid and just not responding and it's causing an ssh auth error somehow renaming the key, needs error checking!
-            print server_name
+            server_name = server_name.rstrip()
             update = 0
             counter += 1
             #for troubleshooting - please leave
@@ -96,7 +110,7 @@ def populate():
             #Before we ping and do our other tests we're going to get the ip address from
             #nslookup. If this fails it will simply return a blank.
              
-            ns_command = 'nslookup ' + server_name.rstrip() + ' | grep Address | grep -v "#" '
+            ns_command = 'nslookup ' + server_name + ' | grep Address | grep -v "#" '
             try:
                 ip_address = check_output(ns_command, shell=True)
                 ip_address = ip_address[9:]
@@ -107,10 +121,36 @@ def populate():
 
 
             try:
-                server = AIXServer.objects.get(name=server_name.rstrip())
+                print "==============="
+                print server_name
+                server = AIXServer.objects.get(name=server_name)
+                print '1'
+                print server.frame
+                print frame
+                print "frame id"
+                print frame.id
                 if server.frame != frame:
-                    AIXserver.objects.filter(name=server_name.rstrip()).update(frame=frame)
+                    #AIXserver.objects.filter(name=server).update(frame=frame.id)
+                    print '2'
+                    server.frame = frame
+                    print '2.5'
+                    server.save()
+                    #server.update(frame=frame.id)
+                    print '3'
+                    test = "test"
+                    print '4'
+                    change_message = "Changed frame for " + str(server_name) + " from " + str(server.frame) + " to " + str(frame.name)
+                    print '4'
+                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message=change_message)
+                    print '5'
             except:
+                print "---------"
+                print frame.name
+                print len(frame.name)
+                print len(str(frame))
+                print server.frame
+                print len(str(server.frame))
+                print len(str(server.frame))
                 print server_name.rstrip()
                 print len(server_name.rstrip())
                 #the created object is not the same, so we create it and then get the instance
