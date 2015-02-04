@@ -35,7 +35,11 @@ def update_server():
                 stdin, stdout, stderr = client.exec_command(command)
 
                 #need rstrip() because there are extra characters at the end
-                os = stdout.readlines()[0].rstrip()
+                #FIXME - dinfhdp09 doesn't have lsb_release installed?????
+                try:
+                    os = stdout.readlines()[0].rstrip()
+                except:
+                    continue
                 os = re.sub('Distributor ID:', '', os)
                 os = re.sub('\s*', '', os)
 
