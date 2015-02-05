@@ -44,7 +44,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(decommissioned=0)
 
     #This overrides the cell div and sets it to a color based on what stack a server is in
-    def stack_color(self, obj):
+    #Note: var was 'stack_color' which displayed as 'Stack color' which was overly wide
+    #in the list display. The underscore converts to a space, but I couldn't use just 'stack'
+    #without it interferring with the stack object, so I used the _ at the end since it
+    #just translates to a space and is not visible in the list_display header.
+    def stack_(self, obj):
         if str(obj.stack) == 'Orange':
             return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
         elif str(obj.stack) == 'Green':
@@ -55,11 +59,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
             return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
         else:
             return obj.stack
-    stack_color.allow_tags = True
+    stack_.allow_tags = True
 
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_color', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym']
     list_filter = ['owner', 'frame', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__id', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
@@ -78,7 +82,8 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     #This overrides the cell div and sets it to a color based on what stack a server is in
-    def stack_color(self, obj):
+    #See notes in AIXServerAdmin for stack_ variable explanation.
+    def stack_(self, obj):
         if str(obj.stack) == 'Orange':
             return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
         elif str(obj.stack) == 'Green':
@@ -89,10 +94,10 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
             return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
         else:
             return obj.stack
-    stack_color.allow_tags = True
+    stack_.allow_tags = True
 
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_color', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     list_filter = ['active', 'exception', 'owner', 'stack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified', 'image_tag']
