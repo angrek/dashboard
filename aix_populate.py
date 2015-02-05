@@ -17,7 +17,7 @@
 
 import os, sys
 from ssh import SSHClient
-#import paramiko
+import paramiko
 import utilities
 from django.utils import timezone
 from subprocess import call, check_output
@@ -42,8 +42,10 @@ def populate():
     password = str(f.read().rstrip())
     f.close()
     #do I need a ping test for p1hmc?? lol
-    client = SSHClient()
+    #client = SSHClient()
+    client = paramiko.SSHClient()
     client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     try:
         client.connect('phmc01', username="wrehfiel", password=password)
@@ -67,7 +69,7 @@ def populate():
     print "Frames:"
     print frames
     #frames = ['795A-9119-FHB-SN023D965']
-    frames = ['824A-8286-42A-SN21950BV']
+    #frames = ['824A-8286-42A-SN21950BV']
 
     for frame in frames:
 
