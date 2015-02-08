@@ -85,6 +85,25 @@ def pie_3d(request, string):
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
 
+def stacked_column(request, string):
+    request.GET.get('string')
+    data = {}
+    total_server_count = AIXServer.objects.filter(active=True, exception=False, decommissioned=False).count()
+     
+    name = "Test Name"
+    title = "Number Of AIX Servers"
+    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title})
+
+def line_basic(request, string):
+    request.GET.get('string')
+    data = {}
+    #Not filtering exceptions as they are active servers and we need a total count
+    total_server_count = AIXServer.objects.filter(active=True, decommissioned=False).count()
+     
+    name = "Test Name"
+    title = "Number Of Active AIX Servers"
+    return render(request, 'server/line_basic.htm', {'data': data, 'name': name, 'title': title})
+
 def detail(request, aixserver_name):
     #try:
     #    server = AIXServer.objects.get(pk=aixserver_name)
