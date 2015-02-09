@@ -1,3 +1,5 @@
+# UNIX Dashboard urls.py
+
 from django.conf.urls import patterns, url
 
 from server import views

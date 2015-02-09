@@ -1,3 +1,5 @@
+#UNIX Dashboard views.py
+
 from __future__ import division #But don't tell anyone, for the sake of the world.
 from django.http import Http404
 from django.shortcuts import render
