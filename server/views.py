@@ -6,14 +6,13 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponse
-from server.models import AIXServer, LinuxServer, Relationships
+from server.models import AIXServer, LinuxServer, Relationships, HistoricalAIXData
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
 
-import json
-from django.http import JsonResponse
+import datetime
      
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
@@ -96,15 +95,61 @@ def stacked_column(request, string):
     title = "Number Of AIX Servers"
     return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title})
 
-def line_basic(request, string):
+def line_basic(request, string, string2):
     request.GET.get('string')
+    request.GET.get('string2')
     data = {}
+    #rather than /aix/week we could change this and make it something like /total_servers/all /total_servers/linux
+    #we could branch this out as well like /aix_versions/linux
+
     #Not filtering exceptions as they are active servers and we need a total count
-    total_server_count = AIXServer.objects.filter(active=True, decommissioned=False).count()
-     
+    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date='2015-02-09').count()
     name = "Test Name"
-    title = "Number Of Active AIX Servers"
-    return render(request, 'server/line_basic.htm', {'data': data, 'name': name, 'title': title})
+    title = "Number Of Active AIX Servers - Last 12 weeks"
+    months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
+
+    #for now, we're just going to replace the data as I figure out what I'm doing with this view
+    if string2 == 'week':
+        #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
+        today = datetime.date.today().strftime('%Y-%m-%d')
+        #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
+        total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+
+        
+        months = []
+        number_of_servers = []
+        number_of_decoms = []
+        number_of_prod = []
+        number_of_non_prod = []
+        interval = 1
+        for x in range (0, 12):
+            ls = datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))
+            ls = ls.strftime('%Y-%m-%d')
+            months.append(ls)
+            interval = interval + 7
+
+            count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count()
+            number_of_servers.append(count)
+
+            decom_count = HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count()
+            number_of_decoms.append(decom_count)
+
+            prod_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count()
+            number_of_prod.append(prod_count)
+
+            non_prod_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count()
+            number_of_non_prod.append(non_prod_count)
+
+
+        months.reverse()
+        number_of_servers.reverse()
+        number_of_decoms.reverse() 
+        number_of_prod.reverse()
+        number_of_non_prod.reverse()
+
+    return render(request, 'server/line_basic.htm', {'data': data, 'months': months, 'number_of_servers': number_of_servers, 'number_of_decoms': number_of_decoms, 'number_of_prod': number_of_prod, 'number_of_non_prod': number_of_non_prod, 'name': name, 'title': title, 'total_server_count': total_server_count})
+
+
 
 def detail(request, aixserver_name):
     #try:
