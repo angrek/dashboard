@@ -90,52 +90,54 @@ def stacked_column(request, string, string2):
     request.GET.get('string')
     request.GET.get('string2')
     data = {}
+
     last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
 
-    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).values_list(string , flat=True).distinct()
+    #FIXME This is working perfectly, we now need to get it for all of the dates.
+    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).exclude(name__name__contains='vio').exclude(os_level='None').values_list(string , flat=True).distinct()
     version_list = list(set(version_list))
-    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
 
-    #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
-    for version in version_list:
-        if string == 'os_level':
-            num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=last_sunday).count()
-            title = "Historical distribution of OS Level on " + str(total_server_count) + " AIX servers by " + string2
-    #for now, we're just going to replace the data as I figure out what I'm doing with this view
+    #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
+
     if string2 == 'week':
-        #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
         today = datetime.date.today().strftime('%Y-%m-%d')
-        #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
-        total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+        #I don't think I really need the total server count as the graph is dynamic
+        #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
 
-        
+        #time_interval is the list of dates to gather data from, whether by day, week, month 
         time_interval = []
-        number_of_servers = []
-        number_of_decoms = []
-        number_of_prod = []
-        number_of_non_prod = []
+        #number_of_servers = []
+
+        #interval is the offset for timedelta to get last sunday every week, every month or whatever
         interval = 1
+
+        #Populate time_interval with the dates
         for x in range (0, 12):
             last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
             time_interval.append(last_sunday)
             interval = interval + 7
 
-            number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
-            number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=last_sunday).count())
-            number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=last_sunday).count())
-            number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=last_sunday).count())
+            #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
+
+        #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
+        for version in version_list:
+            if string == 'os_level':
+                num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=last_sunday).count()
+                title = "Historical distribution of OS Level on AIX servers by " + string2
 
         time_interval.reverse()
-        number_of_servers.reverse()
-        number_of_decoms.reverse() 
-        number_of_prod.reverse()
-        number_of_non_prod.reverse()
+        #number_of_servers.reverse()
+
+        
     name = "Test Name"
     y_axis_title = 'Number of Servers'
-    percentage = "{0:.1f}".format(num/total_server_count * 100)
-    new_list = [str(version), percentage]
+    #percentage = "{0:.1f}".format(num/total_server_count * 100)
+    #new_list = [str(version), percentage]
+    percentage = 0
     data[version] = percentage
-    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'time_interval':time_interval})
+    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval})
+
+
 
 def line_basic(request, string, string2):
     request.GET.get('string')

@@ -18,8 +18,8 @@ $(function () {
             text: '{{ title }}'
         },
         xAxis: {
-            categories:[ {% for month in months %}
-                        '{{ month }}',
+            categories:[ {% for interval in time_interval %}
+                        '{{ interval }}',
                         {% endfor %} ]
         },
         yAxis: {
@@ -70,7 +70,7 @@ $(function () {
             data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
         }, {
             name: '2',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
+            data: [5, 3, 4, 7, 2, ]
         }, {
             name: '3',
             data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
@@ -94,6 +94,8 @@ $(function () {
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-    {{ months }}
+    {{ time_interval }}
+    <br><br>
+    {{ version_list }}
 	</body>
 </html>
