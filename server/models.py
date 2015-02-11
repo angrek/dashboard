@@ -233,11 +233,9 @@ class Power7Inventory(models.Model):
     lpar_id = models.IntegerField(blank=True, null=True)
     frame = models.ForeignKey(Frame, blank=True, null=True)   
     active = models.NullBooleanField(default=True, blank=True)
-    #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
-    decommissioned = models.NullBooleanField(default=False, blank=True)
-    #need to see what color 'stack' they are in (sts, mts, fts, etc)
-    modified = models.DateTimeField(blank=True, null=True)
+    decommissioned = models.NullBooleanField(verbose_name='Decom', default=False, blank=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     curr_shared_proc_pool_id = models.IntegerField(max_length=4, blank=True, null=True)
     curr_shared_proc_pool_name = models.CharField(max_length=20, blank=True, null=True)
     curr_proc_mode = models.CharField(max_length=20, blank=True, null=True)
@@ -286,13 +284,15 @@ class Power7Inventory(models.Model):
     mem_mode = models.CharField(max_length=20, blank=True, null=True)
     desired_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
     curr_hardware_mem_encryption = models.IntegerField(max_length=10, blank=True, null=True)
+    curr_hardware_mem_expansion = models.IntegerField(max_length=10, blank=True, null=True)
+    desired_hardware_mem_expansion = models.IntegerField(max_length=10, blank=True, null=True)
     curr_hpt_ratio = models.CharField(max_length=10, blank=True, null=True)
     curr_bsr_arrays = models.IntegerField(max_length=10, blank=True, null=True)
 
 
     class Meta:
-        verbose_name = "Power7 Inventory"
-        verbose_name_plural = "Power7 Inventory"
+        verbose_name = "AIX Power Inventory"
+        verbose_name_plural = "AIX Power Inventory"
 
     def __unicode__(self):
         return unicode(self.name)

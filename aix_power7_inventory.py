@@ -14,7 +14,7 @@
 #
 #########################################################################
 
-import os
+import os, sys
 from ssh import SSHClient
 from django.utils import timezone
 from django.contrib.admin.models import LogEntry
@@ -35,15 +35,14 @@ def populate():
     #need rstrip to strip off the newline at the end
     password = str(f.read().rstrip())
     f.close()
-    #do I need a ping test for p1hmc?? lol
     client = SSHClient()
     client.load_system_host_keys()
     
-    #we don't have ssh keys to p1hmc so this is going to prompt us for a password for now
     try:
-        client.connect('p1hmc', username="wrehfiel", password=password)
+        client.connect('phmc01', username="wrehfiel", password=password)
     except:
-        print 'SSH to p1hmc has failed!'
+        print 'SSH to phmc01 has failed!'
+        sys.exit()
 
     #Grab all of the frames on the HMC
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
@@ -59,7 +58,7 @@ def populate():
 
         #we've already established a connect6ion, but should put in error checking
         #FIXME
-        client.connect('p1hmc', username="wrehfiel", password=password)
+        client.connect('phmc01', username="wrehfiel", password=password)
 
         types = ['proc', 'mem']
 
@@ -94,7 +93,7 @@ def populate():
                 #we don't really need error checking here because it's whatever the HMC gave us and the previous scripts will have added them to the AIXServer database.
                 name = AIXServer.objects.get(name=server_name)
                 print name
-                Power7Inventory.objects.get_or_create(name=name)
+                Power7Inventory.objects.get_or_create(name=name, frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
                 for key, value in lpar_array.iteritems():
                     print key, "=>",value
                     print "attempting to update value...."
