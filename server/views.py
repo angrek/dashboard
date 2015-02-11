@@ -110,8 +110,11 @@ def line_basic(request, string, string2):
     #we could branch this out as well like /aix_versions/linux
 
     #Not filtering exceptions as they are active servers and we need a total count
-    #FIXME SHIT - DATE IS HARDOCDED!!!
-    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date='2015-02-09').count()
+    #we need the total_server_count from last sunday, which is representative of the day before, saturday, the end of last
+    #week when the chart starts. (starts...i.e. the first date on the chart on the right side)
+    ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
+    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count()
+
     name = "Test Name"
     title = "Number Of Active AIX Servers - Last 12 weeks"
 
@@ -130,8 +133,7 @@ def line_basic(request, string, string2):
         number_of_non_prod = []
         interval = 1
         for x in range (0, 12):
-            ls = datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))
-            ls = ls.strftime('%Y-%m-%d')
+            ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
             months.append(ls)
             interval = interval + 7
 
