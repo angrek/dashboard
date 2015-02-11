@@ -89,10 +89,17 @@ def pie_3d(request, string):
 def stacked_column(request, string):
     request.GET.get('string')
     data = {}
-    total_server_count = AIXServer.objects.filter(active=True, exception=False, decommissioned=False).count()
-     
+    version_list = AIXServer.objects.filter(active=True, decommissioned=False).values_list(string , flat=True).distinct()
+    version_list = list(set(version_list))
+    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False).count()
+    for version in version_list:
+        if string == 'os_level':
+            num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version).count()
+            title = "Historical distribution of OS Level on " + str(total_server_count) + " AIX servers"
     name = "Test Name"
-    title = "Number Of AIX Servers"
+    percentage = "{0:.1f}".format(num/total_server_count * 100)
+    new_list = [str(version), percentage]
+    data[version] = percentage
     return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title})
 
 def line_basic(request, string, string2):
@@ -103,10 +110,10 @@ def line_basic(request, string, string2):
     #we could branch this out as well like /aix_versions/linux
 
     #Not filtering exceptions as they are active servers and we need a total count
+    #FIXME SHIT - DATE IS HARDOCDED!!!
     total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date='2015-02-09').count()
     name = "Test Name"
     title = "Number Of Active AIX Servers - Last 12 weeks"
-    months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 
     #for now, we're just going to replace the data as I figure out what I'm doing with this view
     if string2 == 'week':
@@ -128,18 +135,10 @@ def line_basic(request, string, string2):
             months.append(ls)
             interval = interval + 7
 
-            count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count()
-            number_of_servers.append(count)
-
-            decom_count = HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count()
-            number_of_decoms.append(decom_count)
-
-            prod_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count()
-            number_of_prod.append(prod_count)
-
-            non_prod_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count()
-            number_of_non_prod.append(non_prod_count)
-
+            number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
+            number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
+            number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
+            number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
 
         months.reverse()
         number_of_servers.reverse()
