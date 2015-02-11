@@ -231,6 +231,13 @@ class Storage(models.Model):
 class Power7Inventory(models.Model):
     name = models.ForeignKey(AIXServer)
     lpar_id = models.IntegerField(blank=True, null=True)
+    frame = models.ForeignKey(Frame, blank=True, null=True)   
+    active = models.NullBooleanField(default=True, blank=True)
+    #exceptions will be servers we don't want to gather data on - manually set
+    exception = models.NullBooleanField(default=False, blank=True)
+    decommissioned = models.NullBooleanField(default=False, blank=True)
+    #need to see what color 'stack' they are in (sts, mts, fts, etc)
+    modified = models.DateTimeField(blank=True, null=True)
     curr_shared_proc_pool_id = models.IntegerField(max_length=4, blank=True, null=True)
     curr_shared_proc_pool_name = models.CharField(max_length=20, blank=True, null=True)
     curr_proc_mode = models.CharField(max_length=20, blank=True, null=True)
