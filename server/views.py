@@ -112,8 +112,8 @@ def line_basic(request, string, string2):
     #Not filtering exceptions as they are active servers and we need a total count
     #we need the total_server_count from last sunday, which is representative of the day before, saturday, the end of last
     #week when the chart starts. (starts...i.e. the first date on the chart on the right side)
-    ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
-    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count()
+    last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
+    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
 
     name = "Test Name"
     title = "Number Of Active AIX Servers - Last 12 weeks"
