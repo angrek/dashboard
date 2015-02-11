@@ -86,21 +86,56 @@ def pie_3d(request, string):
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
 
-def stacked_column(request, string):
+def stacked_column(request, string, string2):
     request.GET.get('string')
+    request.GET.get('string2')
     data = {}
-    version_list = AIXServer.objects.filter(active=True, decommissioned=False).values_list(string , flat=True).distinct()
+    last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
+
+    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).values_list(string , flat=True).distinct()
     version_list = list(set(version_list))
-    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False).count()
+    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
+
+    #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
     for version in version_list:
         if string == 'os_level':
-            num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version).count()
-            title = "Historical distribution of OS Level on " + str(total_server_count) + " AIX servers"
+            num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=last_sunday).count()
+            title = "Historical distribution of OS Level on " + str(total_server_count) + " AIX servers by " + string2
+    #for now, we're just going to replace the data as I figure out what I'm doing with this view
+    if string2 == 'week':
+        #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
+        today = datetime.date.today().strftime('%Y-%m-%d')
+        #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
+        total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+
+        
+        time_interval = []
+        number_of_servers = []
+        number_of_decoms = []
+        number_of_prod = []
+        number_of_non_prod = []
+        interval = 1
+        for x in range (0, 12):
+            last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+            time_interval.append(last_sunday)
+            interval = interval + 7
+
+            number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
+            number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=last_sunday).count())
+            number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=last_sunday).count())
+            number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=last_sunday).count())
+
+        time_interval.reverse()
+        number_of_servers.reverse()
+        number_of_decoms.reverse() 
+        number_of_prod.reverse()
+        number_of_non_prod.reverse()
     name = "Test Name"
+    y_axis_title = 'Number of Servers'
     percentage = "{0:.1f}".format(num/total_server_count * 100)
     new_list = [str(version), percentage]
     data[version] = percentage
-    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title})
+    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'time_interval':time_interval})
 
 def line_basic(request, string, string2):
     request.GET.get('string')
