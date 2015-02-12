@@ -23,8 +23,8 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.all()
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='p1ecmapp14-v6')
+    #server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(name='p1anm')
 
     for server in server_list:
             
@@ -33,10 +33,12 @@ def update_server():
             client = SSHClient()
             if utilities.ssh(server, client):
 
-                stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq')
+                stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq | tail -n 1')
                 #this is going to pull 4 different parts of ssl, we just need the base
                 rows = stdout.readlines()
-                ssl = str(rows[0])
+                ssl = str(rows[0]).rstrip().rstrip()
+                print ssl
+                #
 
                 #cut off the beginning and end, not really needed and saves space on the spreadsheet view.
                 ssl = re.sub('openssl-', '', ssl)

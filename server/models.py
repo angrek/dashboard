@@ -12,6 +12,7 @@ class UserProfile(models.Model):
 
     #The addition attributes to include
     website = models.URLField(blank=True)
+    test = models.CharField(max_length=25, blank=True, null=True)
 
     #Override the __unicode__() modthod to return what we want
     def __unicode__(self):
@@ -68,10 +69,10 @@ class AIXServer(models.Model):
     aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
     cent_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
     xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
-    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
-    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    bash = models.CharField(max_length=35, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=45, blank=True, null=True, default='None')
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
-    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+    imperva = models.CharField(max_length=25, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -117,7 +118,7 @@ class HistoricalAIXData(models.Model):
     cent_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
     xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
     bash = models.CharField(max_length=25, blank=True, null=True, default='None')
-    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
@@ -337,7 +338,7 @@ class LinuxServer(models.Model):
     centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
     xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
     bash = models.CharField(max_length=25, blank=True, null=True, default='None')
-    ssl = models.CharField(max_length=20, blank=True, null=True, default='None')
+    ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')

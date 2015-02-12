@@ -91,16 +91,11 @@ def stacked_column(request, string, string2):
     request.GET.get('string2')
     data = {}
 
-    last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
 
-    #FIXME This is working perfectly, we now need to get it for all of the dates.
-    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).exclude(name__name__contains='vio').exclude(os_level='None').values_list(string , flat=True).distinct()
-    version_list = list(set(version_list))
-
+    title = "Historical distribution of OS Level on AIX servers by " + string2
     #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
-
     if string2 == 'week':
-        today = datetime.date.today().strftime('%Y-%m-%d')
+        #today = datetime.date.today().strftime('%Y-%m-%d')
         #I don't think I really need the total server count as the graph is dynamic
         #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
 
@@ -111,19 +106,38 @@ def stacked_column(request, string, string2):
         #interval is the offset for timedelta to get last sunday every week, every month or whatever
         interval = 1
 
-        #Populate time_interval with the dates
+        #Here we're going to get all of the versions of whatever software exist in a given date range.
+        #FIXME last_sunday should be changed so we can pick specific weeks to view rather than starting from just last week
+        last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
+        first_date_in_range = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 78))).strftime('%Y-%m-%d')
+        version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date_in_range, last_sunday]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(string , flat=True).distinct()
+        version_list = list(set(version_list))
+
+
+        #Populate time_interval with the dates for the labels and queries
         for x in range (0, 12):
             last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
             time_interval.append(last_sunday)
             interval = interval + 7
 
-            #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
 
+        #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
         #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
+        version_counter = 0
+        date_counter = 0
+        my_array = [[], [], [], [], [], [], [], [], [], [], [], [], [], []]
+        #myarray = [[], [], [], [], [], []. [], [], [], [], [], [], [], []]
         for version in version_list:
-            if string == 'os_level':
-                num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=last_sunday).count()
-                title = "Historical distribution of OS Level on AIX servers by " + string2
+            #FIXME - this os_level check needs to go somewhere else, but it's fine here for testing I guess, but it's needed more above
+            #if string == 'os_level':
+            for date in time_interval:
+                num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=date).count()
+                if version_counter == 0:
+                    my_array[version_counter][date_counter] = [num]
+                else:
+                    my_array[version_counter].append(num)
+                date_counter += 1
+            version_counter += 1
 
         time_interval.reverse()
         #number_of_servers.reverse()
@@ -135,7 +149,7 @@ def stacked_column(request, string, string2):
     #new_list = [str(version), percentage]
     percentage = 0
     data[version] = percentage
-    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval})
+    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
 
 
 
