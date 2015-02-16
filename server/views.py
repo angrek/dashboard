@@ -86,69 +86,85 @@ def pie_3d(request, string):
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
 
-def stacked_column(request, string, string2):
-    request.GET.get('string')
-    request.GET.get('string2')
+def stacked_column(request, service, period, time_range):
+    request.GET.get('service')
+    request.GET.get('period')
+    request.GET.get('time_range')
     data = {}
 
 
-    title = "Historical distribution of OS Level on AIX servers by " + string2
-    #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
-    if string2 == 'week':
-        #today = datetime.date.today().strftime('%Y-%m-%d')
-        #I don't think I really need the total server count as the graph is dynamic
-        #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+    title = "Historical distribution of OS Level on AIX servers by " + period
 
-        #time_interval is the list of dates to gather data from, whether by day, week, month 
-        time_interval = []
-        #number_of_servers = []
+    #today = datetime.date.today().strftime('%Y-%m-%d')
 
-        #interval is the offset for timedelta to get last sunday every week, every month or whatever
-        interval = 1
+    #time_interval is the list of dates to gather data from, whether by day, week, month 
+    time_interval = []
+    #number_of_servers = []
 
-        #Here we're going to get all of the versions of whatever software exist in a given date range.
-        #FIXME last_sunday should be changed so we can pick specific weeks to view rather than starting from just last week
-        last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
-        first_date_in_range = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 78))).strftime('%Y-%m-%d')
-        version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date_in_range, last_sunday]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(string , flat=True).distinct()
-        version_list = list(set(version_list))
+    #interval is the offset for timedelta to get last sunday every week, every month or whatever
+    interval = 1
+
+    #Here we're going to get all of the versions of whatever software exist in a given date range.
+    #last_date is the newest date of the range on the right of the graph
+    if period == 'week':
+        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        offset = (int(time_range) * 7) +1
+    else:
+        last_date = datetime.date.today().strftime('%Y-%m-%d')
+        offset = int(time_range) + 1
+
+    first_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + offset))).strftime('%Y-%m-%d')
+
+    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+    version_list = list(set(version_list))
 
 
-        #Populate time_interval with the dates for the labels and queries
-        for x in range (0, 12):
-            last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
-            time_interval.append(last_sunday)
+    #Populate time_interval with the dates for the labels and queries
+    for x in range (0, int(time_range)):
+        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        time_interval.append(last_date)
+        if period == 'week':
             interval = interval + 7
+        elif period == 'day':
+            interval = interval + 1
+        else:
+            interval = interval + 1
 
 
-        #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count())
-        #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
-        version_counter = 0
-        date_counter = 0
-        my_array = [[], [], [], [], [], [], [], [], [], [], [], [], [], []]
-        #myarray = [[], [], [], [], [], []. [], [], [], [], [], [], [], []]
-        for version in version_list:
-            #FIXME - this os_level check needs to go somewhere else, but it's fine here for testing I guess, but it's needed more above
-            #if string == 'os_level':
-            for date in time_interval:
-                num = HistoricalAIXData.objects.filter(active=True, exception=False, decommissioned=False, os_level=version, date=date).count()
-                if version_counter == 0:
-                    my_array[version_counter][date_counter] = [num]
-                else:
-                    my_array[version_counter].append(num)
-                date_counter += 1
-            version_counter += 1
+    #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_date).count())
+    #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
+    version_counter = 0
+    date_counter = 0
+    my_array = [[], [], [], [], [], [], [], [], [], [], [], [], [], []]
+    #myarray = [[], [], [], [], [], []. [], [], [], [], [], [], [], []]
+    #my_array = []
+    for version in version_list:
+        #FIXME - this os_level check needs to go somewhere else, but it's fine here for testing I guess, but it's needed more above
+        for date in time_interval:
+            num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, os_level=version, date=date).count()
+    #        num = 1
+            if date_counter == 0:
+                my_array[version_counter] = [num]
+    #            my_array[1][1] = [num]
+            else:
+                my_array[version_counter].append(num)
+            date_counter += 1
+        data[version] = my_array[version_counter]
+        version_counter += 1
+    time_interval.reverse()
 
-        time_interval.reverse()
-        #number_of_servers.reverse()
-
+    #remove empty sets
+    my_array = [x for x in my_array if x]
+    #reverse each list in the list of lists (of lists in lists....AHHH!)
+    for p in my_array:
+            p.reverse()
         
     name = "Test Name"
     y_axis_title = 'Number of Servers'
     #percentage = "{0:.1f}".format(num/total_server_count * 100)
     #new_list = [str(version), percentage]
     percentage = 0
-    data[version] = percentage
+    #data[version] = percentage
     return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
 
 

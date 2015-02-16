@@ -65,25 +65,14 @@ $(function () {
                 }
             }
         },
-        series: [{
-            name: '1',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
-        }, {
-            name: '2',
-            data: [5, 3, 4, 7, 2, ]
-        }, {
-            name: '3',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
-        }, {
-            name: '10',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
-        }, {
-            name: '11',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
-        }, {
-            name: '12',
-            data: [5, 3, 4, 7, 2, 3, 7, 12, 30, 5, 23, 33]
-        }]
+        series: [
+            {% for key,value in data.items %}
+            {
+            name: '{{ key }}',
+            data:  {{ value }}
+            },
+            {% endfor %}
+        ]
     });
 });
 		</script>
@@ -92,12 +81,7 @@ $(function () {
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com//modules/exporting.js"></script>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
 
-    {{ time_interval }}
-    <br><br>
-    {{ version_list }}
-    <br><br>
-    {{ my_array }}
 	</body>
 </html>
