@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
 
-import datetime
+import datetime, calendar
      
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
@@ -109,9 +109,17 @@ def stacked_column(request, service, period, time_range):
     if period == 'week':
         last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
         offset = (int(time_range) * 7) +1
-    else:
+    elif period == 'day':
         last_date = datetime.date.today().strftime('%Y-%m-%d')
         offset = int(time_range) + 1
+    elif period == 'month':
+        #ok, so month goes by end of month? for now until told differently, this month will go by todays date
+        last_date = datetime.date.today().strftime('%Y-%m-%d')
+        offset = (int(time_range) * 30) +1
+    else:
+        #Uh, 404?
+        sys.exit()
+        
 
     first_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + offset))).strftime('%Y-%m-%d')
 
@@ -120,14 +128,30 @@ def stacked_column(request, service, period, time_range):
 
 
     #Populate time_interval with the dates for the labels and queries
-    for x in range (0, int(time_range)):
+    for x in range (0, (int(time_range) + 1)):
         last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
         time_interval.append(last_date)
         if period == 'week':
             interval = interval + 7
         elif period == 'day':
             interval = interval + 1
+        elif period == 'month':
+            if x == 0:
+                #get the first day of the month, we're just adding today on the end of the graph here
+                interval = interval + (int(datetime.date.today().strftime('%d')) - 2)
+            else:
+                #this goes back and finds the first day of each of the last months in the time range and adjusts the year if it has to
+                #the graph for days or weeks doesn't have to do this because it's a set 1 and 7 interval whereas days of the month vary
+                my_year = int(datetime.date.today().strftime('%Y'))
+                my_month = int(datetime.date.today().strftime('%m'))
+                my_interval = x
+                if (my_month - x) < 1:
+                    my_year = my_year -1
+                    my_month = my_month + 12
+                next_month_back = calendar.monthrange(my_year, (my_month - x))[1]
+                interval = interval + next_month_back
         else:
+            #Not sure what to do here, 404? sys.exit?
             interval = interval + 1
 
 
