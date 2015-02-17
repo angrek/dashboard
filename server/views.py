@@ -93,7 +93,7 @@ def stacked_column(request, service, period, time_range):
     data = {}
 
 
-    title = "Historical distribution of OS Level on AIX servers by " + period
+    title = "Historical distribution of " + service + " on AIX servers by " + period
 
     #today = datetime.date.today().strftime('%Y-%m-%d')
 
@@ -123,12 +123,15 @@ def stacked_column(request, service, period, time_range):
 
     first_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + offset))).strftime('%Y-%m-%d')
 
-    version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+    if service == 'os_level':
+        version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+    else:
+        version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).values_list(service , flat=True).distinct()
     version_list = list(set(version_list))
 
 
     #Populate time_interval with the dates for the labels and queries
-    for x in range (0, (int(time_range) + 1)):
+    for x in range (0, (int(time_range))):
         last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
         time_interval.append(last_date)
         if period == 'week':
@@ -165,7 +168,25 @@ def stacked_column(request, service, period, time_range):
     for version in version_list:
         #FIXME - this os_level check needs to go somewhere else, but it's fine here for testing I guess, but it's needed more above
         for date in time_interval:
-            num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, os_level=version, date=date).count()
+            if service == 'os_level':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, os_level=version, date=date).count()
+            elif service == 'aix_ssh':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, aix_ssh=version, date=date).count()
+            elif service == 'cent_ssh':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, cent_ssh=version, date=date).count()
+            elif service == 'centrify':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, centrify=version, date=date).count()
+            elif service == 'xcelys':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, xcelys=version, date=date).count()
+            elif service == 'imperva':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, imperva=version, date=date).count()
+            elif service == 'netbackup':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, netbackup=version, date=date).count()
+            elif service == 'bash':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, bash=version, date=date).count()
+            elif service == 'ssl':
+                num = HistoricalAIXData.objects.filter(active=True, decommissioned=False, ssl=version, date=date).count()
+
     #        num = 1
             if date_counter == 0:
                 my_array[version_counter] = [num]
@@ -193,53 +214,67 @@ def stacked_column(request, service, period, time_range):
 
 
 
-def line_basic(request, string, string2):
+def line_basic(request, string, period, time_range):
     request.GET.get('string')
-    request.GET.get('string2')
+    request.GET.get('period')
+    request.GET.get('time_range')
     data = {}
-    #rather than /aix/week we could change this and make it something like /total_servers/all /total_servers/linux
-    #we could branch this out as well like /aix_versions/linux
-
-    #Not filtering exceptions as they are active servers and we need a total count
-    #we need the total_server_count from last sunday, which is representative of the day before, saturday, the end of last
-    #week when the chart starts. (starts...i.e. the first date on the chart on the right side)
-    last_sunday = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + 1))).strftime('%Y-%m-%d')
-    total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=last_sunday).count()
 
     name = "Test Name"
-    title = "Number Of Active AIX Servers - Last 12 weeks"
+    title = "Number Of Active AIX Servers - Last " + time_range + " " + period + "s"
 
     #for now, we're just going to replace the data as I figure out what I'm doing with this view
-    if string2 == 'week':
-        #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
-        today = datetime.date.today().strftime('%Y-%m-%d')
-        #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
-        total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+    #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
+    #today = datetime.date.today().strftime('%Y-%m-%d')
+    #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
+    #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
 
-        
-        months = []
-        number_of_servers = []
-        number_of_decoms = []
-        number_of_prod = []
-        number_of_non_prod = []
-        interval = 1
-        for x in range (0, 12):
-            ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
-            months.append(ls)
+    
+    months = []
+    number_of_servers = []
+    number_of_decoms = []
+    number_of_prod = []
+    number_of_non_prod = []
+    interval = 1
+    for x in range (0, int(time_range)):
+        ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        months.append(ls)
+        if period == 'week':
             interval = interval + 7
+        elif period == 'day':
+            interval = interval + 1
 
-            number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
-            number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
-            number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
-            number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+        elif period == 'month':
+            if x == 0:
+                #get the first day of the month, we're just adding today on the end of the graph here
+                interval = interval + (int(datetime.date.today().strftime('%d')) - 2)
+            else:
+                #this goes back and finds the first day of each of the last months in the time range and adjusts the year if it has to
+                #the graph for days or weeks doesn't have to do this because it's a set 1 and 7 interval whereas days of the month vary
+                my_year = int(datetime.date.today().strftime('%Y'))
+                my_month = int(datetime.date.today().strftime('%m'))
+                my_interval = x
+                if (my_month - x) < 1:
+                    my_year = my_year -1
+                    my_month = my_month + 12
+                next_month_back = calendar.monthrange(my_year, (my_month - x))[1]
+                interval = interval + next_month_back
+        else:
+            #Not sure what to do here, 404? sys.exit?
+            interval = interval + 1
 
-        months.reverse()
-        number_of_servers.reverse()
-        number_of_decoms.reverse() 
-        number_of_prod.reverse()
-        number_of_non_prod.reverse()
+        number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
+        number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
+        number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
+        number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
 
-    return render(request, 'server/line_basic.htm', {'data': data, 'months': months, 'number_of_servers': number_of_servers, 'number_of_decoms': number_of_decoms, 'number_of_prod': number_of_prod, 'number_of_non_prod': number_of_non_prod, 'name': name, 'title': title, 'total_server_count': total_server_count})
+    months.reverse()
+    number_of_servers.reverse()
+    number_of_decoms.reverse() 
+    number_of_prod.reverse()
+    number_of_non_prod.reverse()
+
+    return render(request, 'server/line_basic.htm', {'data': data, 'months': months, 'number_of_servers': number_of_servers, 'number_of_decoms': number_of_decoms, 'number_of_prod': number_of_prod, 'number_of_non_prod': number_of_non_prod, 'name': name, 'title': title})
 
 
 
