@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
 
 import datetime, calendar
+import sys
      
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
@@ -86,14 +87,16 @@ def pie_3d(request, string):
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
 
-def stacked_column(request, service, period, time_range):
+def stacked_column(request, os, zone, service, period, time_range):
+    request.GET.get('os')
+    request.GET.get('zone')
     request.GET.get('service')
     request.GET.get('period')
     request.GET.get('time_range')
     data = {}
 
-
-    title = "Historical distribution of " + service + " on AIX servers by " + period
+    os = os.upper()
+    title = "Historical distribution of " + service + " on " + os + " servers by " + period
 
     #today = datetime.date.today().strftime('%Y-%m-%d')
 
@@ -124,7 +127,14 @@ def stacked_column(request, service, period, time_range):
     first_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + offset))).strftime('%Y-%m-%d')
 
     if service == 'os_level':
-        version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+        if zone == 'all':
+            version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+        elif zone == 'Production':
+            version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone='Production', date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+        elif zone == 'nonproduction':
+            version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone='Production', date__range=[first_date, last_date]).exclude(name__name__contains='vio').exclude(os_level='None').values_list(service , flat=True).distinct()
+        else:
+            sys.exit()
     else:
         version_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date__range=[first_date, last_date]).values_list(service , flat=True).distinct()
     version_list = list(set(version_list))
@@ -132,7 +142,12 @@ def stacked_column(request, service, period, time_range):
 
     #Populate time_interval with the dates for the labels and queries
     for x in range (0, (int(time_range))):
-        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        #FIXME For some reason my 'day' last date is two days before today.... so this is hackish for now at best
+        if period == 'day':
+            test = 1
+        else:
+            test = 0
+        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval- test ))).strftime('%Y-%m-%d')
         time_interval.append(last_date)
         if period == 'week':
             interval = interval + 7
