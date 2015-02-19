@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from import_export import resources, fields
+from import_export import resources, fields, widgets
 from django.contrib.admin.models import LogEntry
 
 # Create your models here.
@@ -174,7 +174,8 @@ class AIXServerResource(resources.ModelResource):
 
     class Meta:
         model = AIXServer
-        #fields = ('name', 'owner', 'stack', 'stack', 'frame', 'zone', 'active','exception', 'modified', 'os', 'os_level', 'emc_clar', 'emc_sym')
+        #test = fields.Field(column_name='frame', attribute='frame', widget=ForeignLookupKeyWidget(Frame, 'name'))
+        fields = ('name', 'owner', 'frame', 'active', 'exception', 'decommissioned', 'stack', 'created', 'modified', 'ip_address', 'zone', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym', 'relationship')
 
 #Meta model of AIX Server to just show VIO servers
 class VIOServer(AIXServer):

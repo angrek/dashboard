@@ -50,13 +50,13 @@ class AIXServerAdmin(ImportExportModelAdmin):
     #just translates to a space and is not visible in the list_display header.
     def stack_(self, obj):
         if str(obj.stack) == 'Orange':
-            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Green':
-            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Yellow':
-            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Red':
-            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack.name
         else:
             return obj.stack
     stack_.allow_tags = True
@@ -64,8 +64,8 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
-    list_filter = ['owner', 'frame', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
-    search_fields = ['name', 'owner', 'frame__id', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
+    list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
+    search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
     fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     inlines = (RelationshipsInline, ) #, AIXLogAdmin)
