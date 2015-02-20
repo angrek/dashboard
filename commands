@@ -24,3 +24,26 @@ pip install openpyxl
 
 #pillow is installed to be able to add pics to a spreadsheet
 pip install pillow
+ =========================================================================================
+
+Configuration summary
+  + using PCRE library: /usr/src/pcre-8.36
+  + using system OpenSSL library
+  + md5: using OpenSSL library
+  + sha1: using OpenSSL library
+  + using system zlib library
+
+  nginx path prefix: "/usr/local/nginx"
+  nginx binary file: "/usr/local/nginx/sbin/nginx"
+  nginx configuration prefix: "/usr/local/nginx/conf"
+  nginx configuration file: "/usr/local/nginx/conf/nginx.conf"
+  nginx pid file: "/usr/local/nginx/logs/nginx.pid"
+  nginx error log file: "/home/wrehfiel/ENV/dashboard/logs/error.log"
+  nginx http access log file: "/home/wrehfiel/ENV/wrehfiel/dashboard/logs/nginx.log"
+  nginx http client request body temporary files: "client_body_temp"
+  nginx http proxy temporary files: "proxy_temp"
+  nginx http fastcgi temporary files: "fastcgi_temp"
+  nginx http uwsgi temporary files: "uwsgi_temp"
+  nginx http scgi temporary files: "scgi_temp"
+
+[root@p1rhrep nginx-1.6.2]# ./configure --with-pcre=/usr/src/pcre-8.36 --with-pcre-jit --with-http_ssl_module --error-log-path=/home/wrehfiel/ENV/dashboard/logs/error.log --http-log-path=/home/wrehfiel/ENV/wrehfiel/dashboard/logs/nginx.log --user=wrehfiel --group=unixadm
