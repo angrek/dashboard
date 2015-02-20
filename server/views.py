@@ -123,7 +123,6 @@ def stacked_column(request, os, zone, service, period, time_range):
         #Uh, 404?
         sys.exit()
         
-
     first_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + offset))).strftime('%Y-%m-%d')
 
     if service == 'os_level':
@@ -147,7 +146,10 @@ def stacked_column(request, os, zone, service, period, time_range):
             test = 1
         else:
             test = 0
-        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval- test ))).strftime('%Y-%m-%d')
+        last_date = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval ))).strftime('%Y-%m-%d')
+        if x == 0 and period=='day':
+            last_date = datetime.date.today()
+        
         time_interval.append(last_date)
         if period == 'week':
             interval = interval + 7
