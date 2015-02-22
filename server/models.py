@@ -310,66 +310,94 @@ class Power7InventoryResource(resources.ModelResource):
 def get_default_zone():
     return Zone.objects.get(id=3)
 
-class LinuxServer(models.Model):
-    name = models.CharField(max_length=40, unique=True)
-    owner = models.CharField(max_length=30, blank=True, null=True, default='None')
-    vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
-    adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
-    #active will let us keep historical data of past servers if needed
-    active = models.NullBooleanField(default=True, blank=True)
+#class LinuxServer(models.Model):
+#    name = models.CharField(max_length=40, primary_key=True)
+    #name = models.CharField(max_length=40, unique=True)
+#    owner = models.CharField(max_length=30, blank=True, null=True, default='None')
+#    vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
+#    adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    active = models.NullBooleanField(default=True, blank=True)
+#    exception = models.NullBooleanField(default=False, blank=True)
+#    decommissioned = models.NullBooleanField(default=False, blank=True)
+#    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+#    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+#    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
+#    zone = models.ForeignKey(Zone)
+#    os = models.CharField(max_length=50, blank=True, null=True, default='None')
+#    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    memory = models.IntegerField(max_length=10, blank=True, null=True)
+#    cpu = models.IntegerField(max_length=3, blank=True, null=True)
+#    storage = models.IntegerField(max_length=10, blank=True, null=True)
+#    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
+#    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
+#    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
+#    ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
+#    java = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+#    netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
+#    log = models.TextField(blank=True, null=True)
+#
+#    class Meta:
+#        verbose_name = "Linux Server"
+#        verbose_name_plural = "Linux Servers"
+#        ordering = ["name"]
+#
+#    def __unicode__(self):
+#        return '%s' % (self.name)
 
-    #exceptions will be servers we don't want to gather data on - manually set
-    exception = models.NullBooleanField(default=False, blank=True)
-    decommissioned = models.NullBooleanField(default=False, blank=True)
+#class HistoricalLinuxData(models.Model):
+#    date = models.DateField("Date", default=datetime.date.today)
+#    name = models.ForeignKey(LinuxServer)
+#    owner = models.CharField(max_length=30, blank=True, null=True, default='None')
+#    vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
+#    adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    active = models.NullBooleanField(default=True, blank=True)
+#    exception = models.NullBooleanField(default=False, blank=True)
+#    decommissioned = models.NullBooleanField(default=False, blank=True)
+#    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+#    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
+#    zone = models.ForeignKey(Zone)
+#    os = models.CharField(max_length=50, blank=True, null=True, default='None')
+#    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    memory = models.IntegerField(max_length=10, blank=True, null=True)
+#    cpu = models.IntegerField(max_length=3, blank=True, null=True)
+#    storage = models.IntegerField(max_length=10, blank=True, null=True)
+#    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
+#    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
+#    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
+#    ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
+#    java = models.CharField(max_length=20, blank=True, null=True, default='None')
+#    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
+#    netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
+#
+#    class Meta:
+#        verbose_name = "Historical Linux Data"
+#        verbose_name_plural = "Historical Linux Data"
+#        ordering = ["-date"]
+#        unique_together = ("date", "name")
+#
+#    def __unicode__(self):
+#        return '%s' % (self.name)
 
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    #last_updated should be auto set by the scripts anytime it is CHANGED
-    #this means the script will need to compare values and if something is changed
-    #it should change this and add both to the log
-    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    #I'm not sure why we might need the IP but whatever, just in case..
-    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
-    zone = models.ForeignKey(Zone)
-    os = models.CharField(max_length=50, blank=True, null=True, default='None')
-    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
-    memory = models.IntegerField(max_length=10, blank=True, null=True)
-    cpu = models.IntegerField(max_length=3, blank=True, null=True)
-    storage = models.IntegerField(max_length=10, blank=True, null=True)
-    centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
-    xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
-    bash = models.CharField(max_length=25, blank=True, null=True, default='None')
-    ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
-    java = models.CharField(max_length=20, blank=True, null=True, default='None')
-    imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
-    netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
-    log = models.TextField(blank=True, null=True)
 
-    class Meta:
-        verbose_name = "Linux Server"
-        verbose_name_plural = "Linux Servers"
-        ordering = ["name"]
-
-    def __unicode__(self):
-        return '%s' % (self.name)
-
-class DecommissionedLinuxServer(LinuxServer):
-    class Meta:
-        proxy=True
-        verbose_name = "Linux Decommissioned Server"
-        verbose_name_plural = "Linux Decommissioned Servers"
+#class DecommissionedLinuxServer(LinuxServer):
+#    class Meta:
+#        proxy=True
+#        verbose_name = "Linux Decommissioned Server"
+#        verbose_name_plural = "Linux Decommissioned Servers"
 
 #Meta model to just show the application versions
-class LinuxApplications(LinuxServer):
-    class Meta:
-        proxy=True
-        verbose_name = "Linux Applications"
-        verbose_name_plural = "Linux Applications"
+#class LinuxApplications(LinuxServer):
+#    class Meta:
+#        proxy=True
+#        verbose_name = "Linux Applications"
+#        verbose_name_plural = "Linux Applications"
 
 #Meta model to use for exporting into Excel and other formats
-class LinuxServerResource(resources.ModelResource):
-    class Meta:
-        model = LinuxServer
+#class LinuxServerResource(resources.ModelResource):
+#    class Meta:
+#        model = LinuxServer
 
 
 

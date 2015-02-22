@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'dashboard.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^/images/favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^/admin/', include(admin.site.urls)),
 
@@ -19,8 +19,6 @@ urlpatterns = patterns('',
 
     url(r'^todo/', include('todo.urls')),
 
-    #url(r'^favicon\.ico$', RedirectView.as_view(url=settings.MEDIA_URL + 'images/favicon.ico')),
-    #url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/staticfiles/faveicon.ico'}),
 
     url(r'^$', hello),
 

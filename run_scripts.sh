@@ -66,4 +66,5 @@ mail william.rehfield@wellcare.com -s 'starting linux ssl' < 1.txt
 mail william.rehfield@wellcare.com -s 'starting linux xcelys' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_xcelys.py
 #put something in here to shoot me an email
+/home/wrehfiel/ENV/dashboard/historical_data_linux.py
 mail william.rehfield@wellcare.com -s 'finished all scripts' < 1.txt
