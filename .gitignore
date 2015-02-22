@@ -18,3 +18,5 @@ Unix_Configuration*
 nohup.out
 old
 old/*
+logs/*
+logs/

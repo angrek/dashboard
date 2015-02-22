@@ -17,7 +17,7 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, LinuxServer
+from server.models import AIXServer
 import smtplib
 from email.mime.text import MIMEText
 import email.utils
