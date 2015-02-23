@@ -4,17 +4,13 @@ import datetime
 from import_export import resources, fields, widgets
 from django.contrib.admin.models import LogEntry
 
-# Create your models here.
 
 class UserProfile(models.Model):
     #This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User)
-
-    #The addition attributes to include
     website = models.URLField(blank=True)
     test = models.CharField(max_length=25, blank=True, null=True)
 
-    #Override the __unicode__() modthod to return what we want
     def __unicode__(self):
         return self.user
 
@@ -53,10 +49,8 @@ class AIXServer(models.Model):
     owner = models.CharField(max_length=50, blank=True, null=True, default='None')
     frame = models.ForeignKey(Frame)   
     active = models.NullBooleanField(default=True, blank=True)
-    #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
-    #need to see what color 'stack' they are in (sts, mts, fts, etc)
     stack = models.ForeignKey(Stack)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -76,10 +70,10 @@ class AIXServer(models.Model):
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
-    relationship = models.ManyToManyField('self',
-        through='Relationships',
-        symmetrical=False,
-        related_name='related_to')
+    #relationship = models.ManyToManyField('self',
+    #    through='Relationships',
+    #    symmetrical=False,
+    #    related_name='related_to')
     def get_history(self):
         return LogEntry.objects.filter(object_repr=self.name)
 
@@ -105,10 +99,8 @@ class HistoricalAIXData(models.Model):
     name = models.ForeignKey(AIXServer)
     frame = models.ForeignKey(Frame)   
     active = models.NullBooleanField(default=True, blank=True)
-    #exceptions will be servers we don't want to gather data on - manually set
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
-    #need to see what color 'stack' they are in (sts, mts, fts, etc)
     created = models.DateTimeField(blank=True, null=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
     zone = models.ForeignKey(Zone)
@@ -137,17 +129,17 @@ class HistoricalAIXData(models.Model):
 
 
 
-#This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
-class Relationships(models.Model):
-    parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
-    child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
-
-    def __unicode__(self):
-            return '%s - %s' % (self.parent_lpar, self.child_wpar)
-
-    class Meta:
-        verbose_name = "AIX LPAR-WPAR Relationships"
-        verbose_name_plural = "AIX LPAR-WPAR Relationships"
+##This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
+#class Relationships(models.Model):
+#    parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
+#    child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
+#
+#    def __unicode__(self):
+#            return '%s - %s' % (self.parent_lpar, self.child_wpar)
+#
+#    class Meta:
+#        verbose_name = "AIX LPAR-WPAR Relationships"
+#        verbose_name_plural = "AIX LPAR-WPAR Relationships"
 
 
 #Meta model to split off the AIX applications in the admin
@@ -386,14 +378,14 @@ class DecommissionedLinuxServer(LinuxServer):
         verbose_name = "Linux Decommissioned Server"
         verbose_name_plural = "Linux Decommissioned Servers"
 
-#Meta model to just show the application versions
+##Meta model to just show the application versions
 class LinuxApplications(LinuxServer):
     class Meta:
         proxy=True
         verbose_name = "Linux Applications"
         verbose_name_plural = "Linux Applications"
 
-#Meta model to use for exporting into Excel and other formats
+##Meta model to use for exporting into Excel and other formats
 class LinuxServerResource(resources.ModelResource):
     class Meta:
         model = LinuxServer

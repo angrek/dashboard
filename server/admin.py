@@ -1,12 +1,14 @@
 from django.contrib import admin
 from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb, AIXPowerHA
-from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import AIXServerResource
+
+from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import LinuxServerResource
-from server.models import Power7InventoryResource
-from server.models import Relationships, AIXLog
-from server.models import HistoricalAIXData
 from server.models import HistoricalLinuxData
+
+from server.models import Power7InventoryResource
+#from server.models import Relationships, AIXLog
+from server.models import HistoricalAIXData
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
@@ -14,10 +16,10 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 
-class RelationshipsInline(admin.TabularInline):
-    model = Relationships
-    fk_name = 'parent_lpar'
-    extra = 2
+#class RelationshipsInline(admin.TabularInline):
+#    model = Relationships
+#    fk_name = 'parent_lpar'
+#    extra = 2
 
 class AIXLogAdmin(admin.TabularInline):
 #    model = AIXServer
@@ -68,7 +70,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
     fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
-    inlines = (RelationshipsInline, ) #, AIXLogAdmin)
+    #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
@@ -319,11 +321,12 @@ class AIXMksysbAdmin(admin.ModelAdmin):
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(HistoricalAIXData, HistoricalAIXDataAdmin)
-admin.site.register(HistoricalLinuxData, HistoricalLinuxDataAdmin)
 admin.site.register(DecommissionedAIXServer, DecommissionedAIXServerAdmin)
+
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
 admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
+
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
@@ -332,6 +335,6 @@ admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Stack, StackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
-admin.site.register(Relationships)
+#admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
