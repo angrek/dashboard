@@ -49,47 +49,62 @@ def wpars(request):
 #    context = {'red_servers' : red_servers}
 #    return render(request, 'server/3d_pie.htm', context)
 
-def pie_3d(request, string):
-    request.GET.get('string')
+def pie_3d(request, os, zone, service):
+    request.GET.get('os')
+    request.GET.get('zone')
+    request.GET.get('service')
     data = {}
-    version_list = AIXServer.objects.filter(active=True, decommissioned=False, zone='2').values_list(string , flat=True).distinct()
+    if zone == 'nonproduction':
+        zone = '1'
+    elif zone == 'production':
+        zone = '2'
+
+    if zone == 'all':
+        predicates = [('active', True), ('decommissioned', False)]
+    else:
+        predicates = [('active', True), ('decommissioned', False), ('zone', zone)]
+
+    q_list = [Q(x) for x in predicates]
+    version_list = AIXServer.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+    #version_list = AIXServer.objects.filter(active=True, decommissioned=False).values_list(service , flat=True).distinct()
     version_list = list(set(version_list))
-    total_server_count = AIXServer.objects.filter(active=True, decommissioned=False, zone='2').count()
+
+    q_list = [Q(x) for x in predicates]
+    total_server_count = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
+
     for version in (version_list):
-        if string == 'aix_ssh':
-            #predicates = [('active', True), ('decommissioned', False), (service, version)]
-            #q_list = [Q(x) for x in predicates]
-            #num = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
-            num = AIXServer.objects.filter(active=True, decommissioned=False, aix_ssh=version).count()
-            title = "Current distribution of AIX SSH on " + str(total_server_count) + " AIX servers"
-        elif string == 'cent_ssh':
+        if service == 'aix_ssh':
+            if zone == 'all':
+                predicates = [('active', True), ('decommissioned', False), (service, version)]
+            else:
+                predicates = [('active', True), ('decommissioned', False), ('zone', zone), (service, version)]
+            q_list = [Q(x) for x in predicates]
+            num = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
+            #num = AIXServer.objects.filter(active=True, decommissioned=False, aix_ssh=version).count()
+        elif service == 'cent_ssh':
             num = AIXServer.objects.filter(active=True, decommissioned=False, cent_ssh=version).count()
-            title = "Current distribution of Centrify SSH on " + str(total_server_count) + " AIX servers"
-        elif string == 'os_level':
+        elif service == 'os_level':
             num = AIXServer.objects.filter(active=True, decommissioned=False, zone='2', os_level=version).count()
-            title = "Current distribution of OS Level on " + str(total_server_count) + " AIX servers"
-        elif string == 'centrify':
+        elif service == 'centrify':
             num = AIXServer.objects.filter(active=True, decommissioned=False, centrify=version).count()
-            title = "Current distribution of Centrify on " + str(total_server_count) + " AIX servers"
-        elif string == 'xcelys':
+        elif service == 'xcelys':
             num = AIXServer.objects.filter(active=True, decommissioned=False, xcelys=version).count()
-            title = "Current distribution of Xcelys on " + str(total_server_count) + " AIX servers"
-        elif string == 'bash':
+        elif service == 'bash':
             num = AIXServer.objects.filter(active=True, decommissioned=False, bash=version).count()
-            title = "Current distribution of Bash on " + str(total_server_count) + " AIX servers"
-        elif string == 'ssl':
+        elif service == 'ssl':
             num = AIXServer.objects.filter(active=True, decommissioned=False, ssl=version).count()
-            title = "Current distribution of SSL on " + str(total_server_count) + " AIX servers"
-        elif string == 'imperva':
+        elif service == 'imperva':
             num = AIXServer.objects.filter(active=True, decommissioned=False, imperva=version).count()
-            title = "Current distribution of Imperva on " + str(total_server_count) + " AIX servers"
-        elif string == 'netbackup':
+        elif service == 'netbackup':
             num = AIXServer.objects.filter(active=True, decommissioned=False, netbackup=version).count()
-            title = "Current distribution of Netbackup on " + str(total_server_count) + " AIX servers"
+
         percentage = "{0:.1f}".format(num/total_server_count * 100)
         new_list = [str(version), percentage]
         data[version] = percentage
 
+    if zone != 'production' or zone != 'nonproduction':
+        zone = ''
+    title = "Current distribution of " + service + " on " + str(total_server_count) + " " + os + " " + zone + " servers"
     name = "Percentage"
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 

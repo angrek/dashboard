@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^wpars/$', views.wpars, name='wpars'),
     #url(r'^pie_ssh/$', views.pie_ssh, name='pie_ssh'),
     #url(r'^3d_pie/aix_ssh|cent_ssh/$', views.pie_ssh, name='pie_ssh'),
-    url(r'^pie_3d/(?P<string>(.*)+)/$', views.pie_3d, name='pie_3d'),
+    url(r'^pie_3d/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)$', views.pie_3d, name='pie_3d'),
     url(r'^stacked_column/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.stacked_column, name='stacked_column'),
     url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
 
