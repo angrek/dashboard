@@ -137,12 +137,6 @@ foreach my $host (@$host_views) {
             if ($cpu == ''){$cpu = 0;}
 
 
-            if ($state eq 'running'){
-                $active = True;
-            }else{
-                $active = False;
-            }
-
             #it can be inactive with an ip,lets grab it from  nslookup
             $ns_command = "nslookup $server_name | grep Address | grep -v '#'";
             $ip_address = qx($ns_command);
@@ -185,7 +179,7 @@ foreach my $host (@$host_views) {
                 netbackup,
                 log)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, 'None', $cluster_name, "$adapter", $active, $exception, False, "$timestamp", "$timestamp", 
+            $sth->execute($server_name, 'None', $cluster_name, "$adapter", True, False, False, "$timestamp", "$timestamp", 
                         "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '', '');
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
