@@ -51,6 +51,7 @@ SERVER_ENV_CHOICES = (
     (4, 'QA'),
     (5, 'PROD-INFRA'),
     (6, 'PREPROD'),
+    (7, 'PROD'),
     (7, 'DR/COB'),
 )
 
