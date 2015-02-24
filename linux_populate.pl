@@ -162,18 +162,31 @@ foreach my $host (@$host_views) {
             $rv=$dbh->do("lock table server_linuxserver write");
             $sth = $dbh->prepare (qq{insert into server_linuxserver (
                 name,
+                owner,
                 vmware_cluster,
                 adapter,
                 active,
                 exception,
+                decommissioned,
                 created,
                 modified,
                 ip_address,
                 zone_id,
+                os,
+                os_level,
                 memory,
-                cpu)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, $cluster_name, "$adapter", $active, $exception, "$timestamp", "$timestamp", "$ip_address", 3, $memory, $cpu);
+                cpu,
+                storage,
+                centrify,
+                xcelys,
+                bash,
+                java,
+                imperva,
+                netbackup,
+                log)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, 'None', $cluster_name, "$adapter", $active, $exception, False, "$timestamp", "$timestamp", 
+                        "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '', '');
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
