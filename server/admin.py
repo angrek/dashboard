@@ -1,10 +1,12 @@
 from django.contrib import admin
 from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import AIXServerResource
+from server.models import AIXServerENV
 
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import LinuxServerResource
 from server.models import HistoricalLinuxData
+from server.models import LinuxServerENV
 
 from server.models import Power7InventoryResource
 #from server.models import Relationships, AIXLog
@@ -69,7 +71,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'server_env', 'server_env_marker', 'server_env_text']
     #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -108,6 +110,28 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
+
+
+
+class AIXServerENVAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+
+    save_on_top = True
+    list_display = ['name', 'active', 'exception', 'zone', 'server_env', 'server_env_marker', 'server_env_text']
+    list_editable = ['server_env_marker',]
+    list_filter = ['active', 'exception', 'zone', 'server_env']
+    search_fields = ['name', 'zone', 'server_env', 'server_env_text', 'server_env_marker']
+    fields = ['name', 'active', 'exception', 'zone', 'server_env', 'server_env_marker', 'server_env_text']
+
+    resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
+
+
+
+
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
 class AIXPowerHAAdmin(ImportExportModelAdmin):
@@ -182,7 +206,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'server_env', 'server_env_marker', 'server_env_text']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -283,6 +307,23 @@ class LogEntryAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 
+class LinuxServerENVAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+
+    save_on_top = True
+    list_display = ['name', 'active', 'exception', 'zone', 'server_env', 'server_env_marker', 'server_env_text']
+    list_editable = ['server_env_marker',]
+    list_filter = ['active', 'exception', 'zone', 'server_env', 'server_env_marker']
+    search_fields = ['name', 'zone', 'server_env', 'server_env_text', 'server_env_marker']
+    fields = ['name', 'active', 'exception', 'zone', 'server_env', 'server_env_marker', 'server_env_text']
+
+    resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
+
+
 
 
 class ErrptAdmin(admin.ModelAdmin):
@@ -325,6 +366,7 @@ admin.site.register(DecommissionedAIXServer, DecommissionedAIXServerAdmin)
 
 admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
+admin.site.register(HistoricalLinuxData, HistoricalLinuxDataAdmin)
 admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
 
 admin.site.register(VIOServer, VIOServerAdmin)
@@ -338,3 +380,5 @@ admin.site.register(Storage, StorageAdmin)
 #admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
+admin.site.register(AIXServerENV, AIXServerENVAdmin)
+admin.site.register(LinuxServerENV, LinuxServerENVAdmin)

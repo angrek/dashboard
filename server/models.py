@@ -44,6 +44,16 @@ class Stack(models.Model):
     def __unicode__(self):
         return self.name
 
+SERVER_ENV_CHOICES = (
+    (1, 'None'),
+    (2, 'DEV'),
+    (3, 'UAT'),
+    (4, 'QA'),
+    (5, 'PROD-INFRA'),
+    (6, 'PREPROD'),
+    (7, 'DR/COB'),
+)
+
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
     owner = models.CharField(max_length=50, blank=True, null=True, default='None')
@@ -70,6 +80,9 @@ class AIXServer(models.Model):
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
+    server_env = models.NullBooleanField(default=False, blank=True)
+    server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
+    server_env_text = models.TextField(blank=True, null=True)
     #relationship = models.ManyToManyField('self',
     #    through='Relationships',
     #    symmetrical=False,
@@ -175,6 +188,12 @@ class VIOServer(AIXServer):
         proxy=True
         verbose_name = "VIO Server"
         verbose_name_plural = "VIO Servers"
+
+class AIXServerENV(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX Server ENV"
+        verbose_name_plural = "AIX Sever ENV"
 
 class AIXLog(AIXServer):
     class Meta:
@@ -326,6 +345,9 @@ class LinuxServer(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
+    server_env = models.NullBooleanField(default=False, blank=True)
+    server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
+    server_env_text = models.TextField(blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -389,6 +411,12 @@ class LinuxApplications(LinuxServer):
 class LinuxServerResource(resources.ModelResource):
     class Meta:
         model = LinuxServer
+
+class LinuxServerENV(LinuxServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Linux Server ENV"
+        verbose_name_plural = "Linux Sever ENV"
 
 
 
