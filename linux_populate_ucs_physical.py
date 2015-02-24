@@ -71,7 +71,7 @@ def populate():
             print len(server_name.rstrip())
             #the created object is not the same, so we create it and then get the instance
             #setting exception to True so the ssh keys script will pick it up and transfer keys
-            server = LinuxServer.objects.get_or_create(name=str(server_name).rstrip(), ip_address=ip_address, os='RHEL', zone=zone, active=True, exception=True)
+            server = LinuxServer.objects.get_or_create(name=str(server_name).rstrip(), owner='None', vmware_cluster='Physical', adapter='None', active=True, exception=False, decommissioned=False, created=timestamp, modified=timestamp, ip_address=ip_address, zone=zone, os='RHEL', os_level='None', memory=0, cpu=0, storage=0, centrify='None', xcelys='None', bash='None', ssl='None', java='None', impervaxl='None', netbackup='None', log='None')
             server = LinuxServer.objects.get(name=server_name.rstrip())
             change_message = "Added Linux Server " + server_name.rstrip() + "."
             LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)

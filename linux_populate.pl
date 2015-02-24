@@ -130,7 +130,6 @@ foreach my $host (@$host_views) {
             $state = $vm->guest->guestState;
             $memory = $vm->runtime->maxMemoryUsage;
             $cpu = $vm->summary->config->numCpu;
-            $active = '';
 
             #ORM apparently isn't liking NULL....
             if ($memory == ''){$memory = 0;}
@@ -179,7 +178,7 @@ foreach my $host (@$host_views) {
                 netbackup,
                 log)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, 'None', $cluster_name, "$adapter", True, False, False, "$timestamp", "$timestamp", 
+            $sth->execute($server_name, 'None', $cluster_name, "$adapter", 1, 0, 0, "$timestamp", "$timestamp", 
                         "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '', '');
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
