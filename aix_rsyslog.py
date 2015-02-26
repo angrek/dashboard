@@ -21,8 +21,8 @@ django.setup()
 def update_server():
 
     #server_list = AIXServer.objects.all()
-    #server_list = AIXServer.objects.filter(decommissioned=False, active=True)[:15]
-    server_list = AIXServer.objects.filter(name='t8sandbox')
+    server_list = AIXServer.objects.filter(decommissioned=False, active=True)
+    #server_list = AIXServer.objects.filter(name='t8sandbox')
 
     counter = 0
 
@@ -34,7 +34,9 @@ def update_server():
 
             client = SSHClient()
             if utilities.ssh(server, client):
-                
+
+                print "---------------------------------"
+                print server.name
                 #get rsyslog version now
                 command = 'lslpp -l | grep rsyslog | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
@@ -51,9 +53,9 @@ def update_server():
                 #if str(syslog_version) != str(server.syslog):
                 #    utilities.log_change(str(server), 'samba', str(server.syslog), str(syslog_version))
                 #    AIXServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
-                #if str(rsyslog_version) != str(server.rsyslog):
-                #    utilities.log_change(str(server), 'samba', str(server.rsyslog), str(rsyslog_version))
-                #    AIXServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
+                if str(rsyslog_version) != str(server.rsyslog):
+                    utilities.log_change(str(server), 'rsyslog', str(server.rsyslog), str(rsyslog_version))
+                    AIXServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
                 

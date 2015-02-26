@@ -59,10 +59,10 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(syslog_version) != str(server.syslog):
-                    utilities.log_change(str(server), 'samba', str(server.syslog), str(syslog_version))
+                    utilities.log_change(str(server), 'syslog', str(server.syslog), str(syslog_version))
                     LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
                 if str(rsyslog_version) != str(server.rsyslog):
-                    utilities.log_change(str(server), 'samba', str(server.rsyslog), str(rsyslog_version))
+                    utilities.log_change(str(server), 'syslog', str(server.rsyslog), str(rsyslog_version))
                     LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
