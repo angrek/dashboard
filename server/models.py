@@ -79,6 +79,9 @@ class AIXServer(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=25, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
+    syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    samba = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
@@ -128,6 +131,8 @@ class HistoricalAIXData(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
+    syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -347,6 +352,8 @@ class LinuxServer(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
+    syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
@@ -385,6 +392,9 @@ class HistoricalLinuxData(models.Model):
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
+    syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    server_env = models.NullBooleanField(default=False, blank=True)
 
     class Meta:
         verbose_name = "Historical Linux Data"
