@@ -53,7 +53,6 @@ def ping(server):
 
 #test ssh... duh
 def ssh(server, client):
-    print server.name
     client.load_system_host_keys()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
