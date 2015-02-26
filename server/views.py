@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponse
 from server.models import AIXServer, HistoricalAIXData
-#from server.models import AIXServer, LinuxServer, Relationships, HistoricalAIXData, HistoricalLinuxData
+from server.models import LinuxServer, HistoricalLinuxData
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -54,6 +54,7 @@ def pie_3d(request, os, zone, service):
     request.GET.get('zone')
     request.GET.get('service')
     data = {}
+    zone_title = zone
     if zone == 'nonproduction':
         zone = '1'
     elif zone == 'production':
@@ -65,46 +66,40 @@ def pie_3d(request, os, zone, service):
         predicates = [('active', True), ('decommissioned', False), ('zone', zone)]
 
     q_list = [Q(x) for x in predicates]
-    version_list = AIXServer.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
-    #version_list = AIXServer.objects.filter(active=True, decommissioned=False).values_list(service , flat=True).distinct()
-    version_list = list(set(version_list))
 
-    q_list = [Q(x) for x in predicates]
-    total_server_count = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
+    if os == 'aix':
+        version_list = AIXServer.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        version_list = list(set(version_list))
+        q_list = [Q(x) for x in predicates]
+        total_server_count = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
+    elif os == 'linux':
+        version_list = LinuxServer.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        version_list = list(set(version_list))
+        q_list = [Q(x) for x in predicates]
+        total_server_count = LinuxServer.objects.filter(reduce(operator.and_, q_list)).count()
+    else:
+        sys.exit()
 
     for version in (version_list):
-        if service == 'aix_ssh':
-            if zone == 'all':
-                predicates = [('active', True), ('decommissioned', False), (service, version)]
-            else:
-                predicates = [('active', True), ('decommissioned', False), ('zone', zone), (service, version)]
-            q_list = [Q(x) for x in predicates]
+        if zone == 'all':
+            predicates = [('active', True), ('decommissioned', False), (service, version)]
+        else:
+            predicates = [('active', True), ('decommissioned', False), ('zone', zone), (service, version)]
+        q_list = [Q(x) for x in predicates]
+        if os == 'aix':
             num = AIXServer.objects.filter(reduce(operator.and_, q_list)).count()
-            #num = AIXServer.objects.filter(active=True, decommissioned=False, aix_ssh=version).count()
-        elif service == 'cent_ssh':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, cent_ssh=version).count()
-        elif service == 'os_level':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, zone='2', os_level=version).count()
-        elif service == 'centrify':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, centrify=version).count()
-        elif service == 'xcelys':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, xcelys=version).count()
-        elif service == 'bash':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, bash=version).count()
-        elif service == 'ssl':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, ssl=version).count()
-        elif service == 'imperva':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, imperva=version).count()
-        elif service == 'netbackup':
-            num = AIXServer.objects.filter(active=True, decommissioned=False, netbackup=version).count()
+        elif os == 'linux':
+            num = LinuxServer.objects.filter(reduce(operator.and_, q_list)).count()
+        else:
+            sys.exit()
 
         percentage = "{0:.1f}".format(num/total_server_count * 100)
         new_list = [str(version), percentage]
         data[version] = percentage
 
-    if zone != 'production' or zone != 'nonproduction':
-        zone = ''
-    title = "Current distribution of " + service + " on " + str(total_server_count) + " " + os + " " + zone + " servers"
+    if zone_title == 'all':
+        zone_title = ''
+    title = "Current distribution of " + service + " on " + str(total_server_count) + " active " + os + " " + zone_title + " servers"
     name = "Percentage"
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
@@ -249,7 +244,10 @@ def line_basic(request, string, period, time_range):
     number_of_non_prod = []
     interval = 1
     for x in range (0, int(time_range)):
-        ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        if period == 'day':
+            ls = (datetime.date.today() - datetime.timedelta(days = interval)).strftime('%Y-%m-%d')
+        else:
+            ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
         months.append(ls)
         if period == 'week':
             interval = interval + 7
