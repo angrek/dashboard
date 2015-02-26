@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve syslog and rsyslog versions and drop them into Django
+# Script to retrieve rsyslog versions and drop them into Django
 #
 # Boomer Rehfield - 2/25/2014
 #
@@ -13,16 +13,16 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import LinuxServer
+from server.models import AIXServer
 import utilities
 django.setup()
 
 
 def update_server():
 
-    #server_list = LinuxServer.objects.all()
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='uprspegaapp01')
+    #server_list = AIXServer.objects.all()
+    #server_list = AIXServer.objects.filter(decommissioned=False, active=True)[:15]
+    server_list = AIXServer.objects.filter(name='t8sandbox')
 
     counter = 0
 
@@ -34,36 +34,26 @@ def update_server():
 
             client = SSHClient()
             if utilities.ssh(server, client):
-                #get syslog version first
-                print '------------------------------------'
-                print server.name
-                command = 'rpm -qa | grep sysklog | uniq'
-                stdin, stdout, stderr = client.exec_command(command)
-                try:
-                    syslog_version = stdout.readlines()[0].rstrip()
-                    print syslog_version 
-                except:
-                    syslog_version = "None"
-                    print syslog_version
                 
                 #get rsyslog version now
-                command = 'rpm -qa | grep rsyslog | uniq'
+                command = 'lslpp -l | grep rsyslog | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
                 try:
                     rsyslog_version = stdout.readlines()[0].rstrip()
-                    print rsyslog_version 
+                    rsyslog_version = rsyslog_version.split()[0] + "." + rsyslog_version.split()[1]
+                    print "rsyslog: " + rsyslog_version
                 except:
                     rsyslog_version = "None"
-                    print rsyslog_version
+                    print "rsyslog: " + rsyslog_version
                 
 
                 #check existing value, if it exists, don't update
-                if str(syslog_version) != str(server.syslog):
-                    utilities.log_change(str(server), 'samba', str(server.syslog), str(syslog_version))
-                    LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
-                if str(rsyslog_version) != str(server.rsyslog):
-                    utilities.log_change(str(server), 'samba', str(server.rsyslog), str(rsyslog_version))
-                    LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
+                #if str(syslog_version) != str(server.syslog):
+                #    utilities.log_change(str(server), 'samba', str(server.syslog), str(syslog_version))
+                #    AIXServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
+                #if str(rsyslog_version) != str(server.rsyslog):
+                #    utilities.log_change(str(server), 'samba', str(server.rsyslog), str(rsyslog_version))
+                #    AIXServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
                 
@@ -75,7 +65,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Checking rsyslog versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()

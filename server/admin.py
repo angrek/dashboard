@@ -74,7 +74,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text']
+    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text']
     #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -105,11 +105,11 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba']
-    list_filter = ['active', 'exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba', 'owner']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba']
+    list_filter = ['active', 'exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'owner']
     search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba']
+    fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -156,11 +156,11 @@ class AIXPowerHAAdmin(ImportExportModelAdmin):
     stack_color.allow_tags = True
 
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_color', 'active','exception', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba']
-    list_filter = ['active', 'exception', 'owner', 'stack', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba']
+    list_display = ['name', 'image_tag', 'owner', 'stack_color', 'active','exception', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba']
+    list_filter = ['active', 'exception', 'owner', 'stack', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba']
     search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba']
+    fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup','rsyslog', 'samba']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -189,10 +189,10 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
 class HistoricalAIXDataAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba', 'emc_clar', 'emc_sym']
-    list_filter = ['date', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'emc_clar', 'emc_sym']
+    list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'emc_clar', 'emc_sym']
+    list_filter = ['date', 'frame', 'active','exception', 'decommissioned', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'emc_clar', 'emc_sym']
     search_fields = ['name__name', 'active','exception', 'decommissioned', 'zone__id', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym']
-    fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'ip_address', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'samba', 'emc_clar', 'emc_sym']
+    fields = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'ip_address', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'emc_clar', 'emc_sym']
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
