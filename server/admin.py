@@ -7,6 +7,7 @@ from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxSer
 from server.models import LinuxServerResource
 from server.models import HistoricalLinuxData
 from server.models import LinuxServerENV
+from server.models import WindowsServer
 
 from server.models import Power7InventoryResource
 #from server.models import Relationships, AIXLog
@@ -371,6 +372,24 @@ class LogEntryAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 
+############################# WINDOWS TESTING ####################################
+
+class WindowsServerAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
+    search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    resource_class = LinuxServerResource
+    pass
+
+
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(HistoricalAIXData, HistoricalAIXDataAdmin)
@@ -394,3 +413,4 @@ admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(LinuxServerENV, LinuxServerENVAdmin)
+admin.site.register(WindowsServer, WindowsServerAdmin)
