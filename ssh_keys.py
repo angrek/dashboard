@@ -83,19 +83,15 @@ def update_server():
     print args.linux
     server_list = []
 
-    #Because exceptions are set based on my username running the scripts
-    #If another person uses this, his key may be bad even through the
-    #exception is False
-    if username == 'wrehfiel':
-        exception = True
-    else:
-        exception = False
     #Parse the arguments and create a merge server list
     if args.aix:
         print "aix is a go"
         if args.aix == 'all':
             print 'All'
-            server_list += AIXServer.objects.filter(active=True, exception=True, decommissioned=False)
+            if username == 'wrehfiel':
+                server_list += AIXServer.objects.filter(active=True, exception=True, decommissioned=False)
+            else:
+                server_list += AIXServer.objects.filter(active=True, decommissioned=False)
             print server_list
         else:
             for server in [args.aix]:
@@ -106,7 +102,10 @@ def update_server():
         print 'linux is a go'
         if args.linux == 'all':
             print 'Linux All'
-            server_list += LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
+            if username == 'wrehfiel':
+                server_list += LinuxServer.objects.filter(active=True, decommissioned=False)
+            else:
+                server_list += LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
             print server_list
         else:
             for server in [args.linux]:
