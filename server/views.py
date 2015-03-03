@@ -24,6 +24,11 @@ def index(request):
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+def jquerytest(request):
+    first_ten_servers = AIXServer.objects.order_by('name')[:10]
+    context = {'first_ten_servers': first_ten_servers}
+    return render(request, 'server/jquerytest.html', context)
+
 def stacks(request):
     red_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
     yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')

@@ -83,9 +83,9 @@ def update_server():
     print args.linux
     server_list = []
 
-    #Parse the arguments and create a merge server list
+    #Parse the arguments and create a merge serverd list
     if args.aix:
-        print "aix is a go"
+        print "Finding AIX servers"
         if args.aix == 'all':
             print 'All'
             if username == 'wrehfiel':
@@ -99,13 +99,13 @@ def update_server():
             print server_list
            
     if args.linux:
-        print 'linux is a go'
+        print 'Finding Linux servers'
         if args.linux == 'all':
             print 'Linux All'
             if username == 'wrehfiel':
-                server_list += LinuxServer.objects.filter(active=True, decommissioned=False)
-            else:
                 server_list += LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
+            else:
+               server_list += LinuxServer.objects.filter(active=True, decommissioned=False)
             print server_list
         else:
             for server in [args.linux]:
@@ -119,20 +119,23 @@ def update_server():
         server_is_active = 1
 
         counter = counter + 1
+        print '--------------------------------------'
         print 'Working on server ' + str(counter) + "/" + str(total) + " - " + str(server)
             
         if utilities.ping(server):
-            print "-Ping test is good"
+            print "Ping test is good"
 
-            all_ahead_flank = 0
+            keys_file_does_not_exist = 0
 
             client = paramiko.SSHClient()
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             try:
                 client.connect(str(server), username=username, password=password)
+                #FIXME if this works, we should continue to the next server, right??
+                #there is nothing to do right? or should I be testing with keys not pass??
             except:
-                print 'SSH HAS FAILED'
+                print 'SSH has failed'
                 print 'Removing key from known_hosts'
                 known_hosts = '/home/' + username + '/.ssh/known_hosts'
                 file = open(known_hosts)
@@ -148,18 +151,19 @@ def update_server():
                         print "Found IP " + server.ip_address + " entry."
                         file.write(line)
                 file.close()
+
+
                 print 'Trying SSH again'
                 #Now lets try to use SSH again
                 client = paramiko.SSHClient()
                 client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                print server.ip_address
                 #FIXME the below box still isn't working??
                 try:
                     client.connect(str(server), username=username, password=password)
                     print "Ok, removing the entry worked."
                 except:
-                    "SSH STILL NOT WORKING!!!!!!!!!!!!!!!!!!!!!!"
+                    print "SSH STILL NOT WORKING!!!!!!!!!!!!!!!!!!!!!!"
                     continue
 
             command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
@@ -170,7 +174,7 @@ def update_server():
             #print "stdout!"
             #print directory_exists[0].rstrip()
             if directory_exists[0].rstrip() == '0':
-                print '-Ssh directory does not exist. Creating'
+                print 'SSH directory does not exist. Creating'
                 #directory does not exist so we need to create it
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -178,34 +182,43 @@ def update_server():
                 client.connect(str(server), username=username, password=password, allow_agent=True, look_for_keys=True)
                 command = 'mkdir /home/' + username + '/.ssh;chmod 700 /home/' + username + '/.ssh'
                 sdtin, stdout, stderr = client.exec_command(command)
-                #dont' think I really need to grab stdout here
-                #test = stdout.readlines()
                 client.close()
-                all_ahead_flank = 1
-                print '-Directory created'
+
+                #directory doesn't exist, so the keys file doesn't either
+                keys_file_does_not_exist = 1
+                print 'SSH Directory created'
             else:
-                print '-Checking for authorized_keys'
+                print 'SSH directory exists, checking for authorized_keys'
                 #if the directory exists, test if authorized_keys exists
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
                 client.connect(str(server), username=username, password=password)
+
+                #this is a one off for red hat 6 and selinux, but it needs some testing
+                #command = "restorecon -R ~/.ssh"
+                #stdin, stdout, stderr = client.exec_command(command)
+
                 command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
-                print command
                 sdtin, stdout, stderr = client.exec_command(command)
-                #print stdout.readlines()[0].rstrip()
-                if  stdout.readlines()[0].rstrip() == 1:
-                    print '-Authorized keys file exists'
+
+                output = stdout.readlines()[0].rstrip()
+                if  output == '1':
+                    print output
+                    print 'Authorized keys file exists, moving on to the next server.'
+                    command = '/sbin/restorecon -R /home/' + username + '/.ssh'
+                    stdin, stdout, stderr = client.exec_command(command)
                     continue
                 else:
-                    print '-Authorized keys file does not exist'
-                    all_ahead_flank = 1
+                    print output 
+                    print 'Authorized keys file does not exist.'
+                    keys_file_does_not_exist = 1
 
                 client.close()
 
-            if all_ahead_flank:
-                print '-Transferring key'
-                #now we sftp our key over
+            if keys_file_does_not_exist:
+                print 'Transferring key'
+                #sftp our key over
                 transport = paramiko.Transport((str(server), 22))
 
                 try:
@@ -227,7 +240,11 @@ def update_server():
                 client.connect(str(server), username=username, password=password)
                 command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
                 sdtin, stdout, stderr = client.exec_command(command)
+                command = 'chmod 600 /home/' + username + '/.ssh/authorized*'
+                sdtin, stdout, stderr = client.exec_command(command)
                 print '-Key transferred and renamed'
+                command = "dzdo restorecon -R ~/.ssh"
+                stdin, stdout, stderr = client.exec_command(command)
                 client.close()
         else:
                 print '-Server is unreachable by ping!!!!!!!!!!'

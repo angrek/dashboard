@@ -28,7 +28,8 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, Zone, Frame, Stack, Relationships
+from server.models import AIXServer, Zone, Frame, Stack
+#from server.models import Relationships
 #import logging
 django.setup()
 
@@ -208,11 +209,12 @@ def populate():
                                 LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
 
                             #Now we'll try and check if the LPAR<->WPAR relationship exists, or create it
-                            try:
-                                Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
-                            except:
-                                child_wpar = AIXServer.objects.get(name=wpar_name)
-                                Relationships.objects.get_or_create(parent_lpar=server, child_wpar=child_wpar)
+                            #FIXME had to take out relationships, need them back in
+                            #try:
+                            #    Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
+                            #except:
+                            #    child_wpar = AIXServer.objects.get(name=wpar_name)
+                            #    Relationships.objects.get_or_create(parent_lpar=server, child_wpar=child_wpar)
                             
 
                             

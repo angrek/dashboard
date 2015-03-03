@@ -6,6 +6,7 @@ from server import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^jquerytest/$', views.jquerytest, name='jquerytest'),
     url(r'^stacks/$', views.stacks, name='stacks'),
     url(r'^wpars/$', views.wpars, name='wpars'),
     #url(r'^pie_ssh/$', views.pie_ssh, name='pie_ssh'),
