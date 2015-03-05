@@ -23,7 +23,7 @@ def update_server():
     #server_list = LinuxServer.objects.all()
     #zone = NonProduction = 1
     server_list = LinuxServer.objects.filter(active=True, exception=False, zone=1, decommissioned=False, rsyslog='None')[:25]
-    #server_list = LinuxServer.objects.filter(name='d1svn')
+    #server_list = LinuxServer.objects.filter(name='d3archtestapp01')
 
     counter = 0
 
@@ -53,11 +53,11 @@ def update_server():
                 stdin, stdout, stderr = client.exec_command(command)
                 print "New rsyslog version:"
                 try:
-                    rsyslog_version = stdout.readlines()
-                    print str(rsyslog_version[0]).rstrip()
+                    rsyslog_version = stdout.readlines()[0]
+                    print str(rsyslog_version).rstrip()
                 except:
-                #    rsyslog_version = "None"
-                     print "Some sort of error here."
+                    rsyslog_version = "None"
+                    print "Some sort of error here."
                 
 
                 #check existing value, if it exists, don't update
