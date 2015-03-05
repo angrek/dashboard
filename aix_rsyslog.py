@@ -21,7 +21,7 @@ django.setup()
 def update_server():
 
     #server_list = AIXServer.objects.all()
-    server_list = AIXServer.objects.filter(decommissioned=False, active=True)
+    server_list = AIXServer.objects.filter(decommissioned=False)
     #server_list = AIXServer.objects.filter(name='t8sandbox')
 
     counter = 0
