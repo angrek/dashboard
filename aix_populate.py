@@ -70,7 +70,7 @@ def populate():
     print "Frames:"
     print frames
     #frames = ['795A-9119-FHB-SN023D965']
-    #frames = ['824A-8286-42A-SN21950BV']
+    #frames = ['770A-9117-MMB-SN101D17P']
 
     for frame in frames:
 
@@ -129,30 +129,24 @@ def populate():
                 server = AIXServer.objects.get(name=server_name)
                 print '1'
                 print server.frame
-                print frame
+                print frame.name
+                old_frame = str(server.frame).rstrip()
+                new_frame = str(frame.name).rstrip()
                 print "frame id"
                 print frame.id
-                if server.frame != frame:
+                if old_frame != new_frame:
                     #AIXserver.objects.filter(name=server).update(frame=frame.id)
-                    print '2'
                     server.frame = frame
-                    print '2.5'
                     server.save()
                     #server.update(frame=frame.id)
-                    print '3'
-                    test = "test"
-                    print '4'
-                    change_message = "Changed frame for " + str(server_name) + " from " + str(server.frame) + " to " + str(frame.name)
-                    print '4'
+                    change_message = "Changed frame for " + str(server_name) + " from " + old_frame + " to " + new_frame
                     LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message=change_message)
                     print '5'
             except:
                 print "---------"
                 print frame.name
                 print len(frame.name)
-                print len(str(frame))
                 print server.frame
-                print len(str(server.frame))
                 print len(str(server.frame))
                 print server_name.rstrip()
                 print len(server_name.rstrip())
