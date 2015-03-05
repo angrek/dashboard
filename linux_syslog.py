@@ -21,8 +21,8 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.all()
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='uprspegaapp01')
+    #server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(name='ustsesbdb')
 
     counter = 0
 
@@ -62,7 +62,7 @@ def update_server():
                     utilities.log_change(str(server), 'syslog', str(server.syslog), str(syslog_version))
                     LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
                 if str(rsyslog_version) != str(server.rsyslog):
-                    utilities.log_change(str(server), 'syslog', str(server.rsyslog), str(rsyslog_version))
+                    utilities.log_change(str(server), 'rsyslog', str(server.rsyslog), str(rsyslog_version))
                     LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
