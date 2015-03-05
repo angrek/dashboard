@@ -352,6 +352,7 @@ class LinuxServer(models.Model):
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
     syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
+    rsyslog_r = models.NullBooleanField(default=False, blank=True)
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
