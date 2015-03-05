@@ -41,6 +41,8 @@ mail william.rehfield@wellcare.com -s 'starting aix storage' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_storage.py
 mail william.rehfield@wellcare.com -s 'starting aix xcelys' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_xcelys.py
+mail william.rehfield@wellcare.com -s 'starting aix rsyslog' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_rsyslog.py
 /home/wrehfiel/ENV/dashboard/historical_data_aix.py
 mail william.rehfield@wellcare.com -s 'aix scripts are done' < 1.txt
 mail robert.blayet@wellcare.com -s 'aix scripts are done' < 1.txt
