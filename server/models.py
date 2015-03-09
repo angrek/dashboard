@@ -87,6 +87,7 @@ class AIXServer(models.Model):
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True)
+    application_paths = models.TextField(blank=True, null=True)
     #relationship = models.ManyToManyField('self',
     #    through='Relationships',
     #    symmetrical=False,
@@ -358,6 +359,7 @@ class LinuxServer(models.Model):
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True)
+    application_paths = models.TextField(blank=True, null=True)
     log = models.TextField(blank=True, null=True)
 
     class Meta:
