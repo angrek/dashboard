@@ -21,8 +21,8 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.all()
-    #server_list = LinuxServer.objects.filter(decommissioned=False)
-    server_list = LinuxServer.objects.filter(name='ustsesbdb')
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(name='ustsesbdb')
 
     counter = 0
 

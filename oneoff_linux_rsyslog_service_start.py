@@ -27,7 +27,7 @@ def update_server():
     f.close
     #server_list = LinuxServer.objects.all()
     #zone = NonProduction = 1
-    server_list = LinuxServer.objects.filter(active=True, exception=False, zone=1, decommissioned=False, rsyslog_r=0)
+    server_list = LinuxServer.objects.filter(zone=2, decommissioned=False, rsyslog_r=0)
     #server_list = LinuxServer.objects.filter(name='b1esbapp')
 
     counter = 0
