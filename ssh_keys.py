@@ -144,11 +144,11 @@ def update_server():
                 #now reopen it in write mode
                 file = open(known_hosts, "w")
                 for line in lines:
-                    if re.search(server.name, line):
-                        print "Found name " + server.name + " entry."
+                    if not re.search(server.name, line):
                         file.write(line)
-                    if re.search(server.ip_address, line):
-                        print "Found IP " + server.ip_address + " entry."
+
+                for line in lines:
+                    if not re.search(server.ip_address, line):
                         file.write(line)
                 file.close()
 
