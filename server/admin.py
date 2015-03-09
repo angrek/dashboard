@@ -71,11 +71,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
-    list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'asm', 'emc_clar', 'emc_sym']
+    list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'emc_clar', 'emc_sym']
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text']
+    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address', 'asm'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text']
     #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/

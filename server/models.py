@@ -69,6 +69,7 @@ class AIXServer(models.Model):
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=10, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    asm = models.NullBooleanField(default=False, blank=True)
     powerha = models.CharField(max_length=20, blank=True, null=True, default='None')
     centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
     aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
