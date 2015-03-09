@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from server.models import AIXServer, HistoricalAIXData
 from server.models import LinuxServer, HistoricalLinuxData
+from server.models import Frame
 from django.contrib.admin.models import LogEntry
 
 from django.contrib.auth.decorators import login_required
@@ -29,6 +30,11 @@ def jquerytest(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/jquerytest.html', context)
+
+def frames(request):
+    frames = Frame.objects.all().exclude(name='None')
+    context = {'frames' : frames}
+    return render(request, 'server/frames.html', context)
 
 def stacks(request):
     red_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
