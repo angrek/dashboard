@@ -1,3 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional1.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
+<head>
+    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
+    <meta http-equiv='content-language' content='en-us' />
+    <title>Test</title>
+
+<script type='text/javascript'
+    src="/static/js/jquery.min.js">
+    </script>
+<script type='text/javascript'
+    src="/static/js/test.js">
+    </script>
+<link type='text/css' href='/static/css/server_detail.css' rel='stylesheet' />
+</head>
+<body>
+<p>
+jQuery is not loaded.
+</p>
+
+<div class='server_detail_left'>
 <h1>{{ server }}</h1>
 
 <ul>
@@ -25,9 +47,20 @@
     <li>EMC Clariion: {{ server.emc_clar }}</li>
     <li>EMC Sym: {{ server.emc_sym }}</li>
 </ul>
-<p>
-<p>
+</div>
 
+<div class='server_detail_right'>
+<br>
+<h3>Last 20 logged changes</h3>
+<ul>
+{% for entry in log %}
+<li> {{ entry.action_time }} - {{ entry.change_message }} </li>
+{% endfor %}
+</ul>
+</div>
+<br>
+<br>
+<div class='server_graphs'>
 <a href="http://p795agmon/?r=hour&cs=&ce=&m=cpu_used_report&s=by+name&c={{ frame_short_name }}&h={{ server.name }}.wellcare.com&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4">Full Ganglia Page</a>
 
 </br>
@@ -121,3 +154,6 @@
 <a href="http://p795agmon/graph_all_periods.php?c={{ frame_short_name }}&h={{ server.name }}.wellcare.com&v=203570.00&m=disk_write&r=week&z=small&jr=&js=&st=1422546783&vl=bytes%2Fsec&ti=Total%20Disk%20Write%20I%2FO%20per%20second&z=large">
 <img src="http://p795agmon/graph.php?c={{ frame_short_name }}&h={{ server.name }}.wellcare.com&v=203570.00&m=disk_write&r=week&z=small&jr=&js=&st=1422546783&vl=bytes%2Fsec&ti=Total%20Disk%20Write%20I%2FO%20per%20second">
 </a>
+</div>
+</body>
+</html>
