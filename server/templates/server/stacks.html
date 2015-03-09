@@ -12,7 +12,7 @@
 <script type='text/javascript'
     src="/static/js/test.js">
     </script>
-<link type='text/css' href='/static/css/test.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/stacks.css' rel='stylesheet' />
 </head>
 <body>
 <p>
@@ -22,19 +22,29 @@ jQuery is not loaded.
 <h1>Wellcare UNIX Stacks</h1>
 <br>
 Click on the individual server name for a detail page.
+
+
+
+<div class='red_servers'>
 <h3>Red</h3>
+<ul class='red_servers'>
 {% if red_servers %}
     <ul>
     {% for server in red_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+            <li><a class='red' href="/server/{{ server.name }}/">{{ server.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
+</ul>
+</div>
 
 
+
+<div class='orange_servers'>
 <h3>Orange</h3>
+<ul class='orange_servers'>
 {% if orange_servers %}
     <ul>
     {% for server in orange_servers %} 
@@ -44,8 +54,13 @@ Click on the individual server name for a detail page.
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
+</ul>
+</div>
 
+
+<div class='yellow_servers'>
 <h3>Yellow</h3>
+<ul class='yellow_servers'>
 {% if yellow_servers %}
     <ul>
     {% for server in yellow_servers %} 
@@ -55,8 +70,13 @@ Click on the individual server name for a detail page.
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
+</ul>
+</div>
 
+
+<div class='green_servers'>
 <h3>Green</h3>
+<ul class='green_servers'>
 {% if green_servers %}
     <ul>
     {% for server in green_servers %} 
@@ -66,4 +86,5 @@ Click on the individual server name for a detail page.
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
-
+</ul>
+</div>
