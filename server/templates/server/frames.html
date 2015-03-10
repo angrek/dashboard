@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv='content-type' content='text/html' charset=utf-8' />
     <meta http-equiv='content-language' content='en-us' />
-    <title>Test</title>
+    <title>Frames</title>
 
 <script type='text/javascript'
     src="/static/js/jquery.min.js">
@@ -22,71 +22,24 @@ jQuery is not loaded.
 <h1>Wellcare UNIX Frames</h1>
 <br>
 Click on the individual server name for a detail page.
-<ul>
-{% for frame in frames %}
-    <li>{{ frame.name }}
-{% endfor %}
-</ul>
-<div class='red_servers'>
-<h3>Red</h3>
-<ul class='red_servers'>
-{% if red_servers %}
-    <ul>
-    {% for server in red_servers %} 
-            <li><a class='red' href="/server/{{ server.name }}/">{{ server.name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Server is available.</p>
-{% endif %}
-</ul>
-</div>
 
-
-
-<div class='orange_servers'>
-<h3>Orange</h3>
-<ul class='orange_servers'>
-{% if orange_servers %}
-    <ul>
-    {% for server in orange_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Server is available.</p>
-{% endif %}
-</ul>
-</div>
-
+{% for t in sorted_frame_list %}
+{% for key,value in frame_dict.items %}
+{% if key == t %}
 
 <div class='yellow_servers'>
-<h3>Yellow</h3>
-<ul class='yellow_servers'>
-{% if yellow_servers %}
-    <ul>
-    {% for server in yellow_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+<h3>{{ key }}</h3>
+<ul class='frames'>
+    {% for server in value %}
+    <li><a class='yellow' href="/server/{{ server.name }}/">{{ server.name }}</a></li>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>No Server is available.</p>
-{% endif %}
 </ul>
 </div>
-
-
-<div class='green_servers'>
-<h3>Green</h3>
-<ul class='green_servers'>
-{% if green_servers %}
-    <ul>
-    {% for server in green_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Server is available.</p>
 {% endif %}
-</ul>
-</div>
+{% endfor %}
+{% endfor %}
+<br>
+<br>
+
+
+

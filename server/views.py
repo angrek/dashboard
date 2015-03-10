@@ -32,8 +32,26 @@ def jquerytest(request):
     return render(request, 'server/jquerytest.html', context)
 
 def frames(request):
-    frames = Frame.objects.all().exclude(name='None')
-    context = {'frames' : frames}
+    frames = Frame.objects.all().exclude(name='None').order_by('name')
+    count_dict = {}
+    frame_dict = {}
+    for frame in frames:
+        server_count = AIXServer.objects.filter(decommissioned=False, frame=frame).count()
+        count_dict[frame.name] = server_count
+    #trying to sort them here
+    sorted_frame_list = []
+    test_list = []
+    for key, value in sorted(count_dict.iteritems(), key=lambda (k,v): (v,k)):
+        new_frame = Frame.objects.get(name=key)
+        sorted_frame_list.append(new_frame)
+        test_list.append(new_frame)
+    sorted_frame_list.reverse()
+    test_list.reverse()
+
+    for frame in sorted_frame_list:
+        server_list = AIXServer.objects.filter(decommissioned=False, frame=frame).order_by('name')
+        frame_dict[frame] = server_list
+    context = {'frames' : frames, 'frame_dict' : frame_dict, 'sorted_frame_list':sorted_frame_list, 'test_list': test_list}
     return render(request, 'server/frames.html', context)
 
 def stacks(request):
