@@ -71,11 +71,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'asm', 'emc_clar', 'emc_sym']
-    list_filter = ['owner', 'stack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'asm', 'tmef', 'emc_clar', 'emc_sym']
+    list_filter = ['stack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'tmef', 'emc_clar', 'emc_sym', 'owner']
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address', 'asm'], ['os', 'os_level'], 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address', 'asm'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
     #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -252,11 +252,11 @@ class LinuxServerAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
-    search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
+    list_display = ['name', 'owner', 'stack', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
+    search_fields = ['name', 'owner', 'stack', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'owner', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -267,11 +267,11 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
-    list_filter = ['active', 'exception', 'os', 'zone', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
-    search_fields = ['name', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup']
+    list_display = ['name', 'active','exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
+    list_filter = ['active', 'exception', 'stack', 'os', 'zone', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
+    search_fields = ['name', 'os', 'os_level', 'stack', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'application_paths']
+    fields = ['name', 'active', 'exception', 'stack', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'application_paths']
     resource_class = LinuxServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
