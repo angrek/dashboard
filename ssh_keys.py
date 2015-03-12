@@ -140,12 +140,18 @@ def update_server():
                 known_hosts = '/home/' + username + '/.ssh/known_hosts'
                 file = open(known_hosts)
                 lines = file.readlines()
-                file.close
+                file.close()
                 #now reopen it in write mode
                 file = open(known_hosts, "w")
                 for line in lines:
                     if not re.search(server.name, line):
                         file.write(line)
+                file.close()
+
+                file = open(known_hosts)
+                lines = file.readlines()
+                file.close()
+                file = open(known_hosts, 'w')
 
                 for line in lines:
                     if not re.search(server.ip_address, line):
