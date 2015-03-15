@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'import_export',
     'todo',
     'server',
+    'timetracker',
     'gunicorn',
 )
 

@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^server/', include('server.urls')),
 
     url(r'^todo/', include('todo.urls')),
+    url(r'^todo/', include('todo.urls')),
 
 
     url(r'^$', hello),
