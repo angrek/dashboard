@@ -326,8 +326,7 @@ def detail(request, aixserver_name):
     log = LogEntry.objects.filter(object_repr=aixserver_name).order_by('-action_time')[:20]
     server = get_object_or_404(AIXServer, pk=aixserver_name)
     frame = get_object_or_404(AIXServer, pk=aixserver_name).frame
-    frame_short_name = str(frame)[:3] + '-' + str(frame)[-5:]
-    return render(request, 'server/detail.html', {'server': server, 'log': log, 'frame_short_name': frame_short_name})
+    return render(request, 'server/detail.html', {'server': server, 'log': log, 'frame': frame})
 
 
 
