@@ -26,8 +26,8 @@ class Zone(models.Model):
 
 class Frame(models.Model):
     name = models.CharField(max_length=30, blank=True, null=True)
-    short_name = models.CharField(max_length=15, blank=True, null=True)
-    firmware_version = models.CharField(max_length=15, blank=True, null=True)
+    short_name = models.CharField(max_length=15, blank=True, null=True, default='None')
+    firmware_version = models.CharField(max_length=15, blank=True, null=True, default='None')
 
 
     class meta:
