@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^/admin/', include(admin.site.urls)),
 
     url(r'^server/', include('server.urls')),
+    url(r'^timetracker/', include('timetracker.urls')),
 
     url(r'^todo/', include('todo.urls')),
     url(r'^todo/', include('todo.urls')),
