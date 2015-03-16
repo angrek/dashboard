@@ -28,7 +28,7 @@ Click on the individual server name for a detail page.
 {% if key == t %}
 
 <div class='yellow_servers'>
-<h3>{{ key }}</h3>
+<h3><a href="http://p795agmon/?r=hour&cs=&ce=&s=by+name&c={{ key }}&tab=m&vn=">{{ key }}</a></h3>
 <ul class='frames'>
     {% for server in value %}
     <li><a class='yellow' href="/server/{{ server.name }}/">{{ server.name }}</a></li>

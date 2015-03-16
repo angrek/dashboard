@@ -344,7 +344,7 @@ class StackAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 class FrameAdmin(admin.ModelAdmin):
-    list_display = ['name',]
+    list_display = ['name','short_name']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
