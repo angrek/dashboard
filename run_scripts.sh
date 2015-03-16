@@ -13,6 +13,8 @@ mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_populate.py
 mail william.rehfield@wellcare.com -s 'starting aix power7 inventory' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_power7_inventory.py
+mail william.rehfield@wellcare.com -s 'starting aix tmef' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_tmef.py
 mail william.rehfield@wellcare.com -s 'starting aix powerha' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_powerha.py
 mail william.rehfield@wellcare.com -s 'starting aix ssh keys' < 1.txt
