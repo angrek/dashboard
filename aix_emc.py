@@ -20,51 +20,57 @@ django.setup()
 
 
 def update_server():
-
+    counter = 0
     #server_list = AIXServer.objects.all()
     server_list = AIXServer.objects.filter(decommissioned=False)
     #server_list = AIXServer.objects.filter(name__contains='ufts')
     for server in server_list:
-
+        counter+=1
+        print server.name
         if utilities.ping(server):
 
             client = SSHClient()
             if utilities.ssh(server, client):
-
+            
                 #get the emc_clariion version
                 stdin, stdout, stderr = client.exec_command('lslpp -l | grep -i EMC.CLARIION.fcp | uniq')
                 rows = stdout.readlines()
 
                 if rows:
-                    row = rows[0]
-                    #split the lines and grab the first one
-                    temp = row.split("\r")[0]
-                    p = re.compile(r' +')
-                    temp2 = p.split(temp)
-                    emc_clar = temp2[2]
+                    try:
+                        row = rows[0]
+                        #split the lines and grab the first one
+                        temp = row.split("\r")[0]
+                        p = re.compile(r' +')
+                        temp2 = p.split(temp)
+                        emc_clar = temp2[2]
 
-                    #if existing value is the same, don't update
-                    if str(emc_clar) != str(server.emc_clar):
-                        utilities.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
-                        AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
+                        #if existing value is the same, don't update
+                        if str(emc_clar) != str(server.emc_clar):
+                            utilities.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
+                            AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
+                    except:
+                        pass
 
 
                 #get the emc_sym disks
                 stdin2, stdout2, stderr2 = client.exec_command('lslpp -l | grep -i EMC.Symmetrix.fcp | uniq')
                 rows2 = stdout2.readlines()
                 if rows2:
-                    row = rows2[1]
-                    temp = row.split("\r")[0]
-                    p = re.compile(r' +')
-                    temp2 = p.split(temp)
-                    emc_sym = temp2[1]
+                    try:
+                        row = rows2[1]
+                        temp = row.split("\r")[0]
+                        p = re.compile(r' +')
+                        temp2 = p.split(temp)
+                        emc_sym = temp2[1]
 
-                    if str(emc_sym) != str(server.emc_sym):
+                        if str(emc_sym) != str(server.emc_sym):
 
-                        utilities.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
+                            utilities.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
 
-                        AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
-
+                            AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
+                    except:
+                        pass
 
 
 #start execution
