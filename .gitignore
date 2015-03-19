@@ -7,6 +7,7 @@ ALL_AIX.072114.list.orig.good
 mysql/*
 server/migrations
 todo/migrations
+timetracker/migrations
 .gitignore
 server/*.pyc
 todo/*.pyc

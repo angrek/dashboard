@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
+    <meta http-equiv='content-language' content='en-us' />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block title %}
+    {% endblock %}
+
+    <script type='text/javascript' src="/static/js/jquery.min.js"></script>
+    <script type='text/javascript' src="/static/js/test.js"></script>
+
+    <link type='text/css' href='/static/css/test.css' rel='stylesheet' />
+    <link type='text/css' href='/static/css/timetracker.css' rel='stylesheet' />
+    <link rel="icon" href='/static/images/favicon.ico'>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">UNIX Engineering Time Tracker</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+               {% if user.is_authenticated %}
+                <li class="navbar-text">Welcome, {{ user.username }}</li>
+                <li><a href="/accounts/logout/">Logout</a></li>
+               {% else %}
+                <li><a href="/accounts/login/">Login</a></li>
+               {% endif %}
+
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/timetracker/">Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="/timetracker/add_entry">Add Entry</a></li>
+            <li><a href="/timetracker/show_entries">Show Entries</a></li>
+            <li><a href="/timetracker/add_report">Create Report</a></li>
+            <li><a href="/timetracker/show_reports">Show Reports</a></li>
+            <li><a href="/timetracker/add_category">Add Category</a></li>
+            <li><a href="/timetracker/show_categories">Show Categories</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""></a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""></a></li>
+            <li><a href=""></a></li>
+            <li><a href=""></a></li>
+          </ul>
+        </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    {% block content %}
+    {% endblock %}
+
+    </div>
+</body>
+</html

@@ -1,8 +1,14 @@
 
+<h2>Welcome to the UNIX Engineering Database</h2>
 {% extends "base.html" %}
 
 {% block content %}
 
+{% if user.is_authenticated %}
+<h3>Hello {{ user.username }}!</h3>
+{% else %}
+<h3>Please Log In</h3>
+{% endif %}
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}

@@ -1,0 +1,26 @@
+{% extends "timetracker/test_base.html" %}
+
+{% block title %}
+<title>Categories</title>
+{% endblock %}
+
+{% block content %}
+<table class="categories">
+<thead>
+    <tr>
+        <th class="row-1 row-name">Category Name</th>
+        <th class="row-2 row-short-name">Short Name</th>
+        <th class="row-3 row-description">Description</th>
+    </tr>
+</thead>
+<tbody>
+{% for category in categories %}
+<tr>
+    <td>{{ category.name }}</td>
+    <td>{{ category.short_name }}</td>
+    <td>{{ category.description }}</td>
+</tr>
+{% endfor %}
+
+<br><br>
+{% endblock %}

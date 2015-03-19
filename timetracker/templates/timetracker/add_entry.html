@@ -1,0 +1,32 @@
+{% extends "timetracker/test_base.html" %}
+
+{% block title %}
+<title>Add Entry</title>
+{% endblock %}
+
+{% block content %}
+
+<form action='add_entry' method='post'>{% csrf_token %}
+<h4>Add your time entries for today</h4>
+<table>
+<thead>
+    <tr>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Hours</th>
+        <th>Notes</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td><input id='description' type='text' name='description' maxlength='40'></td>
+        <td><input id='category' type='text' name='category' maxlength='30'></td>
+        <td><input id='hours' type='text' name='hours' maxlength='4'></td>
+        <td><input id='notes' type='text' name='notes' maxlength='40'></td>
+    </tr>
+</tbody>
+</table>
+<input type='submit' value='Submit' />
+</form>
+
+{% endblock %}

@@ -1,28 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional1.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
-<head>
-    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
-    <meta http-equiv='content-language' content='en-us' />
-    <title>Index</title>
+{% extends "timetracker/test_base.html" %}
 
-<script type='text/javascript'
-    src="/static/js/jquery.min.js">
-    </script>
-<script type='text/javascript'
-    src="/static/js/test.js">
-    </script>
-<link type='text/css' href='/static/css/test.css' rel='stylesheet' />
-</head>
-<body>
-<p>
-jQuery is not loaded.
-</p>
-<h3>UNIX Engineering Time Tracking Home</h3>
+{% block title %}
+<title>Time Tracking Index</title>
+{% endblock %}
 
-<ul>
-{% for entry in entries %}
-    <li> {{ entry.date }} - {{ entry.username }} </li>
-{% endfor %}
-</ul>
-    
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<h4>Welcome {{ user.username }}!</h4>
+{% else %}
+HACKER!!
+{% endif %}
+
+
+
+
+{% endblock %}
+

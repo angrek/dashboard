@@ -1,0 +1,34 @@
+{% extends "timetracker/test_base.html" %}
+
+{% block title %}
+<title>Time Entries</title>
+{% endblock %}
+
+{% block content %}
+<table class="entries">
+<thead>
+    <tr>
+        <th class="row-1 row-date">Date</th>
+        <th class="row-2 row-username">Username</th>
+        <th class="row-3 row-description2">Description</th>
+        <th class="row-4 row-category">Category</th>
+        <th class="row-5 row-hours">Hours</th>
+        <th class="row-6 row-notes">Notes</th>
+    </tr>
+</thead>
+<tbody>
+
+{% for entry in entries %}
+<tr>
+    <td>{{ entry.date }}</td>
+    <td>{{ entry.username }}</td>
+    <td>{{ entry.description }}</td>
+    <td>{{ entry.category }}</td>
+    <td>{{ entry.hours }}</td>
+    <td>{{ entry.notes }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
