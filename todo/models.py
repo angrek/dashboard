@@ -75,12 +75,18 @@ class ItemCompleted(Item):
         proxy=True
         verbose_name = "Items Completed"
         verbose_name_plural = "Items Completed"
+    def __unicode__(self):
+        return self.title
+
 
 class PersonalTodo(Item):
     class Meta:
         proxy=True
         verbose_name = "Personal Todo List"
         verbose_name_plural = "Personal Todo List"
+
+    def __unicode__(self):
+        return self.title
 
 class BugList(Item):
     class Meta:
@@ -89,7 +95,16 @@ class BugList(Item):
         verbose_name_plural = "Bug List"
 
     def __unicode__(self):
-        return self.name
+        return self.title
+
+class TimeTracking(Item):
+    class Meta:
+        proxy=True
+        verbose_name = "TimeTracking"
+        verbose_name_plural = "TimeTracking"
+
+    def __unicode__(self):
+        return self.title
 
 class Comment(models.Model):
     """
