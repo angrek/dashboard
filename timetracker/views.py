@@ -38,11 +38,6 @@ def add_entry(request):
         #A POST request: Handle form upload
         form = PostForm(request.POST) #BIND data from request.POST into a PostForm
 
-        #if data is valid, create a new post and redirect the user
-        #if form.is_valid():
-        #description = form.cleaned_data['description']
-        #category = form.cleaned_data['category']
-        #hours = form.cleaned_data['hours']
         #notes = form.cleaned_data['notes']
         description = request.POST['description']
         hours = request.POST['hours']
@@ -57,6 +52,13 @@ def add_entry(request):
     return render(request, 'timetracker/add_entry.html', {
         'form': form,
     })
+
+@login_required
+def show_entries(request):
+    date = datetime.date.today()
+    entries = Entry.objects.filter(username=request.user, date=date)
+    context = {'entries': entries}
+    return render(request, 'timetracker/show_entries.html', context)
 
 @login_required
 def add_report(request):
@@ -90,12 +92,6 @@ def show_categories(request):
     categories = Category.objects.order_by('name')
     context = {'categories': categories}
     return render(request, 'timetracker/show_categories.html', context)
-
-@login_required
-def show_entries(request):
-    entries = Entry.objects.order_by('date')
-    context = {'entries': entries}
-    return render(request, 'timetracker/show_entries.html', context)
 
 
 @login_required
