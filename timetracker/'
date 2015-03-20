@@ -16,7 +16,6 @@ from django.template import RequestContext, Context
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseNotFound
-from django.http import Http404
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -58,14 +57,16 @@ def add_entry(request):
     })
 
 @login_required
-def show_entries(request, date):
-    request.GET.get('date')
-    if date == '0000-00-00':
+def show_entries(request, year, month, day):
+    request.GET.get('year')
+    request.GET.get('month')
+    request.GET.get('day')
+    if year == '0000':
         date = datetime.date.today()
     else:
-        date = datetime.date(int(date[:4]), int(date[5:7]), int(date[-2:]))
+        date = datetime.date(int(year), int(month), int(day))
     previous = (date - timedelta(days = 1)).strftime('%Y-%m-%d')
-    next = (date + timedelta(days = 1)).strftime('%Y-%m-%d')
+    next = date + timedelta(days = 1)
     entries = Entry.objects.filter(username=request.user, date=date)
     context = {'entries': entries, 'previous':previous, 'next':next, 'date':date}
     return render(request, 'timetracker/show_entries.html', context)
@@ -87,7 +88,7 @@ def add_report(request):
             categories = Category.objects.order_by('name')
             return HttpResponseRedirect('show_categories', {'categories': categories})
 
-    return render(request, 'timetracker/add_report.html', {
+    return render(request, 'timetracker/add_category.html', {
         'form': form,
     })
 
@@ -99,9 +100,6 @@ def show_reports(request):
 
 @login_required
 def show_categories(request):
-    user = request.user
-    if not user.groups.filter(name='category_admin').exists():
-        raise Http404    
     categories = Category.objects.order_by('name')
     context = {'categories': categories}
     return render(request, 'timetracker/show_categories.html', context)
@@ -109,9 +107,6 @@ def show_categories(request):
 
 @login_required
 def add_category(request):
-    user = request.user
-    if not user.groups.filter(name='category_admin').exists():
-        raise Http404    
     if request.method == 'GET':
         form = PostForm()
     else:

@@ -9,10 +9,13 @@
     {% block title %}
     {% endblock %}
 
-    <script type='text/javascript' src="/static/js/jquery.min.js"></script>
+    <script type='text/javascript' src="/static/jquery-ui-1.9.1/ui/jquery-ui.js"</script>
+    <script type='text/javascript' src="/static/jquery-ui-1.9.1/jquery-1.8.2.js"></script>
     <script type='text/javascript' src="/static/js/test.js"></script>
+    <script type='text/javascript' src="/static/js/test2.js"></script>
 
     <link type='text/css' href='/static/css/test.css' rel='stylesheet' />
+    <link type='text/css' href='/static/jquery-ui-1.9.1/themes/base/jquery.ui.all.css' rel='stylesheet' />
     <link type='text/css' href='/static/css/timetracker.css' rel='stylesheet' />
     <link rel="icon" href='/static/images/favicon.ico'>
 
@@ -59,9 +62,10 @@
           <ul class="nav nav-sidebar">
             <li class="active"><a href="/timetracker/">Overview <span class="sr-only">(current)</span></a></li>
             <li><a href="/timetracker/add_entry">Add Entry</a></li>
-            <li><a href="/timetracker/show_entries">Show Entries</a></li>
+            <li><a href="/timetracker/show_entries/0000-00-00">Show Entries</a></li>
             <li><a href="/timetracker/add_report">Create Report</a></li>
             <li><a href="/timetracker/show_reports">Show Reports</a></li>
+            <li><a href="/timetracker/show_reports">Manager Reports</a></li>
             <li><a href="/timetracker/add_category">Add Category</a></li>
             <li><a href="/timetracker/show_categories">Show Categories</a></li>
           </ul>
