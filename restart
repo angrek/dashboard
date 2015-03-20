@@ -1,0 +1,4 @@
+#!/bin/bash
+killall gunicorn
+/home/wrehfiel/ENV/bin/gunicorn_start&
+dzdo /usr/local/nginx/sbin/nginx -s reload
