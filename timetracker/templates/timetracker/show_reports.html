@@ -1,0 +1,34 @@
+{% extends "timetracker/test_base.html" %}
+
+{% block title %}
+<title>View Report</title>
+{% endblock %}
+
+{% block content %}
+
+<form action='edit_report' method='post'>{% csrf_token %}
+
+<h4>Your requested report from {{ start_date }} to {{ end_date }}</h4>
+
+<table class="entries">
+<thead>
+    <tr>
+        <th class="row-1 row-description2">Description</th>
+        <th class="row-2 row-category">Category</th>
+        <th class="row-3 row-hours">Hours</th>
+        <th class="row-4 row-notes">Notes</th>
+    </tr>
+</thead>
+<tbody>
+{% for entry in entries %}
+    <tr>
+        <td>{{ entry.description }}</td>
+        <td>{{ entry.category }}</td>
+        <td>{{ entry.hours }}</td>
+        <td>{{ entry.notes }}</td>
+    <tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %} 

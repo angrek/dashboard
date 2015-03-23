@@ -1,29 +1,28 @@
 {% extends "timetracker/test_base.html" %}
 
 {% block title %}
-<title>Add Category</title>
+<title>Add Report</title>
 {% endblock %}
 
 {% block content %}
 
-<form action='add_category' method='post'>{% csrf_token %}
-<h4>Add Category</h4>
-<input type="text" name="date" id="date">
+<form action='add_report' method='post'>{% csrf_token %}
+<h4>Create Report</h4>
 <table>
-<thead>
-    <tr>
-        <th>Category Name</th>
-        <th>Short Name</th>
-        <th>Description</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td><input id='name' type='text' name='name' maxlength='30'></td>
-        <td><input id='short_name' type='text' name='short_name' maxlength='3'></td>
-        <td><input id='description' type='text' name='description' maxlength='40'></td>
-    </tr>
-</tbody>
+<div class='demo'>
+<tr>
+    <td>From:</td>
+    <td> <input type="text" name="start_date" id="datepicker"></td>
+</tr>
+</div>
+
+<div class='demo2'>
+<tr>
+    <td>To:</td>
+    <td> <input type="text" name="end_date" id="datepicker2"></td>
+</tr>
+
+</div>
 </table>
 <input type='submit' value='Submit' />
 </form>

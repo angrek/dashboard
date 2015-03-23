@@ -79,23 +79,55 @@ def add_report(request):
         form = PostForm(request.POST) #BIND data from request.POST into a PostForm
 
         #if data is valid, create a new post and redirect the user
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            short_name = form.cleaned_data['short_name']
-            description = form.cleaned_data['description']
-            category = Category.objects.create(name=name, short_name=short_name, description=description)
-            categories = Category.objects.order_by('name')
-            return HttpResponseRedirect('show_categories', {'categories': categories})
+        start_date = request.POST.get('start_date', False)
+        end_date = request.POST.get('end_date', False)
+        entries = Entry.objects.filter(username=request.user).order_by('date')
+        context = {'entries':entries, 'start_date': start_date, 'end_date':end_date}
+        return render(request, 'timetracker/view_report.html', context)
+        #return HttpResponseRedirect('view_report', {'start_date': start_date,'end_date':end_date})
+        #return HttpResponseRedirect('view_report', {'start_date': start_date,'end_date':end_date})
 
     return render(request, 'timetracker/add_report.html', {
         'form': form,
     })
 
 @login_required
+def view_report(request):
+    if request.method == 'GET':
+        #A POST request: Handle form upload
+        form = PostForm(request.POST) #BIND data from request.POST into a PostForm
+
+        #if data is valid, create a new post and redirect the user
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        entries = Entry.objects.filter(username=request.user).order_by('date')
+        start_date = '2015-03-13'
+        context = {'entries': entries, 'start_date':start_date, 'end_date':end_date}
+        #FIXME testing one vs the other
+        #return HttpResponseRedirect('view_report', {'entries':entries, 'start_date': start_date, 'end_date':end_date})
+        return render(request, 'timetracker/view_report.html', context)
+        #form = PostForm()
+    else:
+        #A POST request: Handle form upload
+        form = PostForm(request.POST) #BIND data from request.POST into a PostForm
+
+        #if data is valid, create a new post and redirect the user
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        entries = Entry.objects.filter(username=request.user).order_by('date')
+        context = {'entries': entries, 'start_date':start_date, 'end_date':end_date}
+        #FIXME testing one vs the other
+        #return HttpResponseRedirect('view_report', {'start_date': start_date})
+        return render(request, 'timetracker/view_report.html', context)
+    entries = Entry.objects.order_by('date')
+    context = {'entries': entries}
+    return render(request, 'timetracker/show_reports.html', context)
+
+@login_required
 def show_reports(request):
     entries = Entry.objects.order_by('date')
     context = {'entries': entries}
-    return render(request, 'timetracker/report.html', context)
+    return render(request, 'timetracker/show_reports.html', context)
 
 @login_required
 def show_categories(request):
