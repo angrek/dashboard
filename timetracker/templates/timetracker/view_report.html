@@ -8,8 +8,10 @@
 
 <form action='edit_report' method='post'>{% csrf_token %}
 
-<h4>Your requested report from {{ start_date }} to {{ end_date }}</h4>
+<h4>Your requested time entries from {{ start_date }} to {{ end_date }}</h4>
 
+{% for key, value in date_dict.items %}
+<br>
 <table class="entries">
 <thead>
     <tr>
@@ -21,7 +23,9 @@
     </tr>
 </thead>
 <tbody>
-{% for entry in entries %}
+
+
+    {% for entry in value %}
     <tr>
         <td>{{ entry.date }}</td>
         <td>{{ entry.description }}</td>
@@ -33,4 +37,37 @@
 </tbody>
 </table>
 
+{% endfor %}
+
+<br>
+<h4>Totals</h4>
+{% for key, value in date_totals.items %}
+{{ key }}
+<table class="entries2">
+<thead>
+    <tr>
+        <th class="row-1 row-category">Category</th>
+        <th class="row-2 row-hours">Hours</th>
+    </tr>
+</thead>
+<tbody>
+
+    {% for category,hours in value.items %}
+    <tr>
+        <td>{{ category }}</td>
+        <td>{{ hours }}</td>
+    <tr>
+    {% endfor %}
+</tbody>
+</table>
+<br>
+{% endfor %}
+
+<br>
 {% endblock %} 
+
+
+
+
+
+

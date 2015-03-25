@@ -1,0 +1,48 @@
+{% extends "timetracker/test_base.html" %}
+
+{% block title %}
+<title>Time Entries</title>
+{% endblock %}
+
+{% block content %}
+<table>
+<tr>
+    <td width='5%'><a href="/timetracker/daily_manager_report/{{ previous }}">previous</a></td>
+    <td width='90%'><center>{{ date }}</center></td>
+    <td width='5%'><a href="/timetracker/daily_manager_report/{{ next }}">next</a></td>
+<tr>
+</table>
+<table class="entries">
+<thead>
+    <tr>
+        <th class="row-1 row-description2">Description</th>
+        <th class="row-2 row-category">Category</th>
+        <th class="row-3 row-hours">Hours</th>
+        <th class="row-4 row-notes">Notes</th>
+    </tr>
+</thead>
+<tbody>
+
+{% for entry in entries %}
+<tr>
+    <td>{{ entry.description }}</td>
+    <td>{{ entry.category }}</td>
+    <td>{{ entry.hours }}</td>
+    <td>{{ entry.notes }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% for user in user_list %}
+<br>{{ user.id }}
+{{ user.username }}
+{% endfor %}
+-----
+{% for group in group_list %}
+<br>{{ group }}
+<br>{{ group.id }}
+{% endfor %}
+<br>
+{% endblock %}
+
+

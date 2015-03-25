@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^show_categories/$', views.show_categories, name='show_categories'),
     url(r'^show_entries/(?P<date>(.*)+)$', views.show_entries, name='show_entries'),
     url(r'^show_reports/$', views.show_reports, name='show_reports'),
-    url(r'^view_report/$', views.view_report, name='view_report'),
+    url(r'^view_report$', views.view_report, name='view_report'),
+    url(r'^daily_manager_report/(?P<date>(.*)+)$', views.daily_manager_report, name='daily_manager_report'),
 
 )

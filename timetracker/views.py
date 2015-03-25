@@ -10,7 +10,7 @@ from timetracker.forms import PostForm
 
 from django.contrib.admin.models import LogEntry
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
 from django.http import HttpResponse
@@ -70,6 +70,8 @@ def show_entries(request, date):
     context = {'entries': entries, 'previous':previous, 'next':next, 'date':date}
     return render(request, 'timetracker/show_entries.html', context)
 
+
+
 @login_required
 def add_report(request):
     if request.method == 'GET':
@@ -94,34 +96,53 @@ def add_report(request):
 @login_required
 def view_report(request):
     if request.method == 'GET':
-        #A POST request: Handle form upload
-        form = PostForm(request.POST) #BIND data from request.POST into a PostForm
-
-        #if data is valid, create a new post and redirect the user
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        entries = Entry.objects.filter(username=request.user).order_by('date')
-        start_date = '2015-03-13'
-        context = {'entries': entries, 'start_date':start_date, 'end_date':end_date}
-        #FIXME testing one vs the other
-        #return HttpResponseRedirect('view_report', {'entries':entries, 'start_date': start_date, 'end_date':end_date})
-        return render(request, 'timetracker/view_report.html', context)
-        #form = PostForm()
+        form = PostForm()
     else:
-        #A POST request: Handle form upload
+        #FIXME THIS IS THE ONE BEING USED, DUH
         form = PostForm(request.POST) #BIND data from request.POST into a PostForm
 
-        #if data is valid, create a new post and redirect the user
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
-        entries = Entry.objects.filter(username=request.user).order_by('date')
-        context = {'entries': entries, 'start_date':start_date, 'end_date':end_date}
-        #FIXME testing one vs the other
-        #return HttpResponseRedirect('view_report', {'start_date': start_date})
+        date_list = Entry.objects.filter(username=request.user, date__range=[start_date, end_date]).values_list('date', flat=True).distinct()
+
+        a = Category.objects.get(short_name='A')
+        i = Category.objects.get(short_name='I')
+        o = Category.objects.get(short_name='O')
+        p = Category.objects.get(short_name='P')
+
+        date_dict = {}
+        date_totals = {}
+        temp_totals = {}
+        for date in date_list:
+            entry = Entry.objects.filter(username=request.user, date=date)
+            date_dict[date] = entry
+
+            #we need the total hours for each category for the date
+            total_a = 0
+            total_i = 0
+            total_o = 0
+            total_p = 0
+            for x in entry:
+                hours = x.hours
+                if x.category == a:
+                    total_a += hours
+                elif x.category == i:
+                    total_i += hours
+                elif x.category == o:
+                    total_o += hours
+                elif x.category == p:
+                    total_i += hours
+            temp_totals = {'A': str(total_a), 'I': str(total_i), 'O': str(total_o), 'P': str(total_p)}
+            date_totals[date] = temp_totals
+
+        context = {'start_date':start_date, 'end_date':end_date, 'date_dict':date_dict, 'total_a':total_a, 'date_totals': date_totals, 'date_list': date_list}
         return render(request, 'timetracker/view_report.html', context)
+
+    #these don't reallyl need to be here, we'll never hit the page otherwise...
     entries = Entry.objects.order_by('date')
     context = {'entries': entries}
     return render(request, 'timetracker/show_reports.html', context)
+
 
 @login_required
 def show_reports(request):
@@ -140,6 +161,7 @@ def show_categories(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.groups.filter(name='timetracker_manager').count() == 1, login_url='/timetracker/denied/')
 def add_category(request):
     user = request.user
     if not user.groups.filter(name='category_admin').exists():
@@ -162,5 +184,32 @@ def add_category(request):
     return render(request, 'timetracker/add_category.html', {
         'form': form,
     })
+
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='timetracker_manager').count() == 1, login_url='/timetracker/denied/')
+def daily_manager_report(request, date):
+    temp_list = User.objects.all()
+    group_list = []
+    for user in temp_list:
+        if user.groups.filter(name='unix').exists():
+            group_list.append(user)
+    #group_list = Group.objects.all()
+
+    request.GET.get('date')
+    if date == '0000-00-00':
+        date = datetime.date.today()
+    else:
+        date = datetime.date(int(date[:4]), int(date[5:7]), int(date[-2:]))
+    previous = (date - timedelta(days = 1)).strftime('%Y-%m-%d')
+    next = (date + timedelta(days = 1)).strftime('%Y-%m-%d')
+   
+    entries = []
+    for name in group_list: 
+        t = Entry.objects.filter(username=name, date=date)
+        entries.append(Entry.objects.filter(username=name.id, date=date))
+    #FIXME MAKE THIS A DICT ASSOCIATED WITH EACH USERNAME
+    entries=entries[0]
+    context = {'entries': entries, 'previous':previous, 'next':next, 'date':date, 'group_list':group_list, 't':t}
+    return render(request, 'timetracker/daily_manager_report.html', context)
 
             
