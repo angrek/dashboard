@@ -31,6 +31,8 @@ def update_server():
             client = SSHClient()
             if utilities.ssh(server, client):
 
+                print server.name
+
                 command = 'lsb_release -a | grep Distributor'
                 stdin, stdout, stderr = client.exec_command(command)
 
