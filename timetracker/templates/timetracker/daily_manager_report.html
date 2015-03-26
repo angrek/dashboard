@@ -50,5 +50,52 @@ Users with no entries:
 {% for name in users_with_no_entries %}
 {{ name }},
 {% endfor %}
+
+<br>
+<h4>Totals</h4>
+{% for key, value in total_hours_by_user.items %}
+{{ key }}
+<table class="entries2">
+<thead>
+    <tr>
+        <th class="row-1 row-category">Category</th>
+        <th class="row-2 row-hours">Hours</th>
+    </tr>
+</thead>
+<tbody>
+
+    {% for category,hours in value.items %}
+    <tr>
+        <td>{{ category }}</td>
+        <td>{{ hours }}</td>
+    <tr>
+    {% endfor %}
+</tbody>
+</table>
+<br>
+{% endfor %}
+
+<br>
+<h4>Overall Total Hours for the Day</h4>
+<table class="entries2">
+<thead>
+    <tr>
+        <th class="row-1 row-category">Category</th>
+        <th class="row-2 row-hours">Hours</th>
+    </tr>
+</thead>
+<tbody>
+
+{% for category, hours in total_hours.items %}
+    <tr>
+        <td>{{ category }}</td>
+        <td>{{ hours }}</td>
+    <tr>
+{% endfor %}
+</tbody>
+</table>
+<br>
+
+
 {% endblock %}
 
