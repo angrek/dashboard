@@ -12,6 +12,8 @@
     <td width='5%'><a href="/timetracker/daily_manager_report/{{ next }}">next</a></td>
 <tr>
 </table>
+
+
 <table class="entries">
 <thead>
     <tr>
@@ -22,8 +24,16 @@
     </tr>
 </thead>
 <tbody>
+</tbody>
+</table>
+<br>
+{% for key, value in entries.items %}
 
-{% for entry in entries %}
+<b> {{ key }} </b>
+<table class="entries">
+<tbody>
+
+{% for entry in value %}
 <tr>
     <td>{{ entry.description }}</td>
     <td>{{ entry.category }}</td>
@@ -31,18 +41,14 @@
     <td>{{ entry.notes }}</td>
 </tr>
 {% endfor %}
+
 </tbody>
 </table>
-{% for user in user_list %}
-<br>{{ user.id }}
-{{ user.username }}
-{% endfor %}
------
-{% for group in group_list %}
-<br>{{ group }}
-<br>{{ group.id }}
-{% endfor %}
 <br>
+{% endfor %}
+Users with no entries:
+{% for name in users_with_no_entries %}
+{{ name }},
+{% endfor %}
 {% endblock %}
-
 

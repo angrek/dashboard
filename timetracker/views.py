@@ -202,14 +202,24 @@ def daily_manager_report(request, date):
         date = datetime.date(int(date[:4]), int(date[5:7]), int(date[-2:]))
     previous = (date - timedelta(days = 1)).strftime('%Y-%m-%d')
     next = (date + timedelta(days = 1)).strftime('%Y-%m-%d')
-   
-    entries = []
+  
+    entries = {}
+    users_with_entries = []
+    users_with_no_entries = []
     for name in group_list: 
-        t = Entry.objects.filter(username=name, date=date)
-        entries.append(Entry.objects.filter(username=name.id, date=date))
+        if Entry.objects.filter(username=name, date=date):
+            t = Entry.objects.filter(username=name, date=date)
+            users_with_entries.append(str(name.username))
+            entries[name] = t
+        else:
+            t = ['No Entry']
+            users_with_no_entries.append(str(name.username))
+        #entries.append(Entry.objects.filter(username=name.id, date=date))
+        if not t:
+            t = ['No Entry']
     #FIXME MAKE THIS A DICT ASSOCIATED WITH EACH USERNAME
-    entries=entries[0]
-    context = {'entries': entries, 'previous':previous, 'next':next, 'date':date, 'group_list':group_list, 't':t}
+    #FIXME why isn't this getting xiolan's entries??
+    context = {'entries': entries, 'previous':previous, 'next':next, 'date':date, 'users_with_no_entries':users_with_no_entries}
     return render(request, 'timetracker/daily_manager_report.html', context)
 
             
