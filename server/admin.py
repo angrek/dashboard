@@ -2,6 +2,7 @@ from django.contrib import admin
 from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import AIXServerResource
 from server.models import AIXServerENV
+from server.models import AIXAffinity
 
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import LinuxServerResource
@@ -244,6 +245,15 @@ class ErrptAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class AIXAffinityAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0, exception=0)
+    list_display = ['name', 'curr_lpar_score', 'predicted_lpar_score']
+    list_filter = ['curr_lpar_score', 'predicted_lpar_score']
+    search_field = ['name', 'curr_lpar_score', 'predicted_lpar_score']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 #########################Linux Server Section#############################
 ##########################################################################
 
@@ -412,5 +422,6 @@ admin.site.register(Storage, StorageAdmin)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
+admin.site.register(AIXAffinity, AIXAffinityAdmin)
 admin.site.register(LinuxServerENV, LinuxServerENVAdmin)
 admin.site.register(WindowsServer, WindowsServerAdmin)

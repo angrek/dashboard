@@ -91,6 +91,8 @@ class AIXServer(models.Model):
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True)
+    curr_lpar_score = models.IntegerField(max_length=3, blank=True, null=True)
+    predicted_lpar_score = models.IntegerField(max_length=3, blank=True, null=True)
     application_paths = models.TextField(blank=True, null=True)
     #relationship = models.ManyToManyField('self',
     #    through='Relationships',
@@ -199,6 +201,13 @@ class VIOServer(AIXServer):
         proxy=True
         verbose_name = "VIO Server"
         verbose_name_plural = "VIO Servers"
+
+#Meta model of AIX Server (temp) to show Affinity
+class AIXAffinity(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX Affinity"
+        verbose_name_plural = "AIX Affinity"
 
 class AIXServerENV(AIXServer):
     class Meta:
