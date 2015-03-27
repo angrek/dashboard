@@ -456,6 +456,7 @@ class WindowsServer(models.Model):
     active = models.NullBooleanField(default=True, blank=True)
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
+    stack = models.ForeignKey(Stack)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 

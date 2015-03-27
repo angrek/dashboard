@@ -387,13 +387,28 @@ class LogEntryAdmin(admin.ModelAdmin):
 class WindowsServerAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
-    list_max_show_all = 500
+
+    #This overrides the cell div and sets it to a color based on what stack a server is in
+    def stack_(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+        else:
+            return obj.stack
+    stack_.allow_tags = True
+
+    list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'owner', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
+    list_display = ['name', 'owner', 'stack_', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
+    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'stack', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
