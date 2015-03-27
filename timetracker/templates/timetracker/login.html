@@ -1,0 +1,32 @@
+{% extends "timetracker/test_base.html" %}
+<h2>WWelcome to the UNIX Engineering Database</h2>
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<h3>Hello {{ user.username }}!</h3>
+{% else %}
+<h3>Please Log In</h3>
+{% endif %}
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<form method="post" action="{%  url 'django.contrib.auth.views.login' %}">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}
