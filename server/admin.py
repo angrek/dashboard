@@ -235,7 +235,7 @@ class Power7InventoryAdmin(ImportExportModelAdmin):
 class AIXMksysbAdmin(admin.ModelAdmin):
     list_display = ['name', 'date', 'exists', 'duplicates']
     list_filter = ['date', 'exists', 'duplicates']
-    search_field = ['name', 'date', 'exists', 'duplicates']
+    search_fields = ['name', 'date', 'exists', 'duplicates']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
@@ -250,7 +250,7 @@ class AIXAffinityAdmin(admin.ModelAdmin):
         return self.model.objects.filter(decommissioned=0, exception=0)
     list_display = ['name', 'curr_lpar_score', 'predicted_lpar_score']
     list_filter = ['curr_lpar_score', 'predicted_lpar_score']
-    search_field = ['name', 'curr_lpar_score', 'predicted_lpar_score']
+    search_fields = ['name', 'curr_lpar_score', 'predicted_lpar_score']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
