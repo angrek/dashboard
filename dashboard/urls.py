@@ -13,13 +13,15 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^/images/favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^/admin/', include(admin.site.urls)),
+    url(r'^admin', include(admin.site.urls)),
 
+    #I HATE that I have to do this, but...
     url(r'^server/', include('server.urls')),
+    url(r'^server', include('server.urls')),
     url(r'^timetracker/', include('timetracker.urls')),
-
+    url(r'^timetracker', include('timetracker.urls')),
     url(r'^todo/', include('todo.urls')),
-    url(r'^todo/', include('todo.urls')),
+    url(r'^todo', include('todo.urls')),
 
 
     url(r'^$', hello),
