@@ -32,8 +32,47 @@ import operator
 def index(request):
     return render(request, 'timetracker/index.html')
 
+#@login_required
+#def add_entry(request):
+#    categories = Category.objects.all().order_by('name')
+#    if request.method == 'GET':
+#        form = PostForm()
+#    else:
+#        #A POST request: Handle form upload
+#        form = PostForm(request.POST) #BIND data from request.POST into a PostForm
+#        #notes = form.cleaned_data['notes']
+#        for x in range(1, 6): 
+#            description = request.POST['description' + str(x)]
+#            hours = request.POST['hours' + str(x)]
+#            notes = request.POST['notes' + str(x)]
+#            username = User.objects.get(username=request.user)
+#            if description and hours:
+#                new_category = Category.objects.get(name=request.POST['category' + str(x)])
+#
+#                entry = Entry.objects.create(description=description, category=new_category, username=username, hours=hours, notes=notes)
+#        entries = Entry.objects.filter(username=username).order_by('date')
+#        return HttpResponseRedirect('show_entries/0000-00-00', {'entries': entries})
+#
+#    return render(request, 'timetracker/add_entry.html', {
+#        'form': form,
+#        'categories': categories,
+#    })
+
 @login_required
-def add_entry(request):
+def add_entry(request, date):
+    if request.method == 'GET':
+        request.GET.get('date')
+    else:
+        date = request.POST['date']
+
+    if date == '0000-00-00':
+        date = datetime.date.today()
+    else:
+        date = datetime.date(int(date[:4]), int(date[5:7]), int(date[-2:]))
+    previous = (date - timedelta(days = 1)).strftime('%Y-%m-%d')
+    next = (date + timedelta(days = 1)).strftime('%Y-%m-%d')
+    submit_date = date.strftime('%Y-%m-%d')
+
     categories = Category.objects.all().order_by('name')
     if request.method == 'GET':
         form = PostForm()
@@ -46,18 +85,23 @@ def add_entry(request):
             hours = request.POST['hours' + str(x)]
             notes = request.POST['notes' + str(x)]
             username = User.objects.get(username=request.user)
-            if description and notes and hours:
+            if description and hours:
                 new_category = Category.objects.get(name=request.POST['category' + str(x)])
 
-                entry = Entry.objects.create(description=description, category=new_category, username=username, hours=hours, notes=notes)
+                entry = Entry.objects.create(date=date, description=description, category=new_category, username=username, hours=hours, notes=notes)
         entries = Entry.objects.filter(username=username).order_by('date')
-        return HttpResponseRedirect('show_entries/0000-00-00', {'entries': entries})
+        my_url = '/timetracker/show_entries/' + str(submit_date)
+        #return HttpResponseRedirect('show_entries/0000-00-00', {'entries': entries})
+        return HttpResponseRedirect(my_url, {'entries': entries})
 
     return render(request, 'timetracker/add_entry.html', {
         'form': form,
         'categories': categories,
+        'previous': previous,
+        'next': next,
+        'date': date,
+        'submit_date': submit_date
     })
-
 @login_required
 def show_entries(request, date):
     request.GET.get('date')
@@ -107,6 +151,7 @@ def view_report(request):
         date_list = Entry.objects.filter(username=request.user, date__range=[start_date, end_date]).values_list('date', flat=True).distinct()
 
         a = Category.objects.get(short_name='A')
+        e = Category.objects.get(short_name='E')
         i = Category.objects.get(short_name='I')
         o = Category.objects.get(short_name='O')
         p = Category.objects.get(short_name='P')
@@ -120,6 +165,7 @@ def view_report(request):
 
             #we need the total hours for each category for the date
             total_a = 0
+            total_e = 0
             total_i = 0
             total_o = 0
             total_p = 0
@@ -127,13 +173,15 @@ def view_report(request):
                 hours = x.hours
                 if x.category == a:
                     total_a += hours
+                elif x.category == e:
+                    total_e += hours
                 elif x.category == i:
                     total_i += hours
                 elif x.category == o:
                     total_o += hours
                 elif x.category == p:
                     total_i += hours
-            temp_totals = {'A': str(total_a), 'I': str(total_i), 'O': str(total_o), 'P': str(total_p)}
+            temp_totals = {'A': str(total_a), 'E': str(total_e), 'I': str(total_i), 'O': str(total_o), 'P': str(total_p)}
             date_totals[date] = temp_totals
 
         context = {'start_date':start_date, 'end_date':end_date, 'date_dict':date_dict, 'total_a':total_a, 'date_totals': date_totals, 'date_list': date_list}
@@ -216,11 +264,13 @@ def daily_manager_report(request, date):
     users_with_no_entries = []
 
     a = Category.objects.get(short_name='A')
+    e = Category.objects.get(short_name='E')
     i = Category.objects.get(short_name='I')
     o = Category.objects.get(short_name='O')
     p = Category.objects.get(short_name='P')
 
     overall_total_a = 0
+    overall_total_e = 0
     overall_total_i = 0
     overall_total_o = 0
     overall_total_p = 0
@@ -228,6 +278,7 @@ def daily_manager_report(request, date):
     for name in group_list: 
         tmp_total_hours = 0
         total_a = 0
+        total_e = 0
         total_i = 0
         total_o = 0
         total_p = 0
@@ -239,6 +290,8 @@ def daily_manager_report(request, date):
                 tmp_total_hours += hours
                 if entry.category == a:
                     total_a += hours
+                if entry.category == e:
+                    total_e += hours
                 if entry.category == i:
                     total_i += hours
                 if entry.category == o:
@@ -247,11 +300,12 @@ def daily_manager_report(request, date):
                     total_p += hours
 
             overall_total_a += total_a
+            overall_total_e += total_e
             overall_total_i += total_i
             overall_total_o += total_o
             overall_total_p += total_p
 
-            temp_totals = {'A': str(total_a), 'I': str(total_i), 'O':str(total_o), 'P':str(total_p)}
+            temp_totals = {'A': str(total_a), 'E': str(total_e), 'I': str(total_i), 'O':str(total_o), 'P':str(total_p)}
             total_hours_by_user[name] = temp_totals
 
             users_with_entries.append(str(name.username))
@@ -260,7 +314,7 @@ def daily_manager_report(request, date):
         else:
             users_with_no_entries.append(str(name.username))
 
-    total_hours = {'A': str(overall_total_a), 'I': str(overall_total_i), 'O':str(overall_total_o), 'P':str(overall_total_p)}
+    total_hours = {'A': str(overall_total_a), 'E': str(overall_total_e), 'I': str(overall_total_i), 'O':str(overall_total_o), 'P':str(overall_total_p)}
 
     #Now we need to get the totals
 

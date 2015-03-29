@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^add_category/$', 'timetracker.views.add_category', name='add_category'),
 
     url(r'^add_entry$', 'timetracker.views.add_entry', name='add_entry'),
-    url(r'^add_entry/$', 'timetracker.views.add_entry', name='add_entry'),
+    url(r'^add_entry/(?P<date>(.*)+)$', 'timetracker.views.add_entry', name='add_entry'),
 
     url(r'^add_report$', 'timetracker.views.add_report', name='add_report'),
     url(r'^add_report/$', 'timetracker.views.add_report', name='add_report'),

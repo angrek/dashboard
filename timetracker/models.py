@@ -15,7 +15,7 @@ class Category(models.Model):
         return unicode(self.name)
 
 class Entry(models.Model):
-    date = models.DateField(auto_now=True)
+    date = models.DateField("Date", default=datetime.date.today)
     username = models.ForeignKey(User, default=1)
     modified = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     description = models.CharField(max_length=40, blank=True, null=True)
