@@ -47,6 +47,16 @@ class Stack(models.Model):
     def __unicode__(self):
         return self.name
 
+class SubStack(models.Model):
+    name = models.CharField(max_length=15, blank=True, null=True)
+
+    class meta:
+        verbose_name = "Sub Stack"
+        verbose_name_plural = "Sub Stacks"
+
+    def __unicode__(self):
+        return self.name
+
 SERVER_ENV_CHOICES = (
     (1, 'None'),
     (2, 'DEV'),
@@ -66,6 +76,7 @@ class AIXServer(models.Model):
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
     stack = models.ForeignKey(Stack)
+    substack = models.ForeignKey(SubStack, default=1)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
@@ -350,9 +361,10 @@ class LinuxServer(models.Model):
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
     stack = models.ForeignKey(Stack, default=1)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
+    Substack = models.ForeignKey(SubStack, default=1)
+    created = models.DateTimeField(blank=True, null=True)
+    modified = models.DateTimeField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=50, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -456,7 +468,8 @@ class WindowsServer(models.Model):
     active = models.NullBooleanField(default=True, blank=True)
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
-    stack = models.ForeignKey(Stack)
+    stack = models.ForeignKey(Stack, default=1)
+    substack = models.ForeignKey(SubStack, default=1)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
