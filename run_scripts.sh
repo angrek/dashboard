@@ -12,6 +12,9 @@ mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_populate.py
 mail william.rehfield@wellcare.com -s 'starting aix power7 inventory' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_power7_inventory.py
+mail william.rehfield@wellcare.com -s 'starting aix affinity' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_affinity.py
+
 mail william.rehfield@wellcare.com -s 'starting aix frame firmware' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_frame_firmware.py
 mail william.rehfield@wellcare.com -s 'starting aix tmef' < 1.txt
