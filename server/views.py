@@ -59,11 +59,15 @@ def stacks(request):
     yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
     green_servers = AIXServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
     orange_servers = AIXServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
+    train_servers = AIXServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
+    config_servers = AIXServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
     #server_list = AIXServer.objects.filter(stack__name ='Red')
     context = {'red_servers' : red_servers,
         'yellow_servers': yellow_servers,
         'green_servers': green_servers,
-        'orange_servers': orange_servers}
+        'orange_servers': orange_servers,
+        'train_servers': orange_servers,
+        'config_servers': orange_servers}
     return render(request, 'server/stacks.html', context)
 
 
