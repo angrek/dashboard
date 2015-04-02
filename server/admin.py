@@ -1,5 +1,5 @@
 from django.contrib import admin
-from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, Storage, Frame, AIXMksysb, AIXPowerHA
+from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, SubStack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import AIXServerResource
 from server.models import AIXServerENV
 from server.models import AIXAffinity
@@ -59,24 +59,28 @@ class AIXServerAdmin(ImportExportModelAdmin):
     #just translates to a space and is not visible in the list_display header.
     def stack_(self, obj):
         if str(obj.stack) == 'Orange':
-            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack.name
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Green':
-            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack.name
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Yellow':
-            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack.name
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Red':
-            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack.name
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
         else:
             return obj.stack
     stack_.allow_tags = True
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'asm', 'tmef', 'emc_clar', 'emc_sym']
-    list_filter = ['stack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'tmef', 'emc_clar', 'emc_sym', 'owner']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'modified', 'ip_address', 'os', 'os_level', 'asm', 'tmef', 'emc_clar', 'emc_sym']
+    list_filter = ['stack', 'substack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'tmef', 'emc_clar', 'emc_sym', 'owner']
     search_fields = ['name', 'owner', 'frame__name', 'ip_address', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address', 'asm'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'ip_address', 'asm'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
     #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -94,24 +98,28 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     #See notes in AIXServerAdmin for stack_ variable explanation.
     def stack_(self, obj):
         if str(obj.stack) == 'Orange':
-            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Green':
-            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Yellow':
-            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Red':
-            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
         else:
             return obj.stack
     stack_.allow_tags = True
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba']
-    list_filter = ['active', 'exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba', 'owner']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'substack', 'active','exception', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba']
+    list_filter = ['active', 'exception', 'stack', 'substack', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba', 'owner']
     search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl',  'imperva', 'netbackup']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'application_paths']
+    fields = ['name', 'image_tag', 'owner', 'stack', 'substack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'application_paths']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -146,13 +154,17 @@ class AIXPowerHAAdmin(ImportExportModelAdmin):
     #This overrides the cell div and sets it to a color based on what stack a server is in
     def stack_color(self, obj):
         if str(obj.stack) == 'Orange':
-            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Green':
-            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Yellow':
-            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Red':
-            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
         else:
             return obj.stack
     stack_color.allow_tags = True
@@ -260,9 +272,26 @@ class AIXAffinityAdmin(admin.ModelAdmin):
 class LinuxServerAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
+    def stack_(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
+        else:
+            return obj.stack
+    stack_.allow_tags = True
+
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'stack', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_display = ['name', 'owner', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
     list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
@@ -353,6 +382,11 @@ class StackAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class SubStackAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 class FrameAdmin(admin.ModelAdmin):
     list_display = ['name','short_name', 'firmware_version']
     class Media:
@@ -391,24 +425,28 @@ class WindowsServerAdmin(ImportExportModelAdmin):
     #This overrides the cell div and sets it to a color based on what stack a server is in
     def stack_(self, obj):
         if str(obj.stack) == 'Orange':
-            return '<div style="width:100%%; background-color:orange;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Green':
-            return '<div style="width:100%%; background-color:green;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Yellow':
-            return '<div style="width:100%%; background-color:yellow;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
         elif str(obj.stack) == 'Red':
-            return '<div style="width:100%%; background-color:red;">%s</div>' % obj.stack
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
         else:
             return obj.stack
     stack_.allow_tags = True
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'owner', 'stack_', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
+    list_display = ['name', 'owner', 'stack_', 'substack', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_filter = ['os', 'owner', 'stack', 'substack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'stack', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
+    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'stack', 'substack', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -431,6 +469,7 @@ admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
 admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Stack, StackAdmin)
+admin.site.register(SubStack, SubStackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Storage, StorageAdmin)
 #admin.site.register(Relationships)
