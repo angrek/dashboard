@@ -23,9 +23,8 @@
         <th class="row-4 row-notes">Notes</th>
     </tr>
 </thead>
-<tbody>
-</tbody>
 </table>
+
 <br>
 {% for key, value in entries.items %}
 
@@ -33,14 +32,14 @@
 <table class="entries">
 <tbody>
 
-{% for entry in value %}
-<tr>
-    <td>{{ entry.description }}</td>
-    <td>{{ entry.category }}</td>
-    <td>{{ entry.hours }}</td>
-    <td>{{ entry.notes }}</td>
-</tr>
-{% endfor %}
+    {% for entry in value %}
+    <tr>
+        <td class="row-1 row-description2">{{ entry.description }}</td>
+        <td class="row-2 row-category">{{ entry.category }}</td>
+        <td class="row-3 row-hours">{{ entry.hours }}</td>
+        <td class="row-4 row-notes">{{ entry.notes }}</td>
+    </tr>
+    {% endfor %}
 
 </tbody>
 </table>
