@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from server.models import AIXServer, HistoricalAIXData
 from server.models import LinuxServer, HistoricalLinuxData
+from server.models import WindowsServer #SERIOUSLY???
 from server.models import Frame
 from django.contrib.admin.models import LogEntry
 
@@ -17,6 +18,7 @@ from django.template import RequestContext, Context
 
 import datetime, calendar
 import sys
+from itertools import chain
 
 from django.db.models import Q
 import operator
@@ -55,19 +57,43 @@ def frames(request):
     return render(request, 'server/frames.html', context)
 
 def stacks(request):
-    red_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
-    yellow_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
-    green_servers = AIXServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
-    orange_servers = AIXServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
-    train_servers = AIXServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
-    config_servers = AIXServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
-    #server_list = AIXServer.objects.filter(stack__name ='Red')
+    red_aix_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
+    red_linux_servers = LinuxServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
+    red_windows_servers = WindowsServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
+    red_servers = list(chain(red_aix_servers, red_linux_servers, red_windows_servers))
+
+    yellow_aix_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
+    yellow_linux_servers = LinuxServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
+    yellow_windows_servers = WindowsServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
+    yellow_servers = list(chain(yellow_aix_servers, yellow_linux_servers, yellow_windows_servers))
+
+    green_aix_servers = AIXServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
+    green_linux_servers = LinuxServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
+    green_windows_servers = WindowsServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
+    green_servers = list(chain(green_aix_servers, green_linux_servers, green_windows_servers))
+
+    orange_aix_servers = AIXServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
+    orange_linux_servers = LinuxServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
+    orange_windows_servers = WindowsServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
+    orange_servers = list(chain(orange_aix_servers, orange_linux_servers, orange_windows_servers))
+
+
+    train_aix_servers = AIXServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
+    train_linux_servers = LinuxServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
+    train_windows_servers = WindowsServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
+    train_servers = list(chain(train_aix_servers, train_linux_servers, train_windows_servers))
+
+    config_aix_servers = AIXServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
+    config_linux_servers = LinuxServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
+    config_windows_servers = WindowsServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
+    config_servers = list(chain(config_aix_servers, config_linux_servers, config_windows_servers))
+
     context = {'red_servers' : red_servers,
         'yellow_servers': yellow_servers,
         'green_servers': green_servers,
         'orange_servers': orange_servers,
-        'train_servers': orange_servers,
-        'config_servers': orange_servers}
+        'train_servers': train_servers,
+        'config_servers': config_servers}
     return render(request, 'server/stacks.html', context)
 
 
