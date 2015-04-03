@@ -88,3 +88,31 @@ Click on the individual server name for a detail page.
 {% endif %}
 </ul>
 </div>
+<div class='train_servers'>
+<h3>Train</h3>
+<ul class='train_servers'>
+{% if train_servers %}
+    <ul>
+    {% for server in train_servers %} 
+            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Server is available.</p>
+{% endif %}
+</ul>
+</div>
+<div class='config_servers'>
+<h3>Config</h3>
+<ul class='config_servers'>
+{% if config_servers %}
+    <ul>
+    {% for server in config_servers %} 
+            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Server is available.</p>
+{% endif %}
+</ul>
+</div>
