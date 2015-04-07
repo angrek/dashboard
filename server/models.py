@@ -24,6 +24,16 @@ class Zone(models.Model):
     def __unicode__(self):
         return self.name
 
+class Java(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True, default='None')
+
+    class Meta:
+        verbose_name = "Java"
+        verbose_name_plural = "Java"
+
+    def __unicode__(self):
+        return self.name
+
 class Frame(models.Model):
     name = models.CharField(max_length=30, blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True, default='None')
