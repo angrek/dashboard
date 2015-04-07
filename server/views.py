@@ -28,6 +28,14 @@ def index(request):
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+def java(request):
+    servers = AIXServer.objects.order_by('name')
+    test = {}
+    for server in servers:
+        test[server.name] = server.java_text
+    context = {'servers': servers, 'test': test}
+    return render(request, 'server/java.html', context)
+
 def jquerytest(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
     context = {'first_ten_servers': first_ten_servers}
