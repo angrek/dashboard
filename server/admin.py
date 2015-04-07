@@ -3,6 +3,7 @@ from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, E
 from server.models import AIXServerResource
 from server.models import AIXServerENV
 from server.models import AIXAffinity
+from server.models import Java
 
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import LinuxServerResource
@@ -266,6 +267,7 @@ class AIXAffinityAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+
 #########################Linux Server Section#############################
 ##########################################################################
 
@@ -392,6 +394,11 @@ class FrameAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class JavaAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 class StorageAdmin(admin.ModelAdmin):
     list_display = ['name', 'size']
     class Media:
@@ -471,6 +478,7 @@ admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Stack, StackAdmin)
 admin.site.register(SubStack, SubStackAdmin)
 admin.site.register(Frame, FrameAdmin)
+admin.site.register(Java, JavaAdmin)
 admin.site.register(Storage, StorageAdmin)
 #admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
