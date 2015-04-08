@@ -27,12 +27,9 @@ def update_server():
     for server in server_list:
 
         new_centrify = ''
-
         if utilities.ping(server):
-
             client = SSHClient()
             if utilities.ssh(server, client):
-
                 centrify_is_installed = 1
                 stdin, stdout, stderr = client.exec_command('adinfo -v')
                 try:
