@@ -20,27 +20,27 @@ django.setup()
 
 def update_server():
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='uprspegaapp01')
+    server_list = LinuxServer.objects.filter(name='wwwwhg')
+    #server_list = LinuxServer.objects.filter(decommissioned=False)
 
     counter = 0
 
     for server in server_list:
         #counter += 1
         #print str(counter) + ' - ' + str(server)
-
+        print server.name
         if utilities.ping(server):
 
             client = SSHClient()
             if utilities.ssh(server, client):
-
+                print server.name
                 command = 'rpm -qa | grep bash |grep -v doc'
                 stdin, stdout, stderr = client.exec_command(command)
                 bash_version = stdout.readlines()[0].rstrip()
                 
                 bash_version = re.sub(r'x86_64', '', bash_version)
-
+                print bash_version
+                print timezone.now()
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
                     utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
