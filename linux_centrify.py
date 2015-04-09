@@ -20,9 +20,7 @@ django.setup()
 
 
 def update_server():
-    #server_list = LinuxServer.objects.all()
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='ustswebdb')
+    server_list = LinuxServer.objects.filter(decommissioned=False, zone=1)
 
     for server in server_list:
 
@@ -36,7 +34,7 @@ def update_server():
                     centrify = stdout.readlines()[0]
                     new_centrify = centrify[19:-2]
                 except:
-                    new_centrify = "Not Installed"
+                    new_centrify = "None"
                     centrify_is_installed = 0
 
                 #if it's the same version, we don't need to update the record
