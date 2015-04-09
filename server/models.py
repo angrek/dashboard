@@ -75,7 +75,7 @@ SERVER_ENV_CHOICES = (
     (5, 'PROD-INFRA'),
     (6, 'PREPROD'),
     (7, 'PROD'),
-    (7, 'DR/COB'),
+    (8, 'DR/COB'),
 )
 
 class AIXServer(models.Model):
@@ -102,11 +102,12 @@ class AIXServer(models.Model):
     xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
     bash = models.CharField(max_length=35, blank=True, null=True, default='None')
     ssl = models.CharField(max_length=45, blank=True, null=True, default='None')
-    java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=25, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=35, blank=True, null=True, default='None')
+    java = models.ManyToManyField(Java, default='None')
+
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
