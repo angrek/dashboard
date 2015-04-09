@@ -20,8 +20,7 @@ django.setup()
 
 def update_server():
 
-    server_list = LinuxServer.objects.filter(name='wwwwhg')
-    #server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(decommissioned=False)
 
     counter = 0
 
