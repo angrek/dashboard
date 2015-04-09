@@ -151,6 +151,12 @@ foreach my $host (@$host_views) {
             #NOTE: We do not update active or exception because we don't look at that here or perform the tests.
             #Update the other fields and let those 2 ride from the previous day/test and let the other scripts test those.
 
+            print "$server_name\n";
+            print "$cluster_name\n";
+            print "$adapter\n";
+            print "$timestamp\n";
+            print "$ip_address\n";
+
             $dbh = DBI->connect('DBI:mysql:dashboard', 'wrehfiel', '') || die "Could not connect to database: $DBI::errstr";
             $rv=$dbh->do("lock table server_linuxserver write");
             $sth = $dbh->prepare (qq{insert into server_linuxserver (
@@ -161,6 +167,8 @@ foreach my $host (@$host_views) {
                 active,
                 exception,
                 decommissioned,
+                stack,
+                Substack,
                 created,
                 modified,
                 ip_address,
@@ -177,8 +185,8 @@ foreach my $host (@$host_views) {
                 imperva,
                 netbackup,
                 log)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, 'None', $cluster_name, "$adapter", 1, 0, 0, "$timestamp", "$timestamp", 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, 'None', $cluster_name, "$adapter", 1, 0, 0, 1, 1, "$timestamp", "$timestamp", 
                         "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '', '');
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
