@@ -295,7 +295,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['name', 'owner', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
     list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
-    search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
+    search_fields = ['name', 'owner', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
     class Media:
@@ -310,7 +310,7 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['name', 'active','exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
     list_filter = ['active', 'exception', 'stack', 'os', 'zone', 'os_level', 'zone', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
-    search_fields = ['name', 'os', 'os_level', 'stack', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup']
+    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'active', 'exception', 'stack', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'application_paths']
     resource_class = LinuxServerResource
