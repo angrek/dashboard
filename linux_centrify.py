@@ -20,7 +20,7 @@ django.setup()
 
 
 def update_server():
-    server_list = LinuxServer.objects.filter(decommissioned=False, zone=1)
+    server_list = LinuxServer.objects.filter(decommissioned=False)
 
     for server in server_list:
 
@@ -30,6 +30,7 @@ def update_server():
             if utilities.ssh(server, client):
                 centrify_is_installed = 1
                 stdin, stdout, stderr = client.exec_command('adinfo -v')
+                print '1'
                 try:
                     centrify = stdout.readlines()[0]
                     new_centrify = centrify[19:-2]
