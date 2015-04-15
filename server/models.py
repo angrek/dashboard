@@ -94,6 +94,7 @@ class AIXServer(models.Model):
     os = models.CharField(max_length=10, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
     asm = models.NullBooleanField(default=False, blank=True)
+    ifix = models.NullBooleanField(default=False, blank=True)
     tmef = models.FloatField(default=0.00)
     powerha = models.CharField(max_length=20, blank=True, null=True, default='None')
     centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
