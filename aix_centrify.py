@@ -20,9 +20,9 @@ django.setup()
 
 
 def update_server():
-    server_list = AIXServer.objects.filter(decommissioned=False)
-    #server_list = AIXServer.objects.all()
-    #server_list = AIXServer.objects.filter(name='ustswebdb')
+    server_list = AIXServer.objects.filter(decommissioned=False, zone=1)
+    #server_list = AIXServer.objects.filter(decommissioned=False)
+    #server_list = AIXServer.objects.filter(decommissioned=False, name='t1dbatest')
 
     for server in server_list:
 
@@ -34,19 +34,21 @@ def update_server():
 
         #Make sure the server is set to active and not an exception
         if str(server) not in server_exceptions:
-            
-            if utilities.ping(server):
 
+            if utilities.ping(server):
+                
                 client = SSHClient()
                 if utilities.ssh(server, client):
 
                     centrify_is_installed = 1
+
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
+
                     try:
                         centrify = stdout.readlines()[0]
                         new_centrify = centrify[19:-2]
                     except:
-                        new_centrify = "Not Installed"
+                        new_centrify = "None"
                         centrify_is_installed = 0
 
                     #if it's the same version, we don't need to update the record

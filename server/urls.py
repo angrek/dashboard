@@ -21,6 +21,9 @@ urlpatterns = patterns('',
     url(r'^stacked_column/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.stacked_column, name='stacked_column'),
     url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
 
+    url(r'^treemap/$', views.treemap, name='treemap'),
+    url(r'^treemap$', views.treemap, name='treemap'),
+
     #Can I do something like this? This is what I need....
     #url(r'^3d_pie/<historical_today>/<service>/$', views.pie_ssh, name='pie_ssh'),
 

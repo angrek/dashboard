@@ -33,7 +33,7 @@ def update_server():
             client = SSHClient()
             if utilities.ssh(server, client):
                 print server.name
-                command = 'rpm -qa | grep bash |grep -v doc'
+                command = 'rpm -qa | grep bash |grep -v doc| grep -v completion'
                 stdin, stdout, stderr = client.exec_command(command)
                 bash_version = stdout.readlines()[0].rstrip()
                 

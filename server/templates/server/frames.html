@@ -1,45 +1,40 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional1.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
-<head>
-    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
-    <meta http-equiv='content-language' content='en-us' />
-    <title>Frames</title>
+{% extends "server/test_base.html" %}    
 
-<script type='text/javascript'
-    src="/static/js/jquery.min.js">
+
+{% block title %}
+<title>Frames</title>
+{% endblock %}
+
+
+{% block content %}
+
+<script type='text/javascript' src="/static/js/jquery.min.js">
     </script>
-<script type='text/javascript'
-    src="/static/js/test.js">
+<script type='text/javascript' src="/static/js/test.js">
     </script>
 <link type='text/css' href='/static/css/stacks.css' rel='stylesheet' />
-</head>
-<body>
-<p>
-jQuery is not loaded.
-</p>
 
-<h1>Wellcare UNIX Frames</h1>
+<h3>Wellcare UNIX Frames</h3>
 <br>
-Click on the individual server name for a detail page.
 
 {% for t in sorted_frame_list %}
 {% for key,value in frame_dict.items %}
 {% if key == t %}
 
 <div class='yellow_servers'>
-<h3><a href="http://p795agmon/?r=hour&cs=&ce=&s=by+name&c={{ key.short_name }}&tab=m&vn=">{{ key }}</a></h3>
+<h5><a href="http://p795agmon/?r=hour&cs=&ce=&s=by+name&c={{ key.short_name }}&tab=m&vn=">{{ key }}</a></h5>
 <ul class='frames'>
     {% for server in value %}
-    <li><a class='yellow' href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    <a class='yellow' href="/server/{{ server.name }}/">{{ server.name }}</a>
+    <br>
     {% endfor %}
 </ul>
 </div>
 {% endif %}
 {% endfor %}
 {% endfor %}
-<br>
-<br>
 
+
+{% endblock %}
 
 

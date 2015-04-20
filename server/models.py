@@ -158,7 +158,6 @@ class HistoricalAIXData(models.Model):
     xcelys = models.CharField(max_length=35, blank=True, null=True, default='None')
     bash = models.CharField(max_length=25, blank=True, null=True, default='None')
     ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
-    java = models.CharField(max_length=20, blank=True, null=True, default='None')
     imperva = models.CharField(max_length=15, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
@@ -376,7 +375,7 @@ class LinuxServer(models.Model):
     Substack = models.ForeignKey(SubStack, default=1)
     created = models.DateTimeField(blank=True, null=True)
     modified = models.DateTimeField(blank=True, null=True)
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True, default='0.0.0.0')
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=50, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -396,8 +395,8 @@ class LinuxServer(models.Model):
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
-    server_env_text = models.TextField(blank=True, null=True)
-    application_paths = models.TextField(blank=True, null=True)
+    server_env_text = models.TextField(blank=True, null=True, default='None')
+    application_paths = models.TextField(blank=True, null=True, default='None')
     log = models.TextField(blank=True, null=True)
 
     class Meta:

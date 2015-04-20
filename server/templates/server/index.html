@@ -1,24 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional1.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
-<head>
-    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
-    <meta http-equiv='content-language' content='en-us' />
-    <title>Index</title>
+{% extends "server/test_base.html" %}
 
-<script type='text/javascript'
-    src="/static/js/jquery.min.js">
-    </script>
-<script type='text/javascript'
-    src="/static/js/test.js">
-    </script>
-<link type='text/css' href='/static/css/test.css' rel='stylesheet' />
-</head>
-<body>
-<p>
-jQuery is not loaded.
-</p>
-<h3>Unix Engineering Servers Index</h3>
+
+{% block titel %}
+<title>Server Index</title>
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h4>Welcome {{ user.username }}!</h4>
+{% else %}
+HACKER!!
+{% endif %}
+
+
+
 
 Chart Note: On the line and bar charts, clicking the version labels allows you to remove/add them from each chart.
 
@@ -104,3 +99,4 @@ Lastly, you can change OS's between linux and aix</br>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
+{% endblock %}

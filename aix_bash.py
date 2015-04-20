@@ -21,7 +21,6 @@ django.setup()
 
 def update_server():
     server_list = AIXServer.objects.filter(decommissioned=False)
-    #server_list = AIXServer.objects.filter(name='ustsmidcap')
     #server_list = AIXServer.objects.filter(name__contains='vio')
 
     counter = 0

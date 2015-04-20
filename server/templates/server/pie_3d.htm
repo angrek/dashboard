@@ -1,10 +1,10 @@
-<!DOCTYPE HTML>
-<!-- pie_3d.htm UNIX Dashboard template -->
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highcharts Example</title>
+{% extends "server/test_base.html" %}
 
+{% block title %}
+<title>Highcharts Example</title>
+{% endblock %}
+
+{% block content %}
 		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
 		<style type="text/css">
 ${demo.css}
@@ -50,8 +50,6 @@ $(function () {
     });
 });
 		</script>
-	</head>
-	<body>
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/highcharts.js"></script>
 <script src="/static/js/highcharts-3d.js"></script>
@@ -60,5 +58,4 @@ $(function () {
 
 <div id="container" style="height: 400px"></div>
 
-	</body>
-</html>
+{% endblock %}

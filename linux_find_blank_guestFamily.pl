@@ -91,18 +91,26 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-        print "==============================================================";
-        print "\nName--->", $vm->name;
-        print "\nguestFamily--->", $vm->guest->guestFamily;
-        print "\nguestFullName->", $vm->guest->guestFullName;
-        print "\nguestState---->", $vm-guest-guestState;
-        print "\nCluster name-->", $cluster_name;
-        print "\nHost --------->", $host;
+        #print "==============================================================";
+        #print "\nName--->", $vm->name;
+        #print "\nguestFamily--->", $vm->guest->guestFamily;
+        #print "\nguestFullName->", $vm->guest->guestFullName;
+        #print "\nguestState---->", $vm-guest-guestState;
+        #print "\nCluster name-->", $cluster_name;
+        #print "\nHost --------->", $host;
 
         if (($vm->guest->guestFamily) eq ''){
-            push (@bad_servers, $vm->name);
+            #push (@bad_servers, $vm->name);
+            print "==============================================================";
+            print "\nName--->", $vm->name;
+            print "\nguestFamily--->", $vm->guest->guestFamily;
+            print "\nguestFullName->", $vm->guest->guestFullName;
+            print "\nguestState---->", $vm-guest-guestState;
+            print "\nCluster name-->", $cluster_name;
+            print "\nHost --------->", $host;
         } 
 
+        
         #FIXME broken for testing! FIX NOW!
         if ((($vm->guest->guestFamily) eq 'linuxGueist') || (($vm-name) eq 'p1dbmon')){
 
@@ -182,7 +190,7 @@ foreach my $host (@$host_views) {
 }
 
 Vim::logout();
-print "Bad servers:";
-foreach $baddy(@bad_servers){
-    print "\n$baddy";
-}
+#print "Bad servers:";
+#foreach $baddy(@bad_servers){
+#    print "\n$baddy";
+#}

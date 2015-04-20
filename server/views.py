@@ -41,6 +41,12 @@ def jquerytest(request):
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/jquerytest.html', context)
 
+
+def treemap(request):
+    first_ten_servers = AIXServer.objects.order_by('name')[:10]
+    context = {'first_ten_servers': first_ten_servers}
+    return render(request, 'server/treemap.html', context)
+    
 def frames(request):
     frames = Frame.objects.all().exclude(name='None').order_by('name')
     count_dict = {}
@@ -353,7 +359,6 @@ def line_basic(request, string, period, time_range):
     number_of_non_prod.reverse()
 
     return render(request, 'server/line_basic.htm', {'data': data, 'months': months, 'number_of_servers': number_of_servers, 'number_of_decoms': number_of_decoms, 'number_of_prod': number_of_prod, 'number_of_non_prod': number_of_non_prod, 'name': name, 'title': title})
-
 
 
 def detail(request, aixserver_name):

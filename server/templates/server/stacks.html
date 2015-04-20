@@ -1,10 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-transitional1.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
-<head>
-    <meta http-equiv='content-type' content='text/html' charset=utf-8' />
-    <meta http-equiv='content-language' content='en-us' />
-    <title>Stacks</title>
+{% extends "server/test_base.html" %}    
+
+{% block title %}
+<title>Stacks</title>
+{% endblock %}
+
+
+{% block content %}
 
 <script type='text/javascript'
     src="/static/js/jquery.min.js">
@@ -13,27 +14,18 @@
     src="/static/js/test.js">
     </script>
 <link type='text/css' href='/static/css/stacks.css' rel='stylesheet' />
-</head>
-<body>
-<p>
-jQuery is not loaded.
-</p>
 
-<h1>Wellcare UNIX Stacks</h1>
-<br>
-Click on the individual server name for a detail page.
-
+<h3>Wellcare UNIX Stacks</h3>
 
 
 <div class='red_servers'>
 <h3>Red</h3>
 <ul class='red_servers'>
 {% if red_servers %}
-    <ul>
     {% for server in red_servers %} 
-            <li><a class='red' href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    <a class='red' href="/server/{{ server.name }}/">{{ server.name }}</a>
+    <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
@@ -46,11 +38,10 @@ Click on the individual server name for a detail page.
 <h3>Orange</h3>
 <ul class='orange_servers'>
 {% if orange_servers %}
-    <ul>
     {% for server in orange_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    <a href="/server/{{ server.name }}/">{{ server.name }}</a>
+    <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
@@ -62,11 +53,10 @@ Click on the individual server name for a detail page.
 <h3>Yellow</h3>
 <ul class='yellow_servers'>
 {% if yellow_servers %}
-    <ul>
     {% for server in yellow_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+        <a href="/server/{{ server.name }}/">{{ server.name }}</a>
+        <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
@@ -78,11 +68,10 @@ Click on the individual server name for a detail page.
 <h3>Green</h3>
 <ul class='green_servers'>
 {% if green_servers %}
-    <ul>
     {% for server in green_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+    <a href="/server/{{ server.name }}/">{{ server.name }}</a>
+    <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
@@ -92,11 +81,10 @@ Click on the individual server name for a detail page.
 <h3>Train</h3>
 <ul class='train_servers'>
 {% if train_servers %}
-    <ul>
     {% for server in train_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+        <a href="/server/{{ server.name }}/">{{ server.name }}</a>
+        <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
@@ -106,13 +94,14 @@ Click on the individual server name for a detail page.
 <h3>Config</h3>
 <ul class='config_servers'>
 {% if config_servers %}
-    <ul>
     {% for server in config_servers %} 
-            <li><a href="/server/{{ server.name }}/">{{ server.name }}</a></li>
+        <a href="/server/{{ server.name }}/">{{ server.name }}</a>
+        <br>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No Server is available.</p>
 {% endif %}
 </ul>
 </div>
+
+{% endblock %}
