@@ -39,6 +39,9 @@ def run_backups():
 
     command = 'mysqldump dashboard > /home/wrehfiel/ENV/dashboard/mysql/' + filename
     os.system(command)
+
+    command = 'gzip /home/wrehfiel/ENV/dashboard/mysql/*.mysql'
+    os.system(command)
     #command = 
 
     if day == '15':
