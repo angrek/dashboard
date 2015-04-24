@@ -29,7 +29,7 @@ from django.contrib.admin.models import LogEntry
 import django
 from dashboard import settings
 from server.models import AIXServer, Zone, Frame, Stack
-#from server.models import Relationships
+from server.models import Relationships
 #import logging
 django.setup()
 
@@ -214,11 +214,11 @@ def populate():
 
                             #Now we'll try and check if the LPAR<->WPAR relationship exists, or create it
                             #FIXME had to take out relationships, need them back in
-                            #try:
-                            #    Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
-                            #except:
-                            #    child_wpar = AIXServer.objects.get(name=wpar_name)
-                            #    Relationships.objects.get_or_create(parent_lpar=server, child_wpar=child_wpar)
+                            try:
+                                Relationships.objects.get(parent_lpar=server_name, child_wpar=wpar_name)
+                            except:
+                                child_wpar = AIXServer.objects.get(name=wpar_name)
+                                Relationships.objects.get_or_create(parent_lpar=server, child_wpar=child_wpar)
                             
 
                             
