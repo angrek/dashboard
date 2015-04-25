@@ -12,7 +12,7 @@ from server.models import LinuxServerENV
 from server.models import WindowsServer
 
 from server.models import Power7InventoryResource
-#from server.models import Relationships, AIXLog
+from server.models import Relationships
 from server.models import HistoricalAIXData
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
@@ -21,10 +21,10 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 
-#class RelationshipsInline(admin.TabularInline):
-#    model = Relationships
-#    fk_name = 'parent_lpar'
-#    extra = 2
+class RelationshipsInline(admin.TabularInline):
+    model = Relationships
+    fk_name = 'parent_lpar'
+    extra = 2
 
 class AIXLogAdmin(admin.TabularInline):
 #    model = AIXServer
@@ -80,9 +80,9 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_display = ['name', 'image_tag', 'owner', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'os', 'os_level', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym']
     list_filter = ['stack', 'substack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym', 'owner']
     search_fields = ['name', 'owner', 'frame__name', 'os', 'os_level', 'emc_clar', 'emc_sym']
-    readonly_fields = ['created', 'image_tag']
+    readonly_fields = ['created', 'modified', 'image_tag']
     fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
-    #inlines = (RelationshipsInline, ) #, AIXLogAdmin)
+    inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
     #there is a copy in the scripts directory so it gets saved into git as well
@@ -261,7 +261,7 @@ class ErrptAdmin(admin.ModelAdmin):
 class AIXAffinityAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0, exception=0)
-    list_display = ['name', 'curr_lpar_score', 'predicted_lpar_score']
+    list_display = ['name', 'curr_lpar_score', 'curr_lpar_score_new', 'predicted_lpar_score', 'predicted_lpar_score_new']
     list_filter = ['curr_lpar_score', 'predicted_lpar_score']
     search_fields = ['name', 'curr_lpar_score', 'predicted_lpar_score']
     class Media:
@@ -480,7 +480,7 @@ admin.site.register(SubStack, SubStackAdmin)
 admin.site.register(Frame, FrameAdmin)
 admin.site.register(Java, JavaAdmin)
 admin.site.register(Storage, StorageAdmin)
-#admin.site.register(Relationships)
+admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
