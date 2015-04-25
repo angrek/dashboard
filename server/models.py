@@ -116,11 +116,15 @@ class AIXServer(models.Model):
     server_env_text = models.TextField(blank=True, null=True)
     curr_lpar_score = models.IntegerField(max_length=3, blank=True, null=True)
     predicted_lpar_score = models.IntegerField(max_length=3, blank=True, null=True)
+    curr_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
+    predicted_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
     application_paths = models.TextField(blank=True, null=True)
-    #relationship = models.ManyToManyField('self',
-    #    through='Relationships',
-    #    symmetrical=False,
-    #    related_name='related_to')
+    relationship = models.ManyToManyField('self',
+        through='Relationships',
+        symmetrical=False,
+        related_name='related_to',
+        blank=True,
+        null=True)
     def get_history(self):
         return LogEntry.objects.filter(object_repr=self.name)
 
@@ -178,16 +182,16 @@ class HistoricalAIXData(models.Model):
 
 
 ##This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
-#class Relationships(models.Model):
-#    parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
-#    child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
-#
-#    def __unicode__(self):
-#            return '%s - %s' % (self.parent_lpar, self.child_wpar)
-#
-#    class Meta:
-#        verbose_name = "AIX LPAR-WPAR Relationships"
-#        verbose_name_plural = "AIX LPAR-WPAR Relationships"
+class Relationships(models.Model):
+    parent_lpar = models.ForeignKey(AIXServer, related_name='parent_lpars')
+    child_wpar = models.ForeignKey(AIXServer, related_name='child_wpars')
+
+    def __unicode__(self):
+            return '%s - %s' % (self.parent_lpar, self.child_wpar)
+
+    class Meta:
+        verbose_name = "AIX LPAR-WPAR Relationships"
+        verbose_name_plural = "AIX LPAR-WPAR Relationships"
 
 
 #Meta model to split off the AIX applications in the admin
@@ -392,6 +396,7 @@ class LinuxServer(models.Model):
     syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     rsyslog_r = models.NullBooleanField(default=False, blank=True)
+    rsyslog_problem = models.NullBooleanField(default=False, blank=True)
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
