@@ -10,6 +10,7 @@ from server.models import AIXServer, HistoricalAIXData
 from server.models import LinuxServer, HistoricalLinuxData
 from server.models import WindowsServer #SERIOUSLY???
 from server.models import Frame
+from server.models import Relationships
 from django.contrib.admin.models import LogEntry
 
 from django.contrib.auth.decorators import login_required
