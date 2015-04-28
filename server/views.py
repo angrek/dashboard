@@ -44,8 +44,17 @@ def jquerytest(request):
 
 
 def treemap(request):
-    first_ten_servers = AIXServer.objects.order_by('name')[:10]
-    context = {'first_ten_servers': first_ten_servers}
+    predicted_100 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=100)
+    predicted_90 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=90)
+    predicted_80 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=80)
+    predicted_70 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=70)
+    predicted_60 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=60)
+    predicted_50 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=50)
+    predicted_40 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=40)
+    predicted_30 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=30)
+    predicted_20 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=20)
+    predicted_10 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=10)
+    context = {'predicted_100': predicted_100, 'predicted_90': predicted_90, 'predicted_80':predicted_80, 'predicted_70': predicted_70, 'predicted_60': predicted_60, 'predicted_50':predicted_50, 'predicted_40': predicted_40, 'predicted_30': predicted_30, 'predicted_20':predicted_20, 'predicted_10':predicted_10}
     return render(request, 'server/treemap.html', context)
     
 def frames(request):
