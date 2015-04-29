@@ -14,6 +14,10 @@ from server.models import WindowsServer
 from server.models import Power7InventoryResource
 from server.models import Relationships
 from server.models import HistoricalAIXData
+
+from server.models import CentrifyUser, LocalUser
+from server.models import CentrifyUserCountAIX, CentrifyUserCountLinux
+
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
@@ -77,11 +81,11 @@ class AIXServerAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'os', 'os_level', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym']
+    list_display = ['name', 'image_tag', 'owner', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'os', 'os_level', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym','centrify_user_count']
     list_filter = ['stack', 'substack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym', 'owner']
     search_fields = ['name', 'owner', 'frame__name', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify','centrify_user_count', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
     inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -268,6 +272,42 @@ class AIXAffinityAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 
+#########################Centrify Information########################
+#####################################################################
+
+class CentrifyUserCountAIXAdmin(ImportExportModelAdmin):
+    list_display = ['run_time', 'name', 'user_count']
+    list_filter = ['run_time',]
+    search_fields= ['run_time', 'name']
+    fields = ['run_time', 'name', 'user_count']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    
+class CentrifyUserCountLinuxAdmin(ImportExportModelAdmin):
+    list_display = ['run_time', 'name', 'user_count']
+    list_filter = ['run_time',]
+    search_fields= ['run_time', 'name']
+    fields = ['run_time', 'name', 'user_count']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    
+class CentrifyUserAdmin(ImportExportModelAdmin):
+    list_display = ['username','password', 'uid', 'gid', 'info', 'home_directory', 'shell']
+    list_filter = ['gid', 'shell']
+    search_fields = ['username','uid', 'gid', 'info', 'home_directory', 'shell']
+    fields = ['username','password', 'uid', 'gid', 'info', 'home_directory', 'shell']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    
+class LocalUserAdmin(ImportExportModelAdmin):
+    list_display = ['username','password', 'uid', 'gid', 'info', 'home_directory', 'shell']
+    list_filter = ['gid', 'shell']
+    search_fields = ['username','uid', 'gid', 'info', 'home_directory', 'shell']
+    fields = ['username','password', 'uid', 'gid', 'info', 'home_directory', 'shell']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    
+
 #########################Linux Server Section#############################
 ##########################################################################
 
@@ -423,6 +463,11 @@ class LogEntryAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 
+
+
+
+
+
 ############################# WINDOWS TESTING ####################################
 
 class WindowsServerAdmin(ImportExportModelAdmin):
@@ -464,26 +509,31 @@ admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
 admin.site.register(HistoricalAIXData, HistoricalAIXDataAdmin)
 admin.site.register(DecommissionedAIXServer, DecommissionedAIXServerAdmin)
-
-admin.site.register(LinuxServer, LinuxServerAdmin)
-admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
-admin.site.register(HistoricalLinuxData, HistoricalLinuxDataAdmin)
-admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
-
-admin.site.register(VIOServer, VIOServerAdmin)
-admin.site.register(Power7Inventory, Power7InventoryAdmin)
-admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(Errpt, ErrptAdmin)
-admin.site.register(Zone, ZoneAdmin)
-admin.site.register(Stack, StackAdmin)
-admin.site.register(SubStack, SubStackAdmin)
-admin.site.register(Frame, FrameAdmin)
-admin.site.register(Java, JavaAdmin)
-admin.site.register(Storage, StorageAdmin)
 admin.site.register(Relationships)
 admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(AIXAffinity, AIXAffinityAdmin)
+admin.site.register(VIOServer, VIOServerAdmin)
+admin.site.register(Power7Inventory, Power7InventoryAdmin)
+admin.site.register(Errpt, ErrptAdmin)
+admin.site.register(Frame, FrameAdmin)
+
+admin.site.register(LinuxServer, LinuxServerAdmin)
+admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
+admin.site.register(HistoricalLinuxData, HistoricalLinuxDataAdmin)
+admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
 admin.site.register(LinuxServerENV, LinuxServerENVAdmin)
+
+admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Zone, ZoneAdmin)
+admin.site.register(Stack, StackAdmin)
+admin.site.register(SubStack, SubStackAdmin)
+admin.site.register(Java, JavaAdmin)
+admin.site.register(Storage, StorageAdmin)
 admin.site.register(WindowsServer, WindowsServerAdmin)
+
+admin.site.register(CentrifyUserCountAIX, CentrifyUserCountAIXAdmin)
+admin.site.register(CentrifyUserCountLinux, CentrifyUserCountLinuxAdmin)
+admin.site.register(CentrifyUser, CentrifyUserAdmin)
+admin.site.register(LocalUser, LocalUserAdmin)
