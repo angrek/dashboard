@@ -278,7 +278,7 @@ class AIXAffinityAdmin(admin.ModelAdmin):
 class CentrifyUserCountAIXAdmin(ImportExportModelAdmin):
     list_display = ['run_time', 'name', 'user_count']
     list_filter = ['run_time',]
-    search_fields= ['run_time', 'name']
+    search_fields= ['name__name',]
     fields = ['run_time', 'name', 'user_count']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
