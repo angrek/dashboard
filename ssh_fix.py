@@ -1,9 +1,10 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve SSL versions on the servers and drop them into Django dashboard
+# Script to fix my ssh keys
+# Works fine on Linux but probs with AIX and it's account locking stuff
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 4/29/2015
 #
 #########################################################################
 
@@ -45,7 +46,7 @@ else:
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(zone=1, decommissioned=False, exception=True)
+    server_list = AIXServer.objects.filter(decommissioned=False, active=True, exception=True)
     #server_list = AIXServer.objects.filter(name='dinfmqesbapp01')
           
     for server in server_list:
@@ -101,7 +102,7 @@ def update_server():
                     print "Ok, removing the entry worked."
                 except:
                     print "SSH STILL NOT WORKING!!!!!!!!!!!!!!!!!!!!!!"
-                    command = 'dzdo ssh ' + str(server) + ' adflush'
+                    command = 'dzdo ssh ' + str(server) + ' adflush -f'
                     os.system(command)
                     continue
 
