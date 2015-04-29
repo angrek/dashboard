@@ -119,6 +119,7 @@ class AIXServer(models.Model):
     curr_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
     predicted_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
     application_paths = models.TextField(blank=True, null=True)
+    centrify_user_count = models.IntegerField(max_length=3, blank=True, null=True, default=0)
     relationship = models.ManyToManyField('self',
         through='Relationships',
         symmetrical=False,
@@ -286,6 +287,11 @@ class Storage(models.Model):
     
     def __unicode__(self):
         return unicode(self.name)
+
+
+
+
+
 
 class Power7Inventory(models.Model):
     name = models.ForeignKey(AIXServer)
@@ -511,6 +517,50 @@ class WindowsServerResource(resources.ModelResource):
         model = WindowsServer
 
 
+#####Centrify Information Gathering Mission#####
+
+
+class CentrifyUserCountAIX(models.Model):
+    run_time = models.DateTimeField(blank=True, null=True)
+    name = models.ForeignKey(AIXServer)
+    user_count = models.IntegerField(max_length=4, blank=True, null=True, default=0)
+
+class CentrifyUserCountLinux(models.Model):
+    run_time = models.DateTimeField(auto_now=True, blank=True, null=True)
+    name = models.ForeignKey(LinuxServer)
+    user_count = models.IntegerField(max_length=4, blank=True, null=True, default=0)
+
+class CentrifyUser(models.Model):
+    username = models.CharField(max_length=15)
+    password = models.CharField(max_length=30, blank=True, null=True)
+    uid = models.IntegerField(max_length=6, blank=True, null=True)
+    gid = models.IntegerField(max_length=6, blank=True, null=True)
+    info = models.CharField(max_length=50, blank=True, null=True)
+    home_directory = models.CharField(max_length=50, blank=True, null=True)
+    shell = models.CharField(max_length=15, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Centrify User"
+        verbose_name_plural = "Centrify Users"
+
+    def __unicode__(self):
+        return unicode(self.username)
+
+class LocalUser(models.Model):
+    username = models.CharField(max_length=15)
+    password = models.CharField(max_length=30, blank=True, null=True)
+    uid = models.IntegerField(max_length=6, blank=True, null=True)
+    gid = models.IntegerField(max_length=6, blank=True, null=True)
+    info = models.CharField(max_length=50, blank=True, null=True)
+    home_directory = models.CharField(max_length=50, blank=True, null=True)
+    shell = models.CharField(max_length=15, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Local User"
+        verbose_name_plural = "Local Users"
+
+    def __unicode__(self):
+        return unicode(self.username)
 #class CapacityPlanning(models.Model):
 #    name = models.ForeignKey(AIXServer, related_name='capacity_name')
 #    os = models.ForeignKey(AIXServer, related_name='capacity_os')
