@@ -84,8 +84,7 @@ def get_server_data():
     line = 3
     counter = 0
     server_list = AIXServer.objects.filter(active=True, decommissioned=False)
-    #shortening this just to speed up testing
-    #server_list = AIXServer.objects.filter(name__contains='vio')
+
     for server in server_list:
 
         counter = counter + 1
@@ -130,7 +129,6 @@ def get_server_data():
 
 
 
-        #AIXServer.objects.filter(name=server).update(active=False, modified=timezone.now())
         line += 1
         aix_line = line
 
@@ -138,9 +136,8 @@ def get_server_data():
     #################STARTING LINUX SECTION############################
     line = 3
     counter = 0
-    linux_server_list = LinuxServer.objects.all()
-    #shortening this just to speed up testing
-    #server_list = AIXServer.objects.filter(name__contains='vio')
+    linux_server_list = LinuxServer.objects.all(decommissioned=False)
+
     for server in linux_server_list:
 
         counter = counter + 1

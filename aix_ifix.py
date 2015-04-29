@@ -19,11 +19,8 @@ django.setup()
 
 
 def update_server():
-    #server_list = AIXServer.objects.all()
+
     server_list = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio')
-    #server_list = AIXServer.objects.filter(name='dhypdb01')
-    #server_list = AIXServer.objects.filter(name='d0welap')
-    #server_list = AIXServer.objects.filter(name__contains='vio')
 
     for server in server_list:
         

@@ -20,12 +20,11 @@ django.setup()
 
 
 def update_server():
-    counter = 0
-    #server_list = AIXServer.objects.all()
+
     server_list = AIXServer.objects.filter(decommissioned=False)
-    #server_list = AIXServer.objects.filter(name__contains='ufts')
+
     for server in server_list:
-        counter+=1
+
         print server.name
         if utilities.ping(server):
 

@@ -20,9 +20,8 @@ django.setup()
 
 
 def update_server():
-    #server_list = AIXServer.objects.all()
+
     server_list = AIXServer.objects.filter(decommissioned=False)
-    #server_list = AIXServer.objects.filter(name='dltsodsdb')
 
     for server in server_list:
 

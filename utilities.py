@@ -9,7 +9,6 @@
 #
 ####################################################
 
-#server = 'p1rhrep'
 import os
 from ssh import SSHClient
 from django.utils import timezone

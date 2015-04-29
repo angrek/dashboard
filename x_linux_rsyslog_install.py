@@ -20,10 +20,8 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.all()
     #zone = NonProduction = 1
     server_list = LinuxServer.objects.filter(zone=2, decommissioned=False, rsyslog='None')
-    #server_list = LinuxServer.objects.filter(name='d3archtestapp01')
 
     counter = 0
 

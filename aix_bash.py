@@ -20,10 +20,9 @@ django.setup()
 
 
 def update_server():
-    server_list = AIXServer.objects.filter(decommissioned=False)
-    #server_list = AIXServer.objects.filter(name__contains='vio')
 
-    counter = 0
+    server_list = AIXServer.objects.filter(decommissioned=False)
+
     for server in server_list:
 
         if utilities.ping(server):

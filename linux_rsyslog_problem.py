@@ -20,9 +20,7 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.all()
     server_list = LinuxServer.objects.filter(decommissioned=False, active=True, exception=False)
-    #server_list = LinuxServer.objects.filter(name='dstsmesbapp03')
 
     counter = 0
     for server in server_list:

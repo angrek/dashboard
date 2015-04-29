@@ -24,9 +24,10 @@ django.setup()
 
 
 def update_server():
-    #right now we are just getting these for the VIO servers
+
+    #right now we are just getting these for the non-VIO servers
     server_list = AIXServer.objects.filter(active=True, exception=False).exclude(name__contains='vio')
-    #server_list = AIXServer.objects.filter(name__contains='vio')
+
     total_devices  = 0
     for server in server_list:
 

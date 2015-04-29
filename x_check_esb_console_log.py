@@ -24,8 +24,7 @@ import email.utils
 def update_server():
     text = "======================ESB /opt Console Space Report=============\n"
     print text
-    #server_list = AIXServer.objects.all()
-    #server_list = AIXServer.objects.filter(name='d2vio01')
+
     server_list = ['p1esbapp', 'p2esbapp', 'p3esbapp', 'p4esbapp', 'p5esbapp', 'p6esbapp', 'p7esbapp', 'p8esbapp', 'p9esbapp', 'p10esbapp', 'p11esbapp', 'p12esbapp']
     for server in server_list:
         text = text + "-------------------" + str(server) + "---------------------\n"

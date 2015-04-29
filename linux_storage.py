@@ -20,16 +20,10 @@ django.setup()
 
 
 def update_server():
-    #server_list = LinuxServer.objects.all()
+
     server_list = LinuxServer.objects.filter(decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='ustsesbapp')
-    #server_list = LinuxServer.objects.filter(name__contains='vio')
-    #counter = 0
 
     for server in server_list:
-
-        #counter += 1
-        #print str(counter) + ' - ' + str(server)
 
         if utilities.ping(server):
 

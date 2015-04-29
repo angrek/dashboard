@@ -20,10 +20,7 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.all()
-    #zone = NonProduction = 1
     server_list = LinuxServer.objects.filter(active=True, exception=False, zone=1, decommissioned=False)
-    #server_list = LinuxServer.objects.filter(name='d1svn')
 
     counter = 0
 
