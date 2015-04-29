@@ -47,7 +47,6 @@ else:
 def update_server():
 
     server_list = AIXServer.objects.filter(decommissioned=False, active=True, exception=True)
-    #server_list = AIXServer.objects.filter(name='dinfmqesbapp01')
           
     for server in server_list:
 
