@@ -12,7 +12,7 @@ import os
 import re
 from ssh import SSHClient
 from django.utils import timezone
-from server.models import AIXServer, LinuxServer
+from server.models import AIXServer, LinuxServer, Relationships
 
 #need itertools to concatenate the query sets to combine lists of servers from two different tables
 from itertools import chain
@@ -46,9 +46,34 @@ else:
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False, active=True, exception=True)
+    #Get the list of lpars that host wpars
+    lpar_list = Relationships.objects.values('parent_lpar').distinct()
+    for lpar in lpar_list:
+        lpar = lpar['parent_lpar']
+        print "====================================================="
+        print "Working on lpar host " + lpar
+
+        #First we're just going to adflush the lpar
+        #I could just do this as root, but I'd prefer to try it as myself first
+        #side note: I ran this with just an ls command to verify/cheat
+        #and make sure I could get into them all first
+        #If I can't get into the lpar as root, I'm essentially screwed anyway
+        #command = "ssh " + lpar + " dzdo adflush -f"
+        #print command
+        #os.system(command)
+
+    #command = 'dzdo ssh ' + str(server) + ' adflush -f'
+    #os.system(command)
+
+
+
+    sys.exit()
+    #print "Trying to run adflush as root...."
+    #command = 'dzdo ssh ' + str(server) + ' adflush -f'
+    #os.system(command)
           
-    for server in server_list:
+    server_list = AIXServer.objects.filter(decommissioned=False, active=True, exception=True)
+    for server in server_list2:
 
         print '--------------------------------------'
         print 'Working on server ' + str(server)
@@ -101,6 +126,7 @@ def update_server():
                     print "Ok, removing the entry worked."
                 except:
                     print "SSH STILL NOT WORKING!!!!!!!!!!!!!!!!!!!!!!"
+                    print "Trying to run adflush as root...."
                     command = 'dzdo ssh ' + str(server) + ' adflush -f'
                     os.system(command)
                     continue
