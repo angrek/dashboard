@@ -1,0 +1,25 @@
+
+
+
+{% for line in text %}
+{{ line }} <br>
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
