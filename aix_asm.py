@@ -21,7 +21,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False)[:10]
 
     counter = 0
     for server in server_list:
@@ -42,11 +42,15 @@ def update_server():
 
                 print '--------'
                 print server
-                print output
-                print my_output
+                print '111111111111111111111111111'
+                print  output
+                print '222222222222222222222222222222'
+                print  my_output
+                print '333333333333333333333333333333'
+                print server.asm
 
                 #check existing value, if it exists, don't update
-                if my_output != str(server.asm):
+                if my_output != server.asm:
                     utilities.log_change(str(server), 'asm', str(server.asm), str(my_output))
 
                     AIXServer.objects.filter(name=server).update(asm=my_output, modified=timezone.now())
