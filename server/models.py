@@ -119,6 +119,7 @@ class AIXServer(models.Model):
     curr_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
     predicted_lpar_score_new = models.IntegerField(max_length=3, blank=True, null=True)
     application_paths = models.TextField(blank=True, null=True)
+    local_users = models.TextField(blank=True, null=True)
     centrify_user_count = models.IntegerField(max_length=3, blank=True, null=True, default=0)
     relationship = models.ManyToManyField('self',
         through='Relationships',
@@ -407,6 +408,7 @@ class LinuxServer(models.Model):
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True, default='None')
+    local_users = models.TextField(blank=True, null=True)
     application_paths = models.TextField(blank=True, null=True, default='None')
     log = models.TextField(blank=True, null=True)
 

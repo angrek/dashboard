@@ -85,7 +85,7 @@ class AIXServerAdmin(ImportExportModelAdmin):
     list_filter = ['stack', 'substack', 'os', 'os_level', 'zone', 'active', 'exception', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym', 'owner']
     search_fields = ['name', 'owner', 'frame__name', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify','centrify_user_count', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'image_tag', ['owner', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify','centrify_user_count', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
     inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
@@ -337,7 +337,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'owner', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths']
+    fields = ['name', 'owner', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource

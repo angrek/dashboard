@@ -29,6 +29,18 @@ def index(request):
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+def local_users(request):
+    aix_servers = AIXServer.objects.filter(decommissioned=False, zone=2)
+    linux_servers = LinuxServer.objects.filter(decommissioned=False, zone=2)
+    server_list = list(chain(aix_servers, linux_servers))
+    text = [] 
+    for server in server_list:
+        t = str(server.local_users).split('\n')
+        for line in t:
+            text.append(line)
+    context = {'text': text, 'server_list': server_list}
+    return render(request, 'server/local_users.txt', context)
+
 def java(request):
     servers = AIXServer.objects.order_by('name')
     test = {}
