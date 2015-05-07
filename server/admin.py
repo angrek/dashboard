@@ -177,7 +177,7 @@ class AIXPowerHAAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['name', 'image_tag', 'owner', 'stack_color', 'active','exception', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba']
     list_filter = ['active', 'exception', 'owner', 'stack', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba']
-    search_fields = ['name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl',  'imperva', 'netbackup']
+    search_fields = ['name_name', 'owner', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl',  'imperva', 'netbackup']
     readonly_fields = ['created', 'modified', 'image_tag']
     fields = ['name', 'image_tag', 'owner', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup','rsyslog', 'samba', 'application_paths']
     resource_class = AIXServerResource
@@ -240,7 +240,7 @@ class Power7InventoryAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ('name', 'frame', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
     list_filter = ('frame', 'active', 'exception', 'decommissioned', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
-    search_fields = ('frame', 'name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
+    search_fields = ('name__name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
     readonly_fields = ['modified',]
     fields = ('name', 'frame', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
 
@@ -383,7 +383,7 @@ class HistoricalLinuxDataAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = ['date', 'name', 'owner', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage']
     list_filter = ['date', 'os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
-    search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
+    search_fields = ['name__name', 'owner', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', ]
     fields = ['date', 'name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
     class Media:
