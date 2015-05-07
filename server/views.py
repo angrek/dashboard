@@ -92,37 +92,104 @@ def frames(request):
     context = {'frames' : frames, 'frame_dict' : frame_dict, 'sorted_frame_list':sorted_frame_list, 'test_list': test_list}
     return render(request, 'server/frames.html', context)
 
-def stacks(request):
-    red_aix_servers = AIXServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
-    red_linux_servers = LinuxServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
-    red_windows_servers = WindowsServer.objects.filter(stack__name = 'Red', decommissioned=False).order_by('name')
+
+
+def stacks(request, os, zone):
+    request.GET.get('os')
+    request.GET.get('zone')
+   
+    #Setting up the base filter
+    #either prod, nonprod, or leave it out for everything
+    if zone == 'nonproduction':
+        zone = '1'
+        filters = {'decommissioned': False, 'stack__name': 'Red', 'zone':zone}
+    elif zone == 'production':
+        zone = '2'
+        filters = {'decommissioned': False, 'stack__name': 'Red', 'zone':zone}
+    elif zone == 'all':
+        filters = {'decommissioned': False, 'stack__name': 'Red'}
+
+
+    red_aix_servers = []
+    red_linux_servers = []
+    red_windows_servers = []
+   
+    yellow_aix_servers = []
+    yellow_linux_servers = []
+    yellow_windows_servers = []
+   
+    green_aix_servers = []
+    green_linux_servers = []
+    green_windows_servers = []
+   
+    orange_aix_servers = []
+    orange_linux_servers = []
+    orange_windows_servers = []
+   
+    train_aix_servers = []
+    train_linux_servers = []
+    train_windows_servers = []
+   
+    config_aix_servers = []
+    config_linux_servers = []
+    config_windows_servers = []
+   
+
+    #Linux servers
+    if (os == 'linux') or (os == 'all'):
+        filters['stack__name'] = 'Red'
+        red_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Yellow'
+        yellow_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Green'
+        green_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Orange'
+        orange_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Train'
+        train_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Config'
+        config_linux_servers = LinuxServer.objects.filter(**filters).order_by('name')
+
+
+    #AIX servers
+    if os == 'aix' or os == 'all':
+        filters['stack__name'] = 'Red'
+        red_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Yellow'
+        yellow_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Green'
+        green_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Orange'
+        orange_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Train'
+        train_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Config'
+        config_aix_servers = AIXServer.objects.filter(**filters).order_by('name')
+
+    #Windows servers
+    if (os == 'windows') or (os == 'all'):
+        filters['stack__name'] = 'Red'
+        red_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Yellow'
+        yellow_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Green'
+        green_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Orange'
+        orange_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Train'
+        train_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+        filters['stack__name'] = 'Config'
+        config_windows_servers = WindowsServer.objects.filter(**filters).order_by('name')
+
+    #Chain them all together
     red_servers = list(chain(red_aix_servers, red_linux_servers, red_windows_servers))
-
-    yellow_aix_servers = AIXServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
-    yellow_linux_servers = LinuxServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
-    yellow_windows_servers = WindowsServer.objects.filter(stack__name = 'Yellow', decommissioned=False).order_by('name')
     yellow_servers = list(chain(yellow_aix_servers, yellow_linux_servers, yellow_windows_servers))
-
-    green_aix_servers = AIXServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
-    green_linux_servers = LinuxServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
-    green_windows_servers = WindowsServer.objects.filter(stack__name = 'Green', decommissioned=False).order_by('name')
     green_servers = list(chain(green_aix_servers, green_linux_servers, green_windows_servers))
-
-    orange_aix_servers = AIXServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
-    orange_linux_servers = LinuxServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
-    orange_windows_servers = WindowsServer.objects.filter(stack__name = 'Orange', decommissioned=False).order_by('name')
     orange_servers = list(chain(orange_aix_servers, orange_linux_servers, orange_windows_servers))
-
-
-    train_aix_servers = AIXServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
-    train_linux_servers = LinuxServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
-    train_windows_servers = WindowsServer.objects.filter(stack__name = 'Train', decommissioned=False).order_by('name')
     train_servers = list(chain(train_aix_servers, train_linux_servers, train_windows_servers))
-
-    config_aix_servers = AIXServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
-    config_linux_servers = LinuxServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
-    config_windows_servers = WindowsServer.objects.filter(stack__name = 'Config', decommissioned=False).order_by('name')
     config_servers = list(chain(config_aix_servers, config_linux_servers, config_windows_servers))
+
+
 
     context = {'red_servers' : red_servers,
         'yellow_servers': yellow_servers,
