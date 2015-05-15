@@ -20,13 +20,15 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.filter(active=True, exception=False, zone=1, decommissioned=False).exclude(centrify='5.2.2-192')
-    server_list = LinuxServer.objects.filter(name='trh1sandbox')
+    server_list = LinuxServer.objects.filter(name__contains="xinfdba01", zone=1, decommissioned=False).exclude(centrify='5.2.2-192')
+    #server_list = LinuxServer.objects.filter(name='d0mwcdb')
 
     counter = 0
 
     for server in server_list[:25]:
 
+        print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+        print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
         print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
         print server.name
 
@@ -37,8 +39,60 @@ def update_server():
                 print "Current centrify version:"
                 print server.centrify
 
-                #command = 'cat /etc/syslog.conf'
-                #stdin, stdout, stderr = client.exec_command(command)
+                if server.centrify != '5.2.2-192':
+
+                    print 'Creating directory /unix'
+                    command = 'dzdo mkdir /unix'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    y = stderr.readlines()
+                    print x
+                    for line in x:
+                        print line
+                    for line in y:
+                        print line
+
+
+                    print 'Mounting naswin1 /unix'
+                    command = 'dzdo mount -o nolock naswin1:/unix /unix'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    y = stderr.readlines()
+                    print '2'
+                    for line in x:
+                        print line
+                    for line in y:
+                        print line
+
+                    print 'Installing centrify'
+                    command = 'dzdo rpm -Uvh /unix/software/Centrify/Centrify-Suite-2015-agents-DM/SP1/tmp/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    y = stderr.readlines()
+                    print '3'
+                    for line in x:
+                        print line
+                    for line in y:
+                        print line
+
+                    command = 'dzdo service centrifydc restart;dzdo service sshd restart;dzdo adflush -f'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    for line in x:
+                        print line
+
+                    command = 'adinfo -v'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    for line in x:
+                        print line
+
+
+            else:
+                print "No ssh"
+        else:
+            print "No ping"
+
                 #t = stdout.readlines()
                 #for line in t:
                 #    print line.rstrip()
