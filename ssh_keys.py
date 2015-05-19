@@ -105,7 +105,7 @@ def update_server():
             if username == 'wrehfiel':
                 server_list += LinuxServer.objects.filter(active=True, exception=True, decommissioned=False)
             else:
-               server_list += LinuxServer.objects.filter(active=True, decommissioned=False)
+                server_list += LinuxServer.objects.filter(active=True, decommissioned=False)
             print server_list
         else:
             for server in [args.linux]:
@@ -199,7 +199,11 @@ def update_server():
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 client.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-                client.connect(str(server), username=username, password=password)
+                try:
+                    client.connect(str(server), username=username, password=password)
+                except:
+                    print "Connection timed out or errored out"
+                    continue
 
                 #this is a one off for red hat 6 and selinux, but it needs some testing
                 #command = "restorecon -R ~/.ssh"
