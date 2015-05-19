@@ -34,10 +34,16 @@ while (<FILE>){
 }
 
 
-#@clusters = ('Savvis Non-Prod UCS-Linux');
-@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
-            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
-            'Savvis Prod UCS-SANMGMT');
+#quick function to filter out dups in a list
+sub uniq {
+    my %seen;
+    grep !$seen{$_}++, @_;
+}  
+
+@clusters = ('Savvis Non-Prod UCS-Linux');
+#@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
+#            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
+#            'Savvis Prod UCS-SANMGMT');
 
 foreach $cluster_name(@clusters){
 
@@ -76,6 +82,9 @@ my $vmcounter = 0;
 
 %hash_of_servers = ();
 
+@guest_id = ();
+@guest_full = ();
+
 foreach my $host (@$host_views) {
 
   ########## Get a view of the current host
@@ -88,13 +97,19 @@ foreach my $host (@$host_views) {
 
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
-        #if ($vm->name eq 'u2esbapp'){
+        #if ($vm->name eq 'd1wcdb'){
             print "\n==============================================";
             print "\nName--->", $vm->name;
             print "\nguestFamily--->", $vm->guest->guestFamily;
+            print "\nguestId--->", $vm->config->guestId;
+
             print "\nguestFullName->", $vm->guest->guestFullName;
+            print "\nguestFullName2->", $vm->config->guestFullName;
             print "\nguestState---->", $vm->guest->guestState;
-            #print "\ntest---->", $vm->config->guestID;
+            
+            unshift @guest_id, $vm->config->guestId;
+            unshift @guest_full, $vm->config->guestFullName;
+
             $devices = $vm->config->hardware->device;
             @device_list = ('VirtualE1000', 'VirtualE1000e', 'VirtualIPCNet32', 'VirtualVmxnet2', 'VirtualVmxnet3', 'Flexible');
             foreach $device (@$devices){
@@ -112,11 +127,15 @@ foreach my $host (@$host_views) {
                     }
                 }
             }
+            #print Dumper($vm);
                 
         #}
-        #if (($vm->guest->guestFamily eq 'linuxGuest') || ($vm-name eq 'p1dbmon')){
-        if ($vm->guest->guestFamily eq 'linuxGuest') {
 
+        #if (($vm->guest->guestFamily eq 'linuxGuest') || ($vm-name eq 'p1dbmon')){
+        if (($vm->config->guestFullName =~ /Linux/) || ($vm->config->guestFullName =~ /Cent/) || ($vm->config->guestFullName =~ /Ubuntu/)){
+        #    print "YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
+        #}
+        #if ($vm->guest->guestFamily eq 'llinuxGuest') {
 
             $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
             $timestamp = sprintf ("%04d-%02d-%02d %02d:%02d:%02d",
@@ -218,7 +237,7 @@ foreach my $host (@$host_views) {
             #LEAVE THIS HERE TO SEE VALUES FOR THE FUTURE
             #Dumper command to get all of the possible data we can pull out of ESX 
             #if ($vmcounter == 5){
-            #     print Dumper($vm);
+            #print Dumper($vm);
             #     break;
             #}
         } 
@@ -227,6 +246,21 @@ foreach my $host (@$host_views) {
   $hostcounter++;
 }
 
+@filtered_guest_id = uniq(@guest_id);
+@filtered_guest_full = uniq(@guest_full);
+print "\n=============================\n";
+print "         Guest ID\n";
+print "\n=============================\n\n";
+foreach $name(@filtered_guest_id){
+    print "$name\n";
+}
+print "\n=============================\n";
+print "         Guest Full\n";
+print "\n=============================\n";
+foreach $name(@filtered_guest_full){
+    print "$name\n";
+}
+print "\n";
 ########## Print the table footer
 #print "|--------------------------------------------------------------------------|\n";
 #print "| Found " . $vmcounter . " Virtual Machines on " . $hostcounter . " ESX Host(s) in " . $cluster_view->name . "\n";
