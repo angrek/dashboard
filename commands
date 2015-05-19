@@ -47,3 +47,6 @@ Configuration summary
   nginx http scgi temporary files: "scgi_temp"
 
 [root@p1rhrep nginx-1.6.2]# ./configure --with-pcre=/usr/src/pcre-8.36 --with-pcre-jit --with-http_ssl_module --error-log-path=/home/wrehfiel/ENV/dashboard/logs/error.log --http-log-path=/home/wrehfiel/ENV/wrehfiel/dashboard/logs/nginx.log --user=wrehfiel --group=unixadm
+
+====================================================
+pip install python-crontab
