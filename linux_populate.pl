@@ -40,10 +40,10 @@ sub uniq {
     grep !$seen{$_}++, @_;
 }  
 
-@clusters = ('Savvis Non-Prod UCS-Linux');
-#@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
-#            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
-#            'Savvis Prod UCS-SANMGMT');
+#@clusters = ('Savvis Non-Prod UCS-Linux');
+@clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
+            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
+            'Savvis Prod UCS-SANMGMT');
 
 foreach $cluster_name(@clusters){
 
