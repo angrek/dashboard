@@ -22,3 +22,4 @@ old/*
 logs/*
 logs/
 fix_ssh.py
+.all_network_conections*
