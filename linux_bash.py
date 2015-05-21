@@ -15,12 +15,14 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import utilities
+import paramiko
 django.setup()
 
 
 def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(name__contains="alexandria", decommissioned=False)
 
     counter = 0
 
@@ -30,7 +32,7 @@ def update_server():
         print server.name
         if utilities.ping(server):
 
-            client = SSHClient()
+            client = paramiko.SSHClient()
             if utilities.ssh(server, client):
                 print server.name
                 command = 'rpm -qa | grep bash |grep -v doc| grep -v completion'
