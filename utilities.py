@@ -53,17 +53,24 @@ def ping(server):
 #test ssh... duh
 def ssh(server, client):
     client.load_system_host_keys()
+    print '3'
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    print '4'
     try:
         client.connect(str(server), username="wrehfiel", timeout=10)
+        print '5'
         if server.exception == True:
+            print '1'
             server.exception = False
             server.save()
             LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH succeeded, changed exception.')
         response = 1
 
     except:
+        print '6'
+        print 'exception:' + str(server.exception)
         if server.exception == False:
+            print '2'
             server.exception = True
             server.save()
             LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message='SSH failed, changed exception.')
