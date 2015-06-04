@@ -20,7 +20,8 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(name='t1sandbox', zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
+    #server_list = AIXServer.objects.filter(name__contains='uhdpdb01', zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
+    server_list = AIXServer.objects.filter(name__contains='uhdpdb01')
 
     counter = 0
 
@@ -37,11 +38,20 @@ def update_server():
             if utilities.ssh(server, client):
                 print "Current centrify version:"
                 print server.centrify
+                old_version = server.centrify
 
                 if server.centrify != '5.2.2-192':
 
-                    print 'Creating directory /unix'
-                    command = 'dzdo mkdir /unix'
+                    print 'Checking adquery before install'
+                    command = 'dzdo adquery user | wc -l'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    for line in x:
+                        before = line
+
+
+                    print 'Creating directory /unix_centrify'
+                    command = 'dzdo mkdir /unix_centrify'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
@@ -52,8 +62,8 @@ def update_server():
                         print line
 
 
-                    print 'Mounting naswin1 /unix'
-                    command = 'dzdo mount -o nolock naswin1:/unix /unix'
+                    print 'Mounting naswin1 /unix_centrify'
+                    command = 'dzdo mount naswin1:/unix /unix_centrify'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
@@ -64,28 +74,78 @@ def update_server():
                         print line
 
                     print 'Installing centrify'
-                    command = 'dzdo rpm -Uvh /unix/software/Centrify/Centrify-Suite-2015-agents-DM/SP1/tmp/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    command = 'dzdo installp -acFY -d /unix_centrify/software/Centrify/Centrify-Suite-2015-agents-DM/aix_install CentrifyDC.core;sleep 7;dzdo adflush -a;dzdo adreload;sleep 2'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
                     print '3'
-                    for line in x:
-                        print line
-                    for line in y:
-                        print line
+                    #for line in x:
+                    #    print line
+                    #for line in y:
+                    #    print line
 
-                    command = 'dzdo service centrifydc restart;dzdo service sshd restart;dzdo adflush -f'
+
+
+                    print 'Unmounting naswin1 /unix_centrify'
+                    command = 'dzdo umount /unix_centrify'
+                    stdin, stdout, stderr = client.exec_command(command)
+
+                    print 'Removing directory /unix_centrify'
+                    command = 'dzdo rmdir /unix_centrify'
+                    stdin, stdout, stderr = client.exec_command(command)
+
+
+                    #verify
+                    print 'Checking adquery after install'
+                    command = 'dzdo adquery user | wc -l'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     for line in x:
-                        print line
+                        after = line
+                    print server.name    
+                    print "===============================" 
+                    print "Users before: " + before.rstrip()
+                    print "Users after : " + after.rstrip()
 
+                    #print "Stopping Centrify"
+                    #command = 'dzdo stopsrc -s centrifydc;sleep 5'
+                    #stdin, stdout, stderr = client.exec_command(command)
+                    #x = stdout.readlines()
+                    #for line in x:
+                    #    print line
+                    #y = stderr.readlines()
+                    #for line in y:
+                    #    print line
+
+                    #command = "dzdo ssh " + str(server.name) + " startsrc -s centrifydc"
+                    #os.system(command)
+                    #print "Waiting 10 seconds"
+                    #time.sleep(10)
+
+                    #print "Starting centrify"
+                    #command = 'dzdo startsrc -s centrifydc;dzdo adflush -f'
+                    #stdin, stdout, stderr = client.exec_command(command)
+                    #x = stdout.readlines()
+                    #for line in x:
+                    #    print line
+                    #y = stderr.readlines()
+                    #for line in y:
+                    #    print line
+
+
+                    print "Old Version: " + old_version
                     command = 'adinfo -v'
                     stdin, stdout, stderr = client.exec_command(command)
-                    x = stdout.readlines()
-                    for line in x:
-                        print line
+                    new_centrify = stdout.readlines()[0]
+                    new_centrify = new_centrify[19:-2]
+                    print "New Version: " + new_centrify
 
+                    print ''
+                    print "================================="
+
+                    server.centrify = new_centrify
+                    server.save()
+                    utilities.log_change(str(server), 'Centrify', old_version, new_centrify)
 
             else:
                 print "No ssh"
