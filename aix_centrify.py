@@ -21,6 +21,7 @@ django.setup()
 
 def update_server():
     server_list = AIXServer.objects.filter(decommissioned=False)
+    #server_list = AIXServer.objects.filter(zone=1, decommissioned=False).exclude(centrify='5.2.2-192')
 
     for server in server_list:
 
@@ -37,7 +38,7 @@ def update_server():
                 
                 client = SSHClient()
                 if utilities.ssh(server, client):
-
+                    print server.name
                     centrify_is_installed = 1
 
                     stdin, stdout, stderr = client.exec_command('adinfo -v')
@@ -48,7 +49,6 @@ def update_server():
                     except:
                         new_centrify = "None"
                         centrify_is_installed = 0
-
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
                         utilities.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
