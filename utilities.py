@@ -57,7 +57,7 @@ def ssh(server, client):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     print '4'
     try:
-        client.connect(str(server), username="wrehfiel", timeout=10)
+        client.connect(str(server), username="wrehfiel", timeout=20)
         print '5'
         if server.exception == True:
             print '1'
