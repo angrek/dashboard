@@ -10,10 +10,9 @@
     {% endblock %}
     <script type='text/javascript' src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script type='text/javascript' src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-    <script type='text/javascript' src="/static/js/test.js"></script>
-    <script type='text/javascript' src="/static/js/test2.js"></script>
-
-    <link href="http://code.jquery.com/ui/1.10.2/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script type='text/javascript' src="/static/js/menu.js"></script>
+    <script type='text/javascript' src="/static/js/prefixfree-1.0.7.js"></script>
+    
 
 
     <link type='text/css' href='/static/css/timetracker.css' rel='stylesheet' />
@@ -24,7 +23,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/dashboard_test.css" rel="stylesheet">
 
 </head>
 <body>
@@ -57,31 +56,34 @@
         </div>
       </div>
     </nav>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="/server/">Home <span class="sr-only">(current)</span></a></li>
-            <li><a href="/admin/">Backend Admin Site</a></li>
-            <li><a href="/server/frames">AIX Frames</a></li>
-            <li><a href="/server/java">AIX Java Versions</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href=""></a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="/server/line_basic/aix/month/5">Line-AIX Servers</a></li>
-            <li><a href="/server/pie_3d/aix/all/ifix">Pie-AIX ifix</a></li>
-            <li><a href="/server/pie_3d/aix/all/cent_ssh">Pie-AIX Centryfy SSH</a></li>
-            <li><a href="/server/stacked_column/aix/all/os_level/week/15">Col-AIX OS Levels</a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href=""></a></li>
-          </ul>
-        </div>
+
+
+    <div id="accordian">
+        <ul>
+        <li class="active">
+            <h3><span class="icon-dashboard"></span>Dashboard</h3>
+            <ul>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Search</a></li>
+                <li><a href="#">Graphs</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </li>
+        <!-- we will keep this LI open by default -->
+        <li >
+            <h3><span class="icon-tasks"></span>Tasks</h3>
+            <ul>
+                <li><a href="#">Today's tasks</a></li>
+                <li><a href="#">Urgent</a></li>
+                <li><a href="#">Overdues</a></li>
+                <li><a href="#">Recurring</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </li>
+        </ul>
+    </div>
+
+
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     {% block content %}
