@@ -333,7 +333,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'applications', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    list_display = ['name', 'owner', 'application', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
     list_filter = ['os', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'application', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
