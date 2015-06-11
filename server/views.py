@@ -23,12 +23,14 @@ from itertools import chain
 
 from django.db.models import Q
 import operator
-     
+
+@login_required
 def index(request):
     first_ten_servers = AIXServer.objects.order_by('name')[:10]
     context = {'first_ten_servers': first_ten_servers}
     return render(request, 'server/index.html', context)
 
+@login_required
 def local_users(request):
     aix_servers = AIXServer.objects.filter(decommissioned=False, zone=2)
     linux_servers = LinuxServer.objects.filter(decommissioned=False, zone=2)
