@@ -47,7 +47,7 @@ def java(request):
     servers = AIXServer.objects.order_by('name')
     test = {}
     for server in servers:
-        test[server.name] = server.java_text
+        test[server.name] = server.java
     context = {'servers': servers, 'test': test}
     return render(request, 'server/java.html', context)
 
