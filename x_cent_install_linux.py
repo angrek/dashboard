@@ -64,7 +64,7 @@ def update_server():
                         print line
 
                     print 'Installing centrify'
-                    command = 'dzdo rpm -Uvh /unix/software/Centrify/Centrify-Suite-2015-agents-DM/SP1/tmp/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    command = 'dzdo rpm -Uvh /unix/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/centrifydc-5.2.2-rhel3-x86_64.rpm'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
