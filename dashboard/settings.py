@@ -50,6 +50,7 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -63,6 +64,15 @@ INSTALLED_APPS = (
     'server',
     'timetracker',
     'gunicorn',
+    'django_notify',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki',
+    #'wiki.plugins.attachments',
+    #'wiki.plugins.notification',
+    #'wiki.plugins.images',
+    #'wiki.plugins.macros',
 )
 
 MIDDLEWARE_CLASSES = (
