@@ -162,7 +162,7 @@ class AIXProcPool(models.Model):
         verbose_name_plural = "AIX Proc Pools"
 
     def __unicode__(self):
-        return '%s' % (self.name)
+        return '%s' % (self.pool_name)
 
 
 class HistoricalAIXData(models.Model):

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, SubStack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import AIXServerResource
-from server.models import AIXServerENV
+from server.models import AIXServerENV, AIXProcPool
 from server.models import AIXAffinity
 from server.models import Java
 
@@ -131,7 +131,6 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     pass
 
 
-
 class AIXServerENVAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
@@ -220,6 +219,16 @@ class HistoricalAIXDataAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
+class AIXProcPoolAdmin(ImportExportModelAdmin):
+    save_on_top = True
+    list_display = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
+    list_filter = ['frame', 'pool_name', 'modified']
+    search_fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
+    fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
+    ordering = ['frame']
+    class Media:
+        js = ['/static/admin/js/list_filter_collaps.js']
+    pass
 
 class VIOServerAdmin(ImportExportModelAdmin):
     def get_queryset(self, request):
@@ -514,6 +523,7 @@ admin.site.register(AIXMksysb, AIXMksysbAdmin)
 admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(AIXAffinity, AIXAffinityAdmin)
+admin.site.register(AIXProcPool, AIXProcPoolAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
