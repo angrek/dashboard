@@ -40,7 +40,7 @@ def populate():
     #Grab all of the frames on the HMC
     stdin, stdout, stderr = client.exec_command('lssyscfg -r sys -F name')
 
-    frames = stdout.readlines()[:3]
+    frames = stdout.readlines()
     for frame in frames:
         #the output is throwing newlines at the end of the names for some reason
         #hence the use of rstrip below
