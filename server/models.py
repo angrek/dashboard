@@ -41,8 +41,8 @@ class Frame(models.Model):
 
 
     class meta:
-        verbose_name = "Frame"
-        verbose_name_plural = "Frames"
+        verbose_name = "AIX Frame"
+        verbose_name_plural = "AIX Frames"
 
     def __unicode__(self):
         return self.name
