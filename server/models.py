@@ -229,8 +229,8 @@ class AIXServerResource(resources.ModelResource):
 class VIOServer(AIXServer):
     class Meta:
         proxy=True
-        verbose_name = "VIO Server"
-        verbose_name_plural = "VIO Servers"
+        verbose_name = "AIX VIO Server"
+        verbose_name_plural = "AIX VIO Servers"
 
 #Meta model of AIX Server (temp) to show Affinity
 class AIXAffinity(AIXServer):
