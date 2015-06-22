@@ -57,7 +57,7 @@ def populate():
         for type in types:
             #for each frame, let's get all of the HMC memory data
             command = 'lshwres -r ' + type + ' -m ' + frame.rstrip()
-            print command
+            #print command
 
             stdin, stdout, stderr = client.exec_command(command)
             pool_data = stdout.readlines()
@@ -70,13 +70,19 @@ def populate():
                         print "++++++++++++++++++++++++++++"
                         print "Frame: " + frame.rstrip()
                         print "---------------------------------------------------"
+                        #full out put of the command, 
                         print line.rstrip()
                         print "-----------------------------------"
+                        #name
                         print x[0]
-                        print x[1]
+                        #shared_prod_pool_id
+                        #print x[1]
+                        #max_pool_proc_units
                         print x[2]
-                        print x[3]
-                        print x[4]
+                        #curr_reserved_pool_proc_units
+                        #print x[3]
+                        #pend_reserved_pool_proc_units
+                        #print x[4]
 
             #we'll close the connection after the next section
 
