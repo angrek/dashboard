@@ -40,17 +40,14 @@ class Frame(models.Model):
     firmware_version = models.CharField(max_length=15, blank=True, null=True, default='None')
 
 
-    class meta:
+    class Meta:
         verbose_name = "AIX Frame"
         verbose_name_plural = "AIX Frames"
-
-    def __unicode__(self):
-        return self.name
 
 class Stack(models.Model):
     name = models.CharField(max_length=15, blank=True, null=True)
 
-    class meta:
+    class Meta:
         verbose_name = "Stack"
         verbose_name_plural = "Stacks"
 
@@ -60,7 +57,7 @@ class Stack(models.Model):
 class SubStack(models.Model):
     name = models.CharField(max_length=15, blank=True, null=True)
 
-    class meta:
+    class Meta:
         verbose_name = "Sub Stack"
         verbose_name_plural = "Sub Stacks"
 
