@@ -75,6 +75,7 @@ SERVER_ENV_CHOICES = (
     (8, 'DR/COB'),
 )
 
+
 class AIXServer(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
     owner = models.CharField(max_length=50, blank=True, null=True, default='None')
@@ -145,6 +146,21 @@ class AIXServer(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.name)
+
+class AIXProcPool(models.Model):
+    frame = models.ForeignKey(Frame)   
+    pool_name = models.CharField(max_length=25, blank=True, null=True, default='None')
+    max_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    used_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    modified = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "AIX Proc Pool"
+        verbose_name_plural = "AIX Proc Pools"
+
+    def __unicode__(self):
+        return '%s' % (self.name)
+
 
 class HistoricalAIXData(models.Model):
     date = models.DateField("Date", default=datetime.date.today)
