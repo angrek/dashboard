@@ -44,6 +44,9 @@ class Frame(models.Model):
         verbose_name = "AIX Frame"
         verbose_name_plural = "AIX Frames"
 
+    def __unicode__(self):
+        return self.name
+
 class Stack(models.Model):
     name = models.CharField(max_length=15, blank=True, null=True)
 
