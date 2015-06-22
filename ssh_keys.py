@@ -79,8 +79,8 @@ else:
 
 
 def update_server():
-    print args.aix
-    print args.linux
+    print 'args.aix = ' + str(args.aix)
+    print 'args.linux = ' + str(args.linux)
     server_list = []
 
     #Parse the arguments and create a merge serverd list
@@ -94,7 +94,9 @@ def update_server():
                 server_list += AIXServer.objects.filter(active=True, decommissioned=False)
             print server_list
         else:
+            print '1'
             for server in [args.aix]:
+                print 'server = ' + server
                 server_list += AIXServer.objects.filter(name=server)
             print server_list
            
