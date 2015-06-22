@@ -22,7 +22,6 @@ django.setup()
 def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False, active=False)
-    #server_list = LinuxServer.objects.filter(name__contains="alexandria", decommissioned=False)
 
 
     for server in server_list:
