@@ -7,7 +7,12 @@
 #
 #########################################################################
 
+
+##This line is set in my profile but putting it here so others can run the scripts
 import os, re
+os.environ['DJANGO_SETTINGS_MODULE'] = 'dashboard.settings'
+
+
 from ssh import SSHClient
 from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
@@ -21,10 +26,10 @@ django.setup()
 
 def update_server():
 
-    server_list = LinuxServer.objects.filter(decommissioned=False, active=False)
+    server_list = LinuxServer.objects.filter(decommissioned=False)
 
 
-    for server in server_list:
+    for server in server_list[:2]:
         #counter += 1
         #print str(counter) + ' - ' + str(server)
         print server.name

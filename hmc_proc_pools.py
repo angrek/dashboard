@@ -71,8 +71,8 @@ def populate():
                         print "Frame: " + frame.rstrip()
                         print "---------------------------------------------------"
                         #full out put of the command, 
-                        print line.rstrip()
-                        print "-----------------------------------"
+                        #print line.rstrip()
+                        #print "-----------------------------------"
                         #name
                         print x[0]
                         #shared_prod_pool_id
