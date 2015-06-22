@@ -21,17 +21,18 @@ django.setup()
 
 def update_server():
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(zone=2, decommissioned=False).exclude(centrify='5.2.2-192')
 
     for server in server_list:
-
+        centrify = ''
         new_centrify = ''
         if utilities.ping(server):
             client = SSHClient()
             if utilities.ssh(server, client):
                 centrify_is_installed = 1
                 stdin, stdout, stderr = client.exec_command('adinfo -v')
-                print '1'
+                print server
                 try:
                     centrify = stdout.readlines()[0]
                     new_centrify = centrify[19:-2]
@@ -54,7 +55,26 @@ def update_server():
                     zone = Zone.objects.get(name=zone_tmp)
 
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
-                    
+
+
+                #Get CentrifyDA version
+                centrifyda = ''
+                new_centrifyda = ''
+                stdin, stdout, stderr = client.exec_command('dainfo -v')
+                print '1'
+                try:
+                    centrifyda = stdout.readlines()[0]
+                    new_centrifyda = centrifyda[19:-2]
+                except:
+                    new_centrifyda = "None"
+                    centrify_is_installed = 0
+
+                #if it's the same version, we don't need to update the record
+                if str(new_centrifyda) != str(server.centrifyda):
+                    utilities.log_change(str(server), 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
+                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=new_centrifyda, modified=timezone.now())
+
+
 
 
 #start execution
