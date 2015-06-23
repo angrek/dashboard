@@ -15,8 +15,9 @@ from django.contrib.admin.models import LogEntry
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, AIXProcPool, Frame
+from server.models import AIXServer, AIXProcPool, Frame, Power7Inventory
 import logging
+from decimal import Decimal
 django.setup()
 
 logging.basicConfig( level=logging.INFO )
@@ -88,23 +89,34 @@ def populate():
                         #print x[4]
 
                         #Need to get the used proc units from power 7 table
-                        used_proc_units = 200
-                        frame_obj = Frame.objects.get(name=frame)
+                        #used_proc_units = 200
 
-                        #FIXME uncomment both of these
+                        frame_obj = Frame.objects.get(name=frame)
+                        
+                        server_list = Power7Inventory.objects.filter(frame=frame_obj, curr_shared_proc_pool_name=pool_name)
+                        used_proc_units = 0
+                        print "======================"
+                        for server in server_list:
+                            print "-" + str(server.name) + " - " + str(server.curr_shared_proc_pool_name) + " - " + str(server.curr_proc_units)
+                            used_proc_units += Decimal(server.curr_proc_units)
+                        print "MAX PROC UNITS:  " + str(max_proc_units)
+                        print "USED PROC UNITS: " + str(used_proc_units)
+
+                        print "======================"
+
+
                         try:
                             pool_data = AIXProcPool.objects.get(frame=frame_obj, pool_name=pool_name)
                             pool_data.max_proc_units = max_proc_units
-                            pool_data.used_proc_unis = 300
+                            pool_data.used_proc_units = used_proc_units
+                            pool_data.modified = timezone.now()
                             pool_data.save()
                         except:
-                            pool_data = AIXProcPool.objects.get_or_create(frame=frame_obj, pool_name=pool_name, max_proc_units=max_proc_units, used_proc_units=used_proc_units)
+                            pool_data = AIXProcPool.objects.get_or_create(frame=frame_obj, pool_name=pool_name, max_proc_units=max_proc_units, used_proc_units=used_proc_units, modified=timezone.now())
 
 
 
 
-
-                        AIXServer.objects.filter(name=server.rstrip()).update(frame=frame.rstrip(), os='AIX', active=False, modified=timezone.now())
                         #change_message = "Server is now inactive. Set active to False"
                         #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 #                except:
