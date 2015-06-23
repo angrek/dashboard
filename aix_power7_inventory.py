@@ -90,15 +90,34 @@ def populate():
                 del lpar_array['lpar_name']
                
                 #in case the server is new since the last time it ran, we'll just create a blank server record and then update it.
-                #we don't really need error checking here because it's whatever the HMC gave us and the previous scripts will have added them to the AIXServer database.
-                name = AIXServer.objects.get(name=server_name)
-                print name
-                Power7Inventory.objects.get_or_create(name=name, frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
-                for key, value in lpar_array.iteritems():
-                    print key, "=>",value
-                    print "attempting to update value...."
-                    Power7Inventory.objects.filter(name=name).update(**{key: value})
 
+                #Need this here because a reuse server is missing from somewhere but I don't know why
+                try:
+                    name = AIXServer.objects.get(name=server_name)
+                except:
+                    continue
+                print name
+
+                if name.decommissioned == False:
+                    try:
+                        tmp = Power7Inventory.objects.get(name=name)
+                        Power7Inventory.objects.filter(name=name).update(frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
+                    except Power7Inventory.DoesNotExist:
+                        print 'Not found, creating'
+                        Power7Inventory.objects.get_or_create(name=name, frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
+
+                    for key, value in lpar_array.iteritems():
+                        if value == 'null':
+                            value = 0
+                        print key, "=>",value
+                        print "attempting to update value...."
+                        Power7Inventory.objects.filter(name=name).update(**{key: value})
+                else:
+                    #object is deleted, we need to remove it from here
+                    try:
+                        tmp = Power7Inventory.objects.get(name=name).delete()
+                    except:
+                        pass
 ###########temp comment block
         #for each frame, let's get all of the HMC CPU data for it
 #        command = 'lshwres -r mem -m ' + frame.rstrip() + ' --level lpar'
