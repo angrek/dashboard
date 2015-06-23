@@ -160,6 +160,8 @@ class AIXProcPool(models.Model):
     class Meta:
         verbose_name = "AIX Proc Pool"
         verbose_name_plural = "AIX Proc Pools"
+        ordering = ["frame"]
+        unique_together = ("frame", "pool_name")
 
     def __unicode__(self):
         return '%s' % (self.pool_name)
