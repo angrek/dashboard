@@ -7,11 +7,10 @@
 
 
 {% block content %}
-
-<div class='server_detail_container'>
-<div class='server_detail_left'>
+</div>
+<div id='server_detail_container'>
+<div id='server_detail_left'>
 <h1>{{ server }}</h1>
-
 <ul>
     <li>Server owner: {{ server.owner }}</li>
     <li>Frame: {{ server.frame }}</li>
@@ -40,7 +39,7 @@
 </ul>
 </div>
 
-<div class='server_detail_right'>
+<div id='server_detail_right'>
 <br>
 <h3>Last 20 logged changes</h3>
 <ul>
@@ -53,7 +52,7 @@
 
 <br>
 <br>
-<div class='server_graphs'>
+<div id='server_graphs'>
 <a href="http://p795agmon/?r=hour&cs=&ce=&m=cpu_used_report&s=by+name&c={{ frame.short_name }}&h={{ server.name }}.wellcare.com&host_regex=&max_graphs=0&tab=m&vn=&sh=1&z=small&hc=4">Full Ganglia Page</a>
 
 </br>
