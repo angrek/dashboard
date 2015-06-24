@@ -95,12 +95,15 @@ def populate():
                         
                         server_list = Power7Inventory.objects.filter(frame=frame_obj, curr_shared_proc_pool_name=pool_name)
                         used_proc_units = 0
+                        curr_procs = 0
                         print "======================"
                         for server in server_list:
                             print "-" + str(server.name) + " - " + str(server.curr_shared_proc_pool_name) + " - " + str(server.curr_proc_units)
                             used_proc_units += Decimal(server.curr_proc_units)
+                            curr_procs += Decimal(server.curr_procs)
                         print "MAX PROC UNITS:  " + str(max_proc_units)
                         print "USED PROC UNITS: " + str(used_proc_units)
+                        print "CURR (VIRT) PROCS: " + str(curr_procs)
 
                         print "======================"
 
@@ -109,10 +112,11 @@ def populate():
                             pool_data = AIXProcPool.objects.get(frame=frame_obj, pool_name=pool_name)
                             pool_data.max_proc_units = max_proc_units
                             pool_data.used_proc_units = used_proc_units
+                            pool_data.curr_procs = curr_procs
                             pool_data.modified = timezone.now()
                             pool_data.save()
                         except:
-                            pool_data = AIXProcPool.objects.get_or_create(frame=frame_obj, pool_name=pool_name, max_proc_units=max_proc_units, used_proc_units=used_proc_units, modified=timezone.now())
+                            pool_data = AIXProcPool.objects.get_or_create(frame=frame_obj, pool_name=pool_name, max_proc_units=max_proc_units, used_proc_units=used_proc_units, curr_procs=curr_procs, modified=timezone.now())
 
 
 

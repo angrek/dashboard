@@ -155,6 +155,7 @@ class AIXProcPool(models.Model):
     pool_name = models.CharField(max_length=25, blank=True, null=True, default='None')
     max_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     used_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    curr_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Virtual Procs")
     modified = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -326,10 +327,10 @@ class Power7Inventory(models.Model):
     curr_shared_proc_pool_name = models.CharField(max_length=20, blank=True, null=True)
     curr_proc_mode = models.CharField(max_length=20, blank=True, null=True)
     curr_min_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
-    curr_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    curr_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Assigned Processing Units")
     curr_max_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     curr_min_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
-    curr_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    curr_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Assigned Processing Units")
     curr_max_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
     curr_sharing_mode = models.CharField(max_length=20, blank=True, null=True)
     curr_uncap_weight = models.IntegerField(max_length=6, blank=True, null=True)

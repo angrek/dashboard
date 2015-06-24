@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponse
 from server.models import AIXServer, HistoricalAIXData
+from server.models import AIXProcPool
 from server.models import LinuxServer, HistoricalLinuxData
 from server.models import WindowsServer #SERIOUSLY???
 from server.models import Frame
@@ -268,6 +269,15 @@ def pie_3d(request, os, zone, service):
     name = "Percentage"
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
+def pie_3d_pools(request, frame):
+    proc_pools = AIXProcPool.objects.filter(frame=frame)
+    #context = {'first_ten_servers': first_ten_servers}
+    #return render(request, 'server/index.html', context)
+    pool_data = []
+    frame = Frame.objects.get(pk=frame)
+    for pool in proc_pools:
+       tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
+    return render(request, 'server/pie_3d_pools.html', {'proc_pools':proc_pools, 'tmp_list':tmp_list})
 
 def stacked_column(request, os, zone, service, period, time_range):
     request.GET.get('os')

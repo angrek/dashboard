@@ -221,10 +221,10 @@ class HistoricalAIXDataAdmin(ImportExportModelAdmin):
 
 class AIXProcPoolAdmin(ImportExportModelAdmin):
     save_on_top = True
-    list_display = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
+    list_display = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
     list_filter = ['frame', 'pool_name', 'modified']
-    search_fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
-    fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'modified']
+    search_fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
+    fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
     ordering = ['frame']
     class Media:
         js = ['/static/admin/js/list_filter_collaps.js']
