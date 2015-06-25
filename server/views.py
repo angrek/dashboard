@@ -269,15 +269,6 @@ def pie_3d(request, os, zone, service):
     name = "Percentage"
     return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
 
-def pie_3d_pools(request, frame):
-    proc_pools = AIXProcPool.objects.filter(frame=frame)
-    #context = {'first_ten_servers': first_ten_servers}
-    #return render(request, 'server/index.html', context)
-    pool_data = []
-    frame = Frame.objects.get(pk=frame)
-    for pool in proc_pools:
-       tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
-    return render(request, 'server/pie_3d_pools.html', {'proc_pools':proc_pools, 'tmp_list':tmp_list})
 
 def stacked_column(request, os, zone, service, period, time_range):
     request.GET.get('os')
@@ -395,6 +386,19 @@ def stacked_column(request, os, zone, service, period, time_range):
     return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
 
 
+
+def line_labels_proc_pools(request, frame):
+    proc_pools = AIXProcPool.objects.filter(frame=frame)
+    #context = {'first_ten_servers': first_ten_servers}
+    #return render(request, 'server/index.html', context)
+    title = "AIX Processor Pools By Frame" 
+    sub_title = frame
+    pool_data = []
+    frame = Frame.objects.get(pk=frame)
+    for pool in proc_pools:
+       tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
+       pool_data.append(tmp_list)
+    return render(request, 'server/line_labels_proc_pools.html', {'pool_data':pool_data, 'tmp_list':tmp_list})
 
 def line_basic(request, string, period, time_range):
     request.GET.get('string')

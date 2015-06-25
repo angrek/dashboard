@@ -23,8 +23,8 @@ urlpatterns = patterns('',
 
     url(r'^pie_3d/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)$', views.pie_3d, name='pie_3d'),
 
-    url(r'^pie_3d_pools/(?P<frame>(.*)+)/$', views.pie_3d_pools, name='pie_3d_pools'),
-    url(r'^pie_3d_pools/(?P<frame>(.*)+)$', views.pie_3d_pools, name='pie_3d_pools'),
+    url(r'^line_labels_proc_pools/(?P<frame>(.*)+)/$', views.line_labels_proc_pools, name='line_labels_proc_pools'),
+    url(r'^line_labels_proc_pools/(?P<frame>(.*)+)$', views.line_labels_proc_pools, name='line_labels_proc_pools'),
 
     url(r'^stacked_column/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.stacked_column, name='stacked_column'),
     url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
