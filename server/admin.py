@@ -14,6 +14,7 @@ from server.models import WindowsServer
 from server.models import Power7InventoryResource
 from server.models import Relationships
 from server.models import HistoricalAIXData
+from server.models import HistoricalAIXProcPoolData
 
 from server.models import CentrifyUser, LocalUser
 from server.models import CentrifyUserCountAIX, CentrifyUserCountLinux
@@ -225,6 +226,17 @@ class AIXProcPoolAdmin(ImportExportModelAdmin):
     list_filter = ['frame', 'pool_name', 'modified']
     search_fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
     fields = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
+    ordering = ['frame']
+    class Media:
+        js = ['/static/admin/js/list_filter_collaps.js']
+    pass
+
+class HistoricalAIXProcPoolAdmin(ImportExportModelAdmin):
+    save_on_top = True
+    list_display = ['date', 'frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs']
+    list_filter = ['frame', 'pool_name']
+    search_fields = ['date', 'frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs']
+    fields = ['date', 'frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs']
     ordering = ['frame']
     class Media:
         js = ['/static/admin/js/list_filter_collaps.js']
@@ -524,6 +536,7 @@ admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(AIXAffinity, AIXAffinityAdmin)
 admin.site.register(AIXProcPool, AIXProcPoolAdmin)
+admin.site.register(HistoricalAIXProcPoolData, HistoricalAIXProcPoolAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
 admin.site.register(Errpt, ErrptAdmin)
