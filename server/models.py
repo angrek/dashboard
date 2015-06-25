@@ -167,6 +167,23 @@ class AIXProcPool(models.Model):
     def __unicode__(self):
         return '%s' % (self.pool_name)
 
+class HistoricalAIXProcPoolData(models.Model):
+    date = models.DateField("Date", default=datetime.date.today)
+    frame = models.ForeignKey(Frame)   
+    pool_name = models.CharField(max_length=25, blank=True, null=True, default='None')
+    max_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    used_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
+    curr_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Virtual Procs")
+
+    class Meta:
+        verbose_name = "Historical AIX Proc Pool"
+        verbose_name_plural = "Historical AIX Proc Pools"
+        ordering = ["-date"]
+        unique_together = ("date", "frame", "pool_name")
+
+    def __unicode__(self):
+        return '%s' % (self.pool_name)
+
 
 class HistoricalAIXData(models.Model):
     date = models.DateField("Date", default=datetime.date.today)
