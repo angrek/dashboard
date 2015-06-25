@@ -16,6 +16,10 @@ mail william.rehfield@wellcare.com -s 'starting decom ping sweep' < 1.txt
 
 mail william.rehfield@wellcare.com -s 'starting aix power7 inventory' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_power7_inventory.py
+
+mail william.rehfield@wellcare.com -s 'starting aix historical proc pools' < 1.txt
+/home/wrehfiel/ENV/dashboard/historical_proc_pools.py
+
 mail william.rehfield@wellcare.com -s 'starting aix affinity' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_affinity.py
 
@@ -57,6 +61,9 @@ mail william.rehfield@wellcare.com -s 'starting aix rsyslog' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_rsyslog.py
 mail william.rehfield@wellcare.com -s 'starting aix user local' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_user_local.py
+mail william.rehfield@wellcare.com -s 'starting aix ping decoms' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_ping_decoms.py
+
 /home/wrehfiel/ENV/dashboard/historical_data_aix.py
 mail william.rehfield@wellcare.com -s 'aix scripts are done' < 1.txt
 
