@@ -387,18 +387,72 @@ def stacked_column(request, os, zone, service, period, time_range):
 
 
 
-def line_labels_proc_pools(request, frame):
+def line_labels_proc_pools(request, frame, period, time_range):
+    #request.GET.get('string')
+    request.GET.get('period')
+    request.GET.get('time_range')
+    data = {}
     proc_pools = AIXProcPool.objects.filter(frame=frame)
     #context = {'first_ten_servers': first_ten_servers}
     #return render(request, 'server/index.html', context)
     title = "AIX Processor Pools By Frame" 
-    sub_title = frame
-    pool_data = []
     frame = Frame.objects.get(pk=frame)
+    sub_title = frame.name
+    pool_data = []
     for pool in proc_pools:
        tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
        pool_data.append(tmp_list)
-    return render(request, 'server/line_labels_proc_pools.html', {'pool_data':pool_data, 'tmp_list':tmp_list})
+
+
+    months = []
+    number_of_servers = []
+    number_of_decoms = []
+    number_of_prod = []
+    number_of_non_prod = []
+    interval = 1
+    for x in range (0, int(time_range)):
+        if period == 'day':
+            ls = (datetime.date.today() - datetime.timedelta(days = interval)).strftime('%Y-%m-%d')
+        else:
+            ls = (datetime.date.today() - datetime.timedelta(days = (datetime.date.today().weekday() + interval))).strftime('%Y-%m-%d')
+        months.append(ls)
+        if period == 'week':
+            interval = interval + 7
+        elif period == 'day':
+            interval = interval + 1
+
+        elif period == 'month':
+            if x == 0:
+                #get the first day of the month, we're just adding today on the end of the graph here
+                interval = interval + (int(datetime.date.today().strftime('%d')) - 2)
+            else:
+                #this goes back and finds the first day of each of the last months in the time range and adjusts the year if it has to
+                #the graph for days or weeks doesn't have to do this because it's a set 1 and 7 interval whereas days of the month vary
+                my_year = int(datetime.date.today().strftime('%Y'))
+                my_month = int(datetime.date.today().strftime('%m'))
+                my_interval = x
+                if (my_month - x) < 1:
+                    my_year = my_year -1
+                    my_month = my_month + 12
+                next_month_back = calendar.monthrange(my_year, (my_month - x))[1]
+                interval = interval + next_month_back
+        else:
+            #Not sure what to do here, 404? sys.exit?
+            interval = interval + 1
+
+        #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
+        #number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
+        #number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
+        #number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+
+    months.reverse()
+    #number_of_servers.reverse()
+    #number_of_decoms.reverse() 
+    #number_of_prod.reverse()
+    #number_of_non_prod.reverse()
+
+
+    return render(request, 'server/line_labels_proc_pools.html', {'pool_data':pool_data, 'months':months, 'tmp_list':tmp_list, 'title':title, 'sub_title':sub_title})
 
 def line_basic(request, string, period, time_range):
     request.GET.get('string')
