@@ -1,4 +1,4 @@
-{% extends "server/base.html" %}
+{% extends "server/test_base.html" %}
 
 {% block title %}
 <title>Highcharts Example</title>
@@ -22,6 +22,11 @@ $(function () {
         },
         title: {
             text: '{{ title }}'
+        },
+        subtitle: {
+            useHTML: true,
+            text: '<a href="http://p1rhrep:8000/server/pie_3d/{{ os }}/{{ zone_url1 }}/{{ service }}">{{ zone_label1}}</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://p1rhrep:8000/server/pie_3d/{{ os }}/{{ zone_url2 }}/{{ service }}">{{ zone_label2}}</a>',
+            x: -20
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
