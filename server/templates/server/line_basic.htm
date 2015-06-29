@@ -1,4 +1,4 @@
-{% extends "server/base.html" %}
+{% extends "server/test_base.html" %}
 
 {% block title %}		
 <title>Highcharts Example</title>
@@ -19,7 +19,7 @@ $(function () {
             x: -20 //center
         },
         subtitle: {
-            text: {{ sub_title }},
+            text: '{{ sub_title }}',
             x: -20
         },
         xAxis: {
