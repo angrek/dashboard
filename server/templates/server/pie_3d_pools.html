@@ -1,0 +1,78 @@
+{% extends "server/base.html" %}
+
+{% block title %}
+<title>Highcharts Example</title>
+{% endblock %}
+
+{% block content %}
+		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+		<style type="text/css">
+${demo.css}
+		</style>
+		<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: '{{ title }}'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '{{ name }}',
+            data: [
+                {% for key,value in data.items %}  
+                ['{{ key }}', {{ value }}],
+                {% endfor %}
+            ]
+            
+        }]
+    });
+});
+		</script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/highcharts.js"></script>
+<script src="/static/js/highcharts-3d.js"></script>
+
+<script src="/static/js/exporting.js"></script>
+
+<div id="container" style="height: 400px"></div>
+{{ proc_pools }}
+{% for pool in proc_pools %}
+    {{ pool }}
+    test
+{% endfor %}
+
+{{ tmp_list }}
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
