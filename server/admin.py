@@ -286,8 +286,8 @@ class ErrptAdmin(admin.ModelAdmin):
 class AIXAffinityAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0, exception=0)
-    list_display = ['name', 'curr_lpar_score', 'curr_lpar_score_new', 'predicted_lpar_score', 'predicted_lpar_score_new']
-    list_filter = ['curr_lpar_score', 'predicted_lpar_score']
+    list_display = ['name', 'frame', 'curr_lpar_score', 'curr_lpar_score_new', 'predicted_lpar_score', 'predicted_lpar_score_new']
+    list_filter = ['frame', 'curr_lpar_score', 'predicted_lpar_score']
     search_fields = ['name', 'curr_lpar_score', 'predicted_lpar_score']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
