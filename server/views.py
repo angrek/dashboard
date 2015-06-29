@@ -223,8 +223,25 @@ def pie_3d(request, os, zone, service):
     zone_title = zone
     if zone == 'nonproduction':
         zone = '1'
+        #here we're crafting the 2 subtitle urls of the other zones to link to
+        zone_label1 = 'All'
+        zone_label2 = 'Production'
+        zone_url1 = 'all'
+        zone_url2 = 'production'
+        zone_title = 'NonProduction'
     elif zone == 'production':
         zone = '2'
+        zone_label1 = 'All'
+        zone_label2 = 'NonProduction'
+        zone_url1 = 'all'
+        zone_url2 = 'nonproduction'
+        zone_title = 'Production'
+    else:
+        zone_label1 = 'Production'
+        zone_label2 = 'NonProduction'
+        zone_url1 = 'production'
+        zone_url2 = 'nonproduction'
+        zone_title = ''
 
     if zone == 'all':
         predicates = [('active', True), ('decommissioned', False)]
@@ -263,11 +280,10 @@ def pie_3d(request, os, zone, service):
         new_list = [str(version), percentage]
         data[version] = percentage
 
-    if zone_title == 'all':
-        zone_title = ''
     title = "Current distribution of " + service + " on " + str(total_server_count) + " active " + os + " " + zone_title + " servers"
+    subtitle1 = 'Production'
     name = "Percentage"
-    return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title})
+    return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title, 'os':os, 'service':service, 'subtitle1':subtitle1, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
 
 
 def stacked_column(request, os, zone, service, period, time_range):
@@ -398,12 +414,9 @@ def line_labels_proc_pools(request, frame, period, time_range):
     title = "AIX Processor Pools By Frame" 
     frame = Frame.objects.get(pk=frame)
     sub_title = frame.name
+
+
     pool_data = []
-    for pool in proc_pools:
-       tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
-       pool_data.append(tmp_list)
-
-
     months = []
     number_of_servers = []
     number_of_decoms = []
@@ -440,6 +453,9 @@ def line_labels_proc_pools(request, frame, period, time_range):
             #Not sure what to do here, 404? sys.exit?
             interval = interval + 1
 
+    for pool in proc_pools:
+        tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
+        pool_data.append(tmp_list)
         #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
         #number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
         #number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
