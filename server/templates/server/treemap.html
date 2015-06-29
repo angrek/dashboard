@@ -1,8 +1,10 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>AIX Affinity</title>
+{% extends "server/test_base.html" %}	
+
+{% block title %}
+<title>AIX Affinity</title>
+{% endblock %}
+
+{% block content %}
 
 		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
 		<style type="text/css">
@@ -319,12 +321,10 @@ $(function () {
     });
 });
 		</script>
-	</head>
-	<body>
+
 <script src="/static/Highcharts/js/highcharts.js"></script>
 <script src="/static/Highcharts/js/modules/heatmap.js"></script>
 <script src="/static/Highcharts/js/modules/treemap.js"></script>
 <div id="container"></div>
 <div id="container2"></div>
-	</body>
-</html>
+{% endblock %}
