@@ -1,8 +1,13 @@
+{% extends "server/test_base.html" %}
 
+{% block title %}
+<title>Wellcare AIX WPARs</title>
+{% endblock %}
 
-<h1>Wellcare AIX WPARs</h1>
+{% block content %}
+<link type='text/css' href='/static/css/wpars.css' rel='stylesheet' />
 <br>
-<h3>All</h3>
+<div id='wpar'>
 <h2>LPAR - WPAR</h2>
     <ul>
     {% if relationships %} 
@@ -12,4 +17,5 @@
         {% endfor %}
     {% endif %}
     </ul>
-
+</div>
+{% endblock %}
