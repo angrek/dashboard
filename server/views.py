@@ -399,7 +399,7 @@ def stacked_column(request, os, zone, service, period, time_range):
     #new_list = [str(version), percentage]
     percentage = 0
     #data[version] = percentage
-    return render(request, 'server/stacked_column.htm', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
+    return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
 
 
 
