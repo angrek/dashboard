@@ -358,7 +358,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['active', 'exception', 'zone', 'os', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'os_level']
     search_fields = ['name', 'owner', 'application', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
+    fields = ['name', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -369,11 +369,11 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'active','exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
-    list_filter = ['active', 'exception', 'zone', 'stack', 'os', 'os_level', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
-    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup']
+    list_display = ['name', 'active','exception', 'stack', 'os', 'os_level', 'zone', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
+    list_filter = ['active', 'exception', 'zone', 'stack', 'os', 'os_level', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba']
+    search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'netbackup']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'active', 'exception', 'stack', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'centrifyda', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'application_paths']
+    fields = ['name', 'active', 'exception', 'stack', 'decommissioned', 'modified', 'os', 'os_level', 'zone', 'centrify', 'centrifyda', 'xcelys', 'bash','ssl', 'java', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'application_paths']
     resource_class = LinuxServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -389,7 +389,7 @@ class DecommissionedLinuxServerAdmin(ImportExportModelAdmin):
     list_filter = ['os', 'owner', 'application', 'vmware_cluster', 'os_level', 'active', 'exception']
     search_fields = ['name', 'owner', 'application', 'vmware_cluster', 'ip_address', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'application', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'application_paths']
+    fields = ['name', 'owner', 'application', 'vmware_cluster', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'application_paths']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -406,7 +406,7 @@ class HistoricalLinuxDataAdmin(ImportExportModelAdmin):
     list_filter = ['date', 'os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name__name', 'owner', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', ]
-    fields = ['date', 'name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup']
+    fields = ['date', 'name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl', 'java', 'netbackup']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
