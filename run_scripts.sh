@@ -76,8 +76,6 @@ mail william.rehfield@wellcare.com -s 'starting linux bash' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_bash.py
 mail william.rehfield@wellcare.com -s 'starting linux centrify' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_centrify.py
-mail william.rehfield@wellcare.com -s 'starting linux imperva' < 1.txt
-/home/wrehfiel/ENV/dashboard/linux_imperva.py
 mail william.rehfield@wellcare.com -s 'starting linux netbackup' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_netbackup.py
 mail william.rehfield@wellcare.com -s 'starting linux oslevel' < 1.txt
