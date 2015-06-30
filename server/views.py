@@ -277,6 +277,13 @@ def pie_3d(request, os, zone, service):
             sys.exit()
 
         percentage = "{0:.1f}".format(num/total_server_count * 100)
+        if service == 'zone':
+            if version == 1:
+                version = 'NonProduction'
+            elif version == 2:
+                version = 'Production'
+            elif version == 3:
+                version = 'Unsure'
         new_list = [str(version), percentage]
         data[version] = percentage
 
