@@ -1,0 +1,86 @@
+{% extends "server/test_base.html" %}
+
+{% block title %}		
+<title>Highcharts Example</title>
+{% endblock %}
+
+{% block content %}
+
+		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+		<style type="text/css">
+${demo.css}
+		</style>
+		<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '{{ title }}'
+        },
+        xAxis: {
+            categories:[ {% for interval in time_interval %}
+                        '{{ interval }}',
+                        {% endfor %} ]
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '{{ y_axis_title}}'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -70,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.x + '</b><br/>' +
+                    this.series.name + ': ' + this.y + '<br/>' +
+                    'Total: ' + this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    style: {
+                        textShadow: '0 0 3px black, 0 0 3px black'
+                    }
+                }
+            }
+        },
+        series: [
+            {% for key,value in data.items %}
+            {
+            name: '{{ key }}',
+            data:  {{ value }}
+            },
+            {% endfor %}
+        ]
+    });
+});
+		</script>
+<script src="/static/js/highcharts.js"></script>
+<script src="/static/js/exporting.js"></script>
+
+<div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+
+{% endblock %}
