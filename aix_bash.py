@@ -21,7 +21,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False)[:50]
 
     for server in server_list:
 
@@ -33,12 +33,15 @@ def update_server():
                 command = 'rpm -qa | grep bash |grep -v doc'
                 stdin, stdout, stderr = client.exec_command(command)
                 bash_version = stdout.readlines()[0].rstrip()
-
+                stdin.close()
+                stderr.close()
+                
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
                     utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
 
                     AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
+                client.close()
 
 
 
