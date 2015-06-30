@@ -392,6 +392,14 @@ def stacked_column(request, os, zone, service, period, time_range):
             else:
                 my_array[version_counter].append(num)
             date_counter += 1
+
+        if service == 'zone':
+            if version == 1:
+                version = 'NonProduction'
+            elif version == 2:
+                version = 'Production'
+            elif version == 3:
+                version = 'Unsure'
         data[version] = my_array[version_counter]
         version_counter += 1
     time_interval.reverse()
