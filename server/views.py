@@ -294,8 +294,11 @@ def stacked_column(request, os, zone, service, period, time_range):
     request.GET.get('time_range')
     data = {}
 
-    temp_os = os.upper()
-    title = "Historical distribution of " + service + " on " + temp_os + " servers by " + period
+    if os == 'aix':
+        os_label = "AIX"
+    elif os == "linux":
+        os_label = 'Linux'
+    title = "Historical distribution of " + service + " on " + os_label + " servers by " + period
     
     #doing this to cut down on the amount of calls to datetime
     today = datetime.date.today().strftime('%Y-%m-%d')
@@ -389,16 +392,14 @@ def stacked_column(request, os, zone, service, period, time_range):
 
     #remove empty sets
     my_array = [x for x in my_array if x]
+
     #reverse each list in the list of lists (of lists in lists....AHHH!)
     for p in my_array:
             p.reverse()
         
     name = "Test Name"
     y_axis_title = 'Number of Servers'
-    #percentage = "{0:.1f}".format(num/total_server_count * 100)
-    #new_list = [str(version), percentage]
     percentage = 0
-    #data[version] = percentage
     return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
 
 
