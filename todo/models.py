@@ -11,6 +11,7 @@ class List(models.Model):
     # slug = models.SlugField(max_length=60)    
     group = models.ForeignKey(Group)
 
+    save_on_top = True
     def save(self, *args, **kwargs):
         if not self.id:
             self.slug = slugify(self.name)
@@ -64,7 +65,7 @@ class Item(models.Model):
             self.completed_date = datetime.datetime.now()
         super(Item, self).save()
 
-
+    save_on_top = True
     class Meta:
         ordering = ["priority"]
         verbose_name = 'Item'
@@ -84,6 +85,8 @@ class PersonalTodo(Item):
         proxy=True
         verbose_name = "Personal Todo List"
         verbose_name_plural = "Personal Todo List"
+
+    save_on_top = True
 
     def __unicode__(self):
         return self.title
