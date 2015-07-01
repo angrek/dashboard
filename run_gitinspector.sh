@@ -8,5 +8,5 @@ cd /home/wrehfiel/ENV/dashboard
 export DJANGO_SETTINGS_MODULE=dashboard.settings
 mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
 
-/home/wrehfiel/ENV/bin/python /home/wrehfiel/ENV/dashboard/gitinspector/gitinspector/gitinspector.py --format=html -x author:Peter -x author:Lee --timeline --since=2013-01-01 -w /home/wrehfiel/ENV/dashboard > /home/wrehfiel/ENV/dashboard/server/templates/server/git_stats_dashboard.html
+/home/wrehfiel/ENV/bin/python /home/wrehfiel/ENV/dashboard/gitinspector/gitinspector/gitinspector.py --format=html -x author:Peter -x author:Lee -x author:Scot --timeline --since=2013-01-01 -w /home/wrehfiel/ENV/dashboard > /home/wrehfiel/ENV/dashboard/server/templates/server/git_stats_dashboard.html
 
