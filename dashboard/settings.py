@@ -65,7 +65,7 @@ INSTALLED_APPS = (
     'timetracker',
     'gunicorn',
     'django_notify',
-    #'mptt',
+    'mptt',
     'sekizai',
     'sorl.thumbnail',
     'wiki',
