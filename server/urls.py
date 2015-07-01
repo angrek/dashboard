@@ -41,5 +41,8 @@ urlpatterns = patterns('',
 
     url(r'^(?P<aixserver_name>(.*)+)/$', views.detail, name='detail'),
 
+    #Git statistics for the dashboard
+    url(r'^git_stats_dashboard$', views.git_stats_dashboard, name='git_stats_dashboard'),
+    url(r'^git_stats_dashboard/$', views.git_stats_dashboard, name='git_stats_dashboard'),
 
 )
