@@ -18,19 +18,37 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import LinuxServer
+from server.models import LinuxServer, AIXServer
 import utilities
 import paramiko
 django.setup()
 
+#to chain the lists together
+from itertools import chain
+
 
 def update_server():
 
+    #Examples of how you can filter servers
     server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.all()
+    #server_list = LinuxServer.objects.filter(decommissioned=False, zone=2) #zone 1= non prod, zone 2 = prod
+    #server_list = LinuxServer.objects.filter(name__contains='hdp')
+    #server_list = LinuxServer.objects.filter(name='p1rhrep')
+    #server_list = LinuxServer.objects.filter(decommissioned=False, active=False)  #only ping sweep ones nailed as inactive
+
+    #You can run this against AIX servers as well from here
+    #aix_server_list = AIXServer.objects.filter(decommissioned=False)
+
+    #Run two filters (change one to server_list2 or whaterver)
+    #server_list = list(chain(aix_server_list, server_list))
 
 
-    for server in server_list[:2]:
-        #counter += 1
+    #switch out the below two lines to only ping the first twenty servers
+    #in the database
+    #for server in server_list[:20]:
+    for server in server_list:
+
         #print str(counter) + ' - ' + str(server)
         print server.name
         if utilities.ping(server):
@@ -41,7 +59,7 @@ def update_server():
 
 #start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Performing ping sweep..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
