@@ -38,6 +38,18 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = [
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    #'django.core.context_processors.il8n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'sekizai.context_processors.sekizai'
+]
+
 
 ALLOWED_HOSTS = []
 
@@ -64,15 +76,15 @@ INSTALLED_APPS = (
     'server',
     'timetracker',
     'gunicorn',
-    'django_notify',
+    'django_nyt',
     'mptt',
     'sekizai',
     'sorl.thumbnail',
     'wiki',
-    #'wiki.plugins.attachments',
-    #'wiki.plugins.notification',
-    #'wiki.plugins.images',
-    #'wiki.plugins.macros',
+    'wiki.plugins.attachments',
+    'wiki.plugins.notifications',
+    'wiki.plugins.images',
+    'wiki.plugins.macros',
 )
 
 MIDDLEWARE_CLASSES = (
