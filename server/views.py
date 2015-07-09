@@ -38,6 +38,12 @@ def git_stats_dashboard(request):
     return render(request, 'server/git_stats_dashboard.html', context)
 
 @login_required
+def git_stats_ansible_dev(request):
+    test = 'test'
+    context = {'test': test}
+    return render(request, 'server/git_stats_ansible_dev.html', context)
+
+@login_required
 def local_users(request):
     aix_servers = AIXServer.objects.filter(decommissioned=False, zone=2)
     linux_servers = LinuxServer.objects.filter(decommissioned=False, zone=2)

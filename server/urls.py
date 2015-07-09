@@ -45,4 +45,8 @@ urlpatterns = patterns('',
     url(r'^git_stats_dashboard$', views.git_stats_dashboard, name='git_stats_dashboard'),
     url(r'^git_stats_dashboard/$', views.git_stats_dashboard, name='git_stats_dashboard'),
 
+    #Git statistics for ansible-dev
+    url(r'^git_stats_ansible_dev$', views.git_stats_ansible_dev, name='git_stats_ansible_dev'),
+    url(r'^git_stats_ansible_dev/$', views.git_stats_ansible_dev, name='git_stats_ansible_dev'),
+
 )
