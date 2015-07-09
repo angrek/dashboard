@@ -20,7 +20,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False, name__contains='p')
 
     for server in server_list:
         
@@ -31,8 +31,11 @@ def update_server():
                 print server.name
                 #with the vio servers we want the ios.level rather than the os_level
                 vio_servers = AIXServer.objects.filter(name__contains='vio')
+                hmc_servers = AIXServer.objects.filter(name__contains='hmc')
                 if server in vio_servers:
                     command = 'cat /usr/ios/cli/ios.level'
+                elif server in hmc_servers:
+                    command = 'lshmc -V | grep Release'
                 else:
                     command = 'dzdo oslevel -s'
                 stdin, stdout, stderr = client.exec_command(command)
