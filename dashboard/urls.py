@@ -6,6 +6,8 @@ from django.contrib import admin
 admin.autodiscover()
 from dashboard.views import hello
 from django.contrib.admin.sites import AdminSite
+from wiki.urls import get_pattern as get_wiki_pattern
+from django_nyt.urls import get_pattern as get_nyt_pattern
 
 urlpatterns = patterns('',
     # Examples:
@@ -29,6 +31,9 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout'), 
 
+    #django-wiki
+    url(r'^notification/', get_nyt_pattern()),
+    url(r'', get_wiki_pattern())
 )
 
 admin.site.site_header = 'Lizardfish - The Unix Information Dashboard'
