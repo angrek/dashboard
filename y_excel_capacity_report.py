@@ -136,7 +136,7 @@ def get_server_data():
     #################STARTING LINUX SECTION############################
     line = 3
     counter = 0
-    linux_server_list = LinuxServer.objects.all(decommissioned=False)
+    linux_server_list = LinuxServer.objects.filter(decommissioned=False)
 
     for server in linux_server_list:
 
