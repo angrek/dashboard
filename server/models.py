@@ -110,6 +110,7 @@ class AIXServer(models.Model):
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=35, blank=True, null=True, default='None')
+    python = models.CharField(max_length=35, blank=True, null=True, default='None')
     java = models.ManyToManyField(Java, default='None')
 
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -206,6 +207,7 @@ class HistoricalAIXData(models.Model):
     netbackup = models.CharField(max_length=35, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=35, blank=True, null=True, default='None')
+    python = models.CharField(max_length=35, blank=True, null=True, default='None')
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
 
@@ -444,6 +446,7 @@ class LinuxServer(models.Model):
     rsyslog_r = models.NullBooleanField(default=False, blank=True)
     rsyslog_problem = models.NullBooleanField(default=False, blank=True)
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
+    python = models.CharField(max_length=35, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True, default='None')
@@ -486,6 +489,7 @@ class HistoricalLinuxData(models.Model):
     syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     server_env = models.NullBooleanField(default=False, blank=True)
+    python = models.CharField(max_length=35, blank=True, null=True, default='None')
 
     class Meta:
         verbose_name = "Historical Linux Data"
