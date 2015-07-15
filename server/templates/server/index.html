@@ -1,10 +1,31 @@
 {% extends "server/test_base.html" %}
 
 
-{% block titel %}
+{% block title %}
 <title>Server Index</title>
 {% endblock %}
 
+{% block content %}
 
+<script type='text/javascript' src="/static/js/jquery.min.js">
+    </script>
+<script type='text/javascript' src="/static/js/test.js">
+    </script>
+
+<link type='text/css' href='/static/css/index.css' rel='stylesheet' />
+
+<center><h3>Release Notes</h3></center>
+
+<br>
+
+<div class='yellow_servers'>
+
+<ul class='frames'>
+{% for note in last_ten_notes %}
+<h5><a class='yellow' href=''>{{ note }}</a><h5>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}
 
  
