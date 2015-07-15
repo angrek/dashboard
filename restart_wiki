@@ -1,0 +1,2 @@
+cd /home/wrehfiel/ENV/moinmoin
+/home/wrehfiel/ENV/moinmoin-venv-python/bin/moin moin --threaded --host 10.4.74.225 --port 8001
