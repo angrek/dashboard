@@ -14,6 +14,9 @@ from server.models import Frame
 from server.models import Relationships
 from django.contrib.admin.models import LogEntry
 
+import todo.models
+from todo.models import ReleaseNotes
+
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.template import RequestContext, Context
@@ -27,8 +30,8 @@ import operator
 
 @login_required
 def index(request):
-    first_ten_servers = AIXServer.objects.order_by('name')[:10]
-    context = {'first_ten_servers': first_ten_servers}
+    last_ten_notes = ReleaseNotes.objects.all()
+    context = {'last_ten_notes': last_ten_notes}
     return render(request, 'server/index.html', context)
 
 @login_required
