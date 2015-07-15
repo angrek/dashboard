@@ -36,6 +36,20 @@ class List(models.Model):
         # Prevents (at the database level) creation of two lists with the same name in the same group
         unique_together = ("group", "slug")
 
+class ReleaseNotes(models.Model):
+    release_note = models.CharField(max_length=140)
+    created_date = models.DateField(auto_now=True, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.release_note
+
+    class Meta:
+        verbose_name = "Release Note"
+        verbose_name_plural = "Release Notes"
+
+        unique_together = ("release_note", "created_date")
+
+
 
 class Item(models.Model):
     title = models.CharField(max_length=140)
@@ -127,3 +141,4 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
+
