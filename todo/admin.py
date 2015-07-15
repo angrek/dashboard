@@ -1,6 +1,11 @@
 from django.contrib import admin
 from todo.models import Item, ItemCompleted, User, List, Comment, PersonalTodo, BugList, TimeTracking
+from todo.models import ReleaseNotes
 
+class ReleaseNotesAdmin(admin.ModelAdmin):
+    list_display = ('release_note', 'created_date')
+    readonly_fields = ('created_date',)
+    fields = ('release_note', 'created_date')
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'list', 'priority', 'created_by', 'assigned_to', 'completed', 'due_date')
@@ -76,3 +81,4 @@ admin.site.register(PersonalTodo, PersonalTodoAdmin)
 admin.site.register(ItemCompleted, ItemCompletedAdmin)
 admin.site.register(BugList, BugListAdmin)
 admin.site.register(TimeTracking, TimeTrackingAdmin)
+admin.site.register(ReleaseNotes, ReleaseNotesAdmin)
