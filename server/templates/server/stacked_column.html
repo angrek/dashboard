@@ -19,6 +19,9 @@ $(function () {
         title: {
             text: '{{ title }}'
         },
+        subtitle: {
+            text: 'test'
+        },
         xAxis: {
             categories:[ {% for interval in time_interval %}
                         '{{ interval }}',
@@ -38,10 +41,10 @@ $(function () {
             }
         },
         legend: {
-            align: 'right',
-            x: -70,
-            verticalAlign: 'top',
-            y: 20,
+            align: 'middle',
+            x: -20,
+            verticalAlign: 'bottom',
+            y: 22,
             floating: true,
             backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
             borderColor: '#CCC',
@@ -81,6 +84,6 @@ $(function () {
 <script src="/static/js/highcharts.js"></script>
 <script src="/static/js/exporting.js"></script>
 
-<div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+<div id="container" style="min-width: 310px; height: 550px; margin: 0 auto"></div>
 
 {% endblock %}
