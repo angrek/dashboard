@@ -442,8 +442,8 @@ def line_labels_proc_pools(request, frame, period, time_range):
     proc_pools = AIXProcPool.objects.filter(frame=frame)
     #context = {'first_ten_servers': first_ten_servers}
     #return render(request, 'server/index.html', context)
-    title = "AIX Processor Pools By Frame" 
     frame = Frame.objects.get(pk=frame)
+    title = "AIX Processor Pools for Frame"
     sub_title = frame.name
 
 
