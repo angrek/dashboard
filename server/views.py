@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from server.models import AIXServer, HistoricalAIXData
 from server.models import AIXProcPool
+from server.models import HistoricalAIXProcPoolData
+
 from server.models import LinuxServer, HistoricalLinuxData
 from server.models import WindowsServer #SERIOUSLY???
 from server.models import Frame
@@ -434,27 +436,37 @@ def stacked_column(request, os, zone, service, period, time_range):
 
 
 
-def line_labels_proc_pools(request, frame, period, time_range):
+#Historical view of our I
+def column_basic_proc_pools(request, frame, pool_name, period, time_range):
     #request.GET.get('string')
     request.GET.get('period')
     request.GET.get('time_range')
     data = {}
+   
+
     proc_pools = AIXProcPool.objects.filter(frame=frame)
-    #context = {'first_ten_servers': first_ten_servers}
-    #return render(request, 'server/index.html', context)
     frame = Frame.objects.get(pk=frame)
-    title = "AIX Processor Pools for Frame"
+    
+    
+    
+    title = "AIX Processor Pools for " + str(frame.short_name) + " " + pool_name
     sub_title = frame.name
 
 
     pool_data = []
     months = []
     number_of_servers = []
-    number_of_decoms = []
-    number_of_prod = []
-    number_of_non_prod = []
+    max_proc_units = []
+    curr_procs = []
+    used_proc_units = []
     interval = 1
+
+    #time_interval is the list of dates to gather data from, whether by day, week, month
+    time_interval = []
+
     for x in range (0, int(time_range)):
+
+        
         if period == 'day':
             ls = (datetime.date.today() - datetime.timedelta(days = interval)).strftime('%Y-%m-%d')
         else:
@@ -484,22 +496,25 @@ def line_labels_proc_pools(request, frame, period, time_range):
             #Not sure what to do here, 404? sys.exit?
             interval = interval + 1
 
-    for pool in proc_pools:
-        tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
-        pool_data.append(tmp_list)
-        #number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
-        #number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
-        #number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
-        #number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+
+        #tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
+        #pool_data.append(tmp_list)
+
+        max_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).max_proc_units)
+        curr_procs.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).curr_procs)
+        used_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).used_proc_units)
 
     months.reverse()
-    #number_of_servers.reverse()
-    #number_of_decoms.reverse() 
-    #number_of_prod.reverse()
-    #number_of_non_prod.reverse()
+    max_proc_units.reverse()
+    curr_procs.reverse() 
+    used_proc_units.reverse()
+
+    y_axis_title = 'Procs'
+
+    return render(request, 'server/column_basic_proc_pools.html', {'pool_data':pool_data, 'max_proc_units':max_proc_units, 'curr_procs':curr_procs, 'used_proc_units':used_proc_units, 'months':months, 'title':title, 'sub_title':sub_title, 'y_axis_title':y_axis_title})
 
 
-    return render(request, 'server/line_labels_proc_pools.html', {'pool_data':pool_data, 'months':months, 'tmp_list':tmp_list, 'title':title, 'sub_title':sub_title})
+
 
 def line_basic(request, string, period, time_range):
     request.GET.get('string')
