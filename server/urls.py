@@ -30,8 +30,9 @@ urlpatterns = patterns('',
     url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
     url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.line_basic, name='line_basic'),
 
-    url(r'^line_labels_proc_pools/(?P<frame>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_labels_proc_pools, name='line_labels_proc_pools'),
-    url(r'^line_labels_proc_pools/(?P<frame>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.line_labels_proc_pools, name='line_labels_proc_pools'),
+
+    url(r'^column_basic_proc_pools/(?P<frame>(.*)+)/(?P<pool_name>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.column_basic_proc_pools, name='column_basic_proc_pools'),
+    url(r'^column_basic_proc_pools/(?P<frame>(.*)+)/(?P<pool_name>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.column_basic_proc_pools, name='column_basic_proc_pools'),
 
     url(r'^treemap/$', views.treemap, name='treemap'),
     url(r'^treemap$', views.treemap, name='treemap'),
