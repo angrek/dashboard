@@ -28,7 +28,7 @@ def update_server():
         #date = datetime.date.today() - datetime.timedelta(days=1)
         
         #We only want one entry per day here
-        HistoricalLinuxData.objects.get_or_create(date=date, name=server, vmware_cluster=server.vmware_cluster, adapter=server.adapter, active=server.active, exception=server.exception, decommissioned=server.decommissioned, created=server.created, ip_address=server.ip_address, zone=server.zone, os=server.os, os_level=server.os_level, memory=server.memory, cpu=server.cpu, centrify=server.centrify, xcelys=server.xcelys, bash=server.bash, ssl=server.ssl, java=server.java, imperva=server.imperva, netbackup=server.netbackup, rsyslog=server.rsyslog)
+        HistoricalLinuxData.objects.get_or_create(date=date, name=server, vmware_cluster=server.vmware_cluster, adapter=server.adapter, active=server.active, exception=server.exception, decommissioned=server.decommissioned, created=server.created, ip_address=server.ip_address, zone=server.zone, os=server.os, os_level=server.os_level, memory=server.memory, cpu=server.cpu, centrify=server.centrify, xcelys=server.xcelys, bash=server.bash, ssl=server.ssl, java=server.java, netbackup=server.netbackup, rsyslog=server.rsyslog)
 
 
 
