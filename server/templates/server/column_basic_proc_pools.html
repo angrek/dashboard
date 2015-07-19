@@ -1,0 +1,80 @@
+{% extends "server/test_base.html" %}		
+
+{% block title %}
+<title>AIX Processor Pools</title>
+{% endblock %}
+
+{% block content %}
+
+		<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+		<style type="text/css">
+${demo.css}
+		</style>
+		<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '{{ title }}'
+        },
+        subtitle: {
+            text: '{{ subtitle }}'
+        },
+        xAxis: {
+            categories: [ {% for month in months %}
+                '{{ month }}',
+                {% endfor %} 
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '{{ y_axis_title }}'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'CPUs in Pool',
+            data: [ {% for num in max_proc_units %}
+                    {{ num }},
+                    {% endfor %} ]
+        }, {
+            name: 'Assigned Virtual Procs',
+            data: [ {% for num in curr_procs %}
+                    {{ num }},
+                    {% endfor %} ]
+        }, {
+            name: 'Assigned Entitlements',
+            data: [ {% for num in used_proc_units %}
+                    {{ num }},
+                    {% endfor %} ]
+
+        }]
+    });
+});
+		</script>
+	</head>
+	<body>
+<script src="/static/js/highcharts.js"></script>
+<script src="/static/js/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+{% endblock %}
