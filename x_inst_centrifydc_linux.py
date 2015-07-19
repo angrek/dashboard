@@ -21,7 +21,7 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
-    server_list = LinuxServer.objects.filter(zone=2, name__contains='p1anm', decommissioned=False).exclude(centrify='5.2.2-192')
+    server_list = LinuxServer.objects.filter(zone=2, name__contains='t2esbdb-v6', decommissioned=False).exclude(centrify='5.2.2-192')
     #server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
 
     counter = 0
@@ -86,7 +86,8 @@ def update_server():
 
                     print 'Installing centrify'
                     #command = 'dzdo rpm -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
-                    command = 'dzdo rpm -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/linux_386/centrifydc-5.2.2-rhel3-i386.rpm'
+                    #command = 'dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/linux_386/centrifydc-5.2.2-rhel3-i386.rpm'
+                    command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm"
                     #command = 'dzdo rpm -Uvh /home/wrehfiel/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
