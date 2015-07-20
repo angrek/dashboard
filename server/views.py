@@ -32,7 +32,12 @@ import operator
 
 @login_required
 def index(request):
-    last_ten_notes = ReleaseNotes.objects.all()
+    last_ten_notes = ReleaseNotes.objects.all().order_by('-created_date')[:20]
+    note_list = []
+    for note in last_ten_notes:
+        line = str(note.created_date) + " --  " + str(note.release_note)
+        note_list.append(line)
+    last_ten_notes = note_list
     context = {'last_ten_notes': last_ten_notes}
     return render(request, 'server/index.html', context)
 
