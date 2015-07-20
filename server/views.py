@@ -312,7 +312,7 @@ def pie_3d(request, os, zone, service):
     title = "Current distribution of " + service + " on " + str(total_server_count) + " active " + os + " " + zone_title + " servers"
     subtitle1 = 'Production'
     name = "Percentage"
-    return render(request, 'server/pie_3d.htm', {'data': data, 'name': name, 'title': title, 'os':os, 'service':service, 'subtitle1':subtitle1, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
+    return render(request, 'server/pie_3d.html', {'data': data, 'name': name, 'title': title, 'os':os, 'service':service, 'subtitle1':subtitle1, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
 
 
 def stacked_column(request, os, zone, service, period, time_range):
