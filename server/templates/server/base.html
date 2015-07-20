@@ -10,21 +10,19 @@
     {% endblock %}
     <script type='text/javascript' src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script type='text/javascript' src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-    <script type='text/javascript' src="/static/js/test.js"></script>
-    <script type='text/javascript' src="/static/js/test2.js"></script>
+    <script type='text/javascript' src="/static/js/menu.js"></script>
+    <script type='text/javascript' src="/static/js/prefixfree-1.0.7.js"></script>
+    
 
-    <link href="http://code.jquery.com/ui/1.10.2/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
 
-
-    <link type='text/css' href='/static/css/timetracker.css' rel='stylesheet' />
 
     <link rel="icon" href='/static/images/favicon.ico'>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/dashboard_test.css" rel="stylesheet">
 
 </head>
 <body>
@@ -37,7 +35,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">LizardFish - UNIX Engineering Server Information Site</a>
+          <a class="navbar-brand" href="http://p1rhrep:8000/server/">LizardFish - UNIX Information Site</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -57,31 +55,139 @@
         </div>
       </div>
     </nav>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="/server/">Home <span class="sr-only">(current)</span></a></li>
-            <li><a href="/admin/">Backend Admin Site</a></li>
-            <li><a href="/server/frames">AIX Frames</a></li>
-            <li><a href="/server/java">AIX Java Versions</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href=""></a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="/server/line_basic/aix/month/5">Line-AIX Servers</a></li>
-            <li><a href="/server/pie_3d/aix/all/ifix">Pie-AIX ifix</a></li>
-            <li><a href="/server/pie_3d/aix/all/cent_ssh">Pie-AIX Centryfy SSH</a></li>
-            <li><a href="/server/stacked_column/aix/all/os_level/week/15">Col-AIX OS Levels</a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href="/server/stacks/all/all">All Stacks</a></li>
-            <li><a href=""></a></li>
-          </ul>
-        </div>
+
+
+    <div id="accordian">
+        <ul>
+        <li >
+            <h3<span class="icon-dashboar"></span><a href="http://p1rhrep:8000/admin/">Admin</a></h3>
+        </li>
+        <li class="active">
+            <h3 id="test2">AIX</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/line_basic/aix/month/6">AIX Servers Last 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/frames">Frames</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacks/all/all">Stacks</a></li>
+                <li><a href="http://p1rhrep:8000/server/treemap">LPAR Affinity</a></li>
+                <li><a href="http://p1rhrep:8000/server/local_users.txt">Local Users For CSA</a></li>
+                <li><a href="http://p1rhrep:8000/server/wpars">WPAR Relationships - TESTING</a></li>
+                <li><a href="http://p1rhrep:8000/server/java">Java - TESTING</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>AIX Services Charts</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/zone">Zone</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/os_level">OS Level</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/aix_ssh">AIX SSH</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/cent_ssh">Centrify SSH</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/centrify">CentrifyDC</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/centrifyda">Centrify Direct Audit</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/bash">Bash</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/ssl">SSL</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/imperva">Imperva</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/netbackup">Netbackup</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/rsyslog">Rsyslog</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/samba">Samba</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/ifix">AIX Ifix</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/emc_clar">EMC Clarion</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/emc_clar">EMC Clar</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/emc_sym">EMC Sym</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/aix/all/ifix">AIX Ifix</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>AIX Historical Charts</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/line_basic/aix/month/6">Total Servers - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/zone/month/6">Zone - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/os_level/month/6">OS Level - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/aix_ssh/day/14">AIX SSH - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/cent_ssh/day/14">Centrify SSH - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/centrify/day/14">Centrify - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/xcelys/day/14">Xcelys - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/bash/day/14">Bash - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/ssl/day/14">SSL - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/imperva/day/14">Imperva - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/netbackup/day/14">Netbackup - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/rsyslog/day/14">Rsyslog - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/samba/day/14">Samba - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/emc_clar/day/14">EMC Clar - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/aix/all/emc_sym/day/14">EMC Sym - 14 Days</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>AIX Processor Pools</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/line_labels_proc_pools/8/day/7">AIX Proc Pools-Last 7 Days-TESTING</a></li>
+                <li><a href="http://p1rhrep:8000/server/line_labels_proc_pools/8/week/4">AIX Proc Pools-Last 4 Weeks-TESTING</a></li>
+                <li><a href="http://p1rhrep:8000/server/line_labels_proc_pools/8/month/6">AIX Proc Pools-Last 6 Months-TESTING</a></li>
+            </ul>
+        </li>
+        <li>
+            <h3>Linux</h3>
+            <ul>
+            </ul>
+        </li>
+        <li >
+            <h3>Linux Services Charts</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/vmware_cluster">VMWare Cluster</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/zone">Zone</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/os_level">OS Level</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/adapter">Adapter</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/os_level">OS Level</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/centrify">CentrifyDC</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/centrifyda">Centrify Direct Audit</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/bash">Bash</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/ssl">SSL</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/xcelys">Xcelys</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/syslog">Syslog</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/rsyslog">Rsyslog</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/server_env">Server ENV File Exists</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/samba">Samba - TESTING</a></li>
+                <li><a href="http://p1rhrep:8000/server/pie_3d/linux/all/netbackup">Netbackup - Testing</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>Linux Historical Charts</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/line_basic/linux/month/6">Total Servers - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/zone/month/6">Zone - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/adapter/month/6">Adapter - 6 Months</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/os_level/day/14">OS Level - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/centrify/day/14">Centrify - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/xcelys/day/14">Xcelys - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/bash/day/14">Bash - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/ssl/day/14">SSL - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/netbackup/day/14">Netbackup - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/syslog/day/14">Syslog - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/rsyslog/day/14">Rsyslog - 14 Days</a></li>
+                <li><a href="http://p1rhrep:8000/server/stacked_column/linux/all/server_env/day/14">Server_env (exists)- 14 Days</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>Git Statistics</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8000/server/git_stats_dashboard">Git Stats - Dashboard</a></li>
+                <li><a href="http://p1rhrep:8000/server/git_stats_ansible_dev">Git Stats - Ansible Dev</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>Wiki - Coming Soon</h3>
+            <ul>
+                <li><a href="http://p1rhrep:8001">MoinMoin Wiki</a></li>
+            </ul>
+        </li>
+        <li >
+            <h3>Pages In Testing</h3>
+            <ul>
+            </ul>
+        </li>
+        </ul>
+    </div>
+
+
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     {% block content %}
