@@ -24,7 +24,7 @@ django.setup()
 
 def get_a_good_server(zone):
     #I'm banking that five servers won't be missing the /mksysb directory all at the same time....
-    server_list = AIXServer.objects.filter(active=True, decommissioned=False, zone=zone)[:5]
+    server_list = AIXServer.objects.filter(active=True, decommissioned=False, zone=zone)
     success = 0
     
     for server in server_list:
