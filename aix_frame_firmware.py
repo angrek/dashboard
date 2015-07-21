@@ -28,7 +28,7 @@ def update_server():
     counter = 0
     for frame in frame_list:
 
-        server_list = AIXServer.objects.filter(active=True, exception=False, decommissioned=False, frame=frame).exclude(name__contains='vio')[:1]
+        server_list = AIXServer.objects.filter(active=True, exception=False, decommissioned=False, frame=frame).exclude(name__contains='vio')
         print "======================="
         print frame.name
 
