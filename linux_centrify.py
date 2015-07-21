@@ -21,8 +21,8 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.filter(decommissioned=False)
-    server_list = LinuxServer.objects.filter(zone=2, decommissioned=False).exclude(centrify='5.2.2-192')
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(decommissioned=False).exclude(centrify='5.2.2-192')
 
     for server in server_list:
         centrify = ''
