@@ -21,7 +21,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False)[:10]
+    server_list = AIXServer.objects.filter(decommissioned=False)
 
     counter = 0
     for server in server_list:
