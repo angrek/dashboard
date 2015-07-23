@@ -30,6 +30,33 @@ from itertools import chain
 from django.db.models import Q
 import operator
 
+
+def get_zone(zone):
+    if zone is 'nonproduction' or zone is '1':
+        zone = 1
+        #here we're crafting the 2 subtitle urls of the other zones to link to
+        zone_label1 = 'All'
+        zone_label2 = 'Production'
+        zone_url1 = 'all'
+        zone_url2 = 'production'
+        zone_title = 'NonProduction'
+    elif zone is 'production' or zone is '2':
+        zone = 2
+        zone_label1 = 'All'
+        zone_label2 = 'NonProduction'
+        zone_url1 = 'all'
+        zone_url2 = 'nonproduction'
+        zone_title = 'Production'
+    else:
+        zone_label1 = 'Production'
+        zone_label2 = 'NonProduction'
+        zone_url1 = 'production'
+        zone_url2 = 'nonproduction'
+        zone_title = ''
+    return (zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title)
+
+
+
 @login_required
 def index(request):
     last_ten_notes = ReleaseNotes.objects.all().order_by('-created_date')[:20]
@@ -243,27 +270,9 @@ def pie_3d(request, os, zone, service):
     request.GET.get('service')
     data = {}
     zone_title = zone
-    if zone == 'nonproduction':
-        zone = '1'
-        #here we're crafting the 2 subtitle urls of the other zones to link to
-        zone_label1 = 'All'
-        zone_label2 = 'Production'
-        zone_url1 = 'all'
-        zone_url2 = 'production'
-        zone_title = 'NonProduction'
-    elif zone == 'production':
-        zone = '2'
-        zone_label1 = 'All'
-        zone_label2 = 'NonProduction'
-        zone_url1 = 'all'
-        zone_url2 = 'nonproduction'
-        zone_title = 'Production'
-    else:
-        zone_label1 = 'Production'
-        zone_label2 = 'NonProduction'
-        zone_url1 = 'production'
-        zone_url2 = 'nonproduction'
-        zone_title = ''
+
+    zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title = get_zone(zone)
+
 
     if zone == 'all':
         predicates = [('active', True), ('decommissioned', False)]
@@ -322,11 +331,14 @@ def stacked_column(request, os, zone, service, period, time_range):
     request.GET.get('period')
     request.GET.get('time_range')
     data = {}
+    zone_title = zone
+
+    zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title = get_zone(zone)
 
     if os == 'aix':
-        os_label = "AIX"
+        os_label = os.upper()
     elif os == "linux":
-        os_label = 'Linux'
+        os_label = os.capitalize()
     title = "Historical distribution of " + service + " on " + os_label + " servers by " + period
     
     #doing this to cut down on the amount of calls to datetime
@@ -380,18 +392,43 @@ def stacked_column(request, os, zone, service, period, time_range):
             #Not sure what to do here, 404? sys.exit?
             sys.exit()
 
+
+    ################################################################
+    #  Divider for gettin version list
+    ################################################################
+
     #Here we'll go through each label date and use those to find which versions are on those specific dates
     version_list = []
-    for my_date in time_interval:
-        if os=='aix':
-            t = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=my_date).values_list(service , flat=True).distinct()
-        elif os == 'linux':
-            t = HistoricalLinuxData.objects.filter(active=True, decommissioned=False, date=my_date).values_list(service , flat=True).distinct()
 
-        t = list(set(t))
-        version_list = version_list + t
+
+    for my_date in time_interval:
+
+        #FIXME Well crap.... I don't want this in here but I need that date to make the predicates....how...can I add it in after??
+        if zone == 'all':
+            predicates = [('active', True), ('decommissioned', False), ('date', my_date)]
+        else:
+            predicates = [('active', True), ('decommissioned', False), ('zone', zone), ('date', my_date)]
+
+        q_list = [Q(x) for x in predicates]
+
+        if os == 'aix':
+            #FIXME
+            #temp_list = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=my_date).values_list(service , flat=True).distinct()
+            temp_list = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        elif os == 'linux':
+            #temp_list = HistoricalLinuxData.objects.filter(active=True, decommissioned=False, date=my_date).values_list(service , flat=True).distinct()
+            temp_list = HistoricalLinuxData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        else:
+            sys.exit()
+        temp_list = list(set(temp_list)) #quick way to make sure you have all uniques
+        version_list = version_list + temp_list  #add em up
+
     version_list = list(set(version_list))
 
+
+    #################################################################
+    # Divider for iterating over the versions
+    ################################################################
 
     #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
     version_counter = 0
@@ -401,8 +438,14 @@ def stacked_column(request, os, zone, service, period, time_range):
     for version in version_list:
         for date in time_interval:
             #Using django Q objects to create a dynamic query here
-            predicates = [('active', True), ('decommissioned', False), (service, version), ('date', date)]
+            if zone == 'all':
+                predicates = [('active', True), ('decommissioned', False), (service, version), ('date', date)]
+            else:
+                predicates = [('active', True), ('decommissioned', False), (service, version), ('zone', zone), ('date', date)]
+
+
             q_list = [Q(x) for x in predicates]
+
             if os == 'aix':
                 num = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).count()
             elif os == 'linux':
@@ -415,6 +458,7 @@ def stacked_column(request, os, zone, service, period, time_range):
                 my_array[version_counter].append(num)
             date_counter += 1
 
+        #FIXME Need a proper call rather than hardcoding it
         if service == 'zone':
             if version == 1:
                 version = 'NonProduction'
@@ -437,11 +481,17 @@ def stacked_column(request, os, zone, service, period, time_range):
     name = "Test Name"
     y_axis_title = 'Number of Servers'
     percentage = 0
-    return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array})
+    return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array, 'os':os, 'service':service, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
 
 
 
-#Historical view of our I
+
+############################################################################
+#############################################################################
+###FIXME just putting this here for testing
+
+
+#Historical view of our AIX Processor Pools
 def column_basic_proc_pools(request, frame, pool_name, period, time_range):
     #request.GET.get('string')
     request.GET.get('period')

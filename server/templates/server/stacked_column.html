@@ -1,7 +1,7 @@
 {% extends "server/base.html" %}
 
 {% block title %}		
-<title>Highcharts Example</title>
+<title>Historical Stacked Column Chart</title>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +20,8 @@ $(function () {
             text: '{{ title }}'
         },
         subtitle: {
-            text: 'test'
+            useHTML: true,
+            text: '<a href="http://p1rhrep:8000/server/stacked_column/{{ os }}/{{ zone_url1 }}/{{ service }}/day/4">{{ zone_label1 }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://p1rhrep:8000/server/stacked_column/{{ os }}/{{ zone_url2 }}/{{ service }}/day/4">{{ zone_label2 }}</a>'
         },
         xAxis: {
             categories:[ {% for interval in time_interval %}
