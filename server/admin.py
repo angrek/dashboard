@@ -10,6 +10,10 @@ from server.models import LinuxServerResource
 from server.models import HistoricalLinuxData
 from server.models import LinuxServerENV
 from server.models import WindowsServer
+from server.models import WindowsServerOwner
+from server.models import WindowsServerResource
+from server.models import DecommissionedWindowsServer
+from server.models import HistoricalWindowsData
 
 from server.models import Power7InventoryResource
 from server.models import Relationships
@@ -515,16 +519,47 @@ class WindowsServerAdmin(ImportExportModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'owner', 'stack_', 'substack', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['os', 'owner', 'stack', 'substack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
+    list_display = ['name', 'owner', 'application', 'distribution_list', 'stack_', 'substack', 'active', 'power_state', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
+    #list_editable = ['owner', 'stack', 'substack']
+    list_filter = ['os', 'owner', 'application', 'distribution_list', 'stack', 'substack', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active']
     search_fields = ['name', 'owner', 'ip_address', 'adapter', 'zone__id', 'os', 'os_level']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'vmware_cluster', 'adapter', 'ip_address', 'stack', 'substack', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
+    fields = ['name', 'owner', 'application', 'distribution_list', 'vmware_cluster', 'adapter', 'ip_address', 'stack', 'substack', 'active', 'power_state', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
     pass
 
+class DecommissionedWindowsServerAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=1)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'application', 'distribution_list', 'active', 'decommissioned', 'stack', 'substack', 'created', 'modified', 'vmware_cluster', 'adapter', 'ip_address', 'zone', 'os', 'os_level', 'memory', 'cpu', 'storage']
+    list_filter = ['os', 'owner', 'application', 'vmware_cluster', 'os_level', 'active']
+    search_fields = ['name', 'owner', 'application', 'vmware_cluster', 'ip_address', 'os', 'os_level']
+    readonly_fields = ['created', 'modified']
+    fields = ['name', 'owner', 'application', 'distribution_list', 'active', 'decommissioned', 'stack', 'substack', 'created', 'modified', 'vmware_cluster', 'adapter', 'ip_address', 'zone', 'os', 'os_level', 'memory', 'cpu', 'storage']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    resource_class = WindowsServerResource
+    pass
+
+
+class WindowsServerOwnerAdmin(ImportExportModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'application', 'distribution_list']
+    list_filter = ['os', 'owner', 'application', 'distribution_list']
+    list_editable = ['owner', 'application', 'distribution_list']
+    search_fields = ['name', 'owner', 'application', 'distribution_list']
+    fields = ['name', 'owner', 'application', 'distribution_list']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    resource_class = WindowsServerResource
+    pass
 
 admin.site.register(AIXServer, AIXServerAdmin)
 admin.site.register(AIXApplications, AIXApplicationsAdmin)
@@ -555,6 +590,8 @@ admin.site.register(SubStack, SubStackAdmin)
 admin.site.register(Java, JavaAdmin)
 admin.site.register(Storage, StorageAdmin)
 admin.site.register(WindowsServer, WindowsServerAdmin)
+admin.site.register(WindowsServerOwner, WindowsServerOwnerAdmin)
+admin.site.register(DecommissionedWindowsServer, DecommissionedWindowsServerAdmin)
 
 admin.site.register(CentrifyUserCountAIX, CentrifyUserCountAIXAdmin)
 admin.site.register(CentrifyUserCountLinux, CentrifyUserCountLinuxAdmin)
