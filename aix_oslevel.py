@@ -42,7 +42,13 @@ def update_server():
 
                 #need rstrip() because there are extra characters at the end
                 oslevel = stdout.readlines()[0].rstrip()
+
+                if server in hmc_servers:
+                    oslevel = "HMC " + oslevel
                 
+                if server in vio_servers:
+                    oslevel = "VIO " + oslevel
+
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level):
                     utilities.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
