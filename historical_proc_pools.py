@@ -26,7 +26,10 @@ def update_server():
     for pool in pool_list:
         date = datetime.date.today()
         
-        HistoricalAIXProcPoolData.objects.get_or_create(date=date, frame=pool.frame, pool_name=pool.pool_name, max_proc_units=pool.max_proc_units, used_proc_units=pool.used_proc_units, curr_procs=pool.curr_procs)
+        try:
+            HistoricalAIXProcPoolData.objects.get_or_create(date=date, frame=pool.frame, pool_name=pool.pool_name, max_proc_units=pool.max_proc_units, used_proc_units=pool.used_proc_units, curr_procs=pool.curr_procs)
+        except:
+            pass
 
 
 

@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from server.models import AIXServer, HistoricalAIXData
 from server.models import AIXProcPool
 from server.models import HistoricalAIXProcPoolData
@@ -32,7 +33,7 @@ import operator
 
 
 def get_zone(zone):
-    if zone is 'nonproduction' or zone is '1':
+    if (zone == 'nonproduction') or (zone == '1'):
         zone = 1
         #here we're crafting the 2 subtitle urls of the other zones to link to
         zone_label1 = 'All'
@@ -40,7 +41,7 @@ def get_zone(zone):
         zone_url1 = 'all'
         zone_url2 = 'production'
         zone_title = 'NonProduction'
-    elif zone is 'production' or zone is '2':
+    elif (zone == 'production') or (zone == '2'):
         zone = 2
         zone_label1 = 'All'
         zone_label2 = 'NonProduction'
@@ -274,6 +275,7 @@ def pie_3d(request, os, zone, service):
     zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title = get_zone(zone)
 
 
+
     if zone == 'all':
         predicates = [('active', True), ('decommissioned', False)]
     else:
@@ -331,14 +333,19 @@ def stacked_column(request, os, zone, service, period, time_range):
     request.GET.get('period')
     request.GET.get('time_range')
     data = {}
-    zone_title = zone
+
+    #url = 'http://www.cnn.com/' + str(zone)
+    #return HttpResponseRedirect(url)
+    #sys(exit)
 
     zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title = get_zone(zone)
+
 
     if os == 'aix':
         os_label = os.upper()
     elif os == "linux":
         os_label = os.capitalize()
+
     title = "Historical distribution of " + service + " on " + os_label + " servers by " + period
     
     #doing this to cut down on the amount of calls to datetime
