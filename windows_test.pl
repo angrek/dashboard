@@ -33,11 +33,11 @@ while (<FILE>){
     $password = $_;
 }
 
-
+#FIXME
 #@clusters = ('Savvis Non-Prod UCS-DMZ');
 @clusters = ('Savvis Non-Prod UCS-Linux', 'Savvis Non-Prod UCS-DMZ',
             'Savvis Non-Prod UCS-DB', 'Savvis Non-Prod UCS-Win',
-            'Savvis Prod UCS-DMZ', 'Savvis Prod UCS-Linux',
+            'Savvis Prod UCS-DMZ',
             'Savvis Prod UCS-App',
             'Savvis Prod UCS-App2',
             'Savvis Prod UCS-IPT-A',
@@ -46,12 +46,15 @@ while (<FILE>){
             'Savvis Prod UCS-SANMGMT',
             'Tampa Prod-HP');
 
+$zone_id = 3;
 foreach $cluster_name(@clusters){
 
 if ($cluster_name =~ /Non-Prod/){
     $service_url = "https://vcenterdev01/sdk/vimService";
+    $zone_id = 1;
 }else{
     $service_url = "https://vcenterprod01/sdk/vimService";
+    $zone_id = 2;
 }
 
 print $cluster_name;
@@ -96,12 +99,17 @@ foreach my $host (@$host_views) {
   ########## Print information on the VMs and the Hosts
     foreach my $vm (@$vm_views) {
 
-        if (($vm->guest->guestFamily eq 'windowsGuest') || (substr($vm->guest->guestFullName, 0, 9) eq 'Microsoft')){
+        if (($vm->guest->guestFamily eq 'windowsGuest') || (substr($vm->config->guestFullName, 0, 9) eq 'Microsoft')){
+            $os_level = $vm->config->guestFullName;
+            $os_level =~ s/Microsoft Windows Server //;
             print "\n------------------------------------------------------";
             print "\nname>", $vm->name;
             print "\nguestFamily->", $vm->guest->guestFamily;
             print "\nguestFullName->", $vm->guest->guestFullName;
+            print "\nconfig->guestFullName->", $vm->config->guestFullName;
+            print "\nguestId", $vm->config->guestId;
             print "\nguestState---->", $vm->guest->guestState;
+            print "\nOS LEVEL ->", $os_level;
             #print "\ntest---->", $vm->config->guestID;
             $devices = $vm->config->hardware->device;
             @device_list = ('VirtualE1000', 'VirtualE1000e', 'VirtualIPCNet32', 'VirtualVmxnet2', 'VirtualVmxnet3', 'Flexible');
@@ -124,7 +132,7 @@ foreach my $host (@$host_views) {
         #}
         #if (($vm->guest->guestFamily eq 'linuxGuest') || ($vm-name eq 'p1dbmon')){
         #if ($vm->guest->guestFamily eq 'linuxGuest') {
-        #if ($vm->guest->guestFamily eq 'WindowsGuest') {
+        #if ($vm->guest->guestFamily eq 'windowsGuest') {
 
 
             $tmp = ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
@@ -160,8 +168,12 @@ foreach my $host (@$host_views) {
                 $ip_address = "0.0.0.0";
             }
             print "\nIP Address--->", $ip_address;
-            $exception = 1;
 
+            if ($state == 'running'){
+                $state = 1;
+            }else{
+                $state = 0;
+            }
 
             #NOTE: We do not update active or exception because we don't look at that here or perform the tests.
             #Update the other fields and let those 2 ride from the previous day/test and let the other scripts test those.
@@ -171,11 +183,15 @@ foreach my $host (@$host_views) {
             $sth = $dbh->prepare (qq{insert into server_windowsserver (
                 name,
                 owner,
+                application,
+                distribution_list,
                 vmware_cluster,
                 adapter,
                 active,
-                exception,
+                power_state,
                 decommissioned,
+                stack_id,
+                substack_id,
                 created,
                 modified,
                 ip_address,
@@ -185,9 +201,9 @@ foreach my $host (@$host_views) {
                 memory,
                 cpu,
                 storage)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
-            $sth->execute($server_name, 'None', $cluster_name, "$adapter", 1, 0, 0, "$timestamp", "$timestamp", 
-                        "$ip_address", 3, 'Windows', '', $memory, $cpu, 0);
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", power_state="$state", modified="$timestamp", ip_address="$ip_address", zone_id=$zone_id, os_level="$os_level", memory=$memory, cpu=$cpu} );
+            $sth->execute($server_name, 'None', 'None', 'None', $cluster_name, "$adapter", 1, $state, 0, 1, 1, "$timestamp", "$timestamp", 
+                        "$ip_address", $zone_id, 'Windows', $os_level, $memory, $cpu, 0);
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
@@ -221,8 +237,8 @@ foreach my $host (@$host_views) {
             #     print Dumper($vm);
             #     break;
             }
-        #} 
-    }
+        } 
+    #}
 
   #$hostcounter++;
 }
