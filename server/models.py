@@ -531,8 +531,10 @@ class LinuxServerENV(LinuxServer):
 class WindowsServer(models.Model):
     name = models.CharField(max_length=40, primary_key=True)
     owner = models.CharField(max_length=30, blank=True, null=True, default='None')
+    application = models.CharField(max_length=50, blank=True, null=True, default='None')
+    distribution_list = models.CharField(max_length=50, blank=True, null=True, default='None')
     active = models.NullBooleanField(default=True, blank=True)
-    exception = models.NullBooleanField(default=False, blank=True)
+    power_state = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(default=False, blank=True)
     stack = models.ForeignKey(Stack, default=1)
     substack = models.ForeignKey(SubStack, default=1)
@@ -559,6 +561,48 @@ class WindowsServer(models.Model):
 class WindowsServerResource(resources.ModelResource):
     class Meta:
         model = WindowsServer
+
+class DecommissionedWindowsServer(WindowsServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Windows Decommissioned Server"
+        verbose_name_plural = "Windows Decommissioned Servers"
+
+class WindowsServerOwner(WindowsServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Windows Server Owner"
+        verbose_name_plural = "Windows Server Owners"
+
+class HistoricalWindowsData(models.Model):
+    name = models.CharField(max_length=40, primary_key=True)
+    owner = models.CharField(max_length=30, blank=True, null=True, default='None')
+    application = models.CharField(max_length=50, blank=True, null=True, default='None')
+    distribution_list = models.CharField(max_length=50, blank=True, null=True, default='None')
+    active = models.NullBooleanField(default=True, blank=True)
+    exception = models.NullBooleanField(default=False, blank=True)
+    decommissioned = models.NullBooleanField(default=False, blank=True)
+    stack = models.ForeignKey(Stack, default=1)
+    substack = models.ForeignKey(SubStack, default=1)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+    vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
+    adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
+    ip_address = models.GenericIPAddressField(blank=True, null=True, default='None')
+    zone = models.ForeignKey(Zone)
+    os = models.CharField(max_length=50, blank=True, null=True, default='None')
+    os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    memory = models.IntegerField(max_length=10, blank=True, null=True)
+    cpu = models.IntegerField(max_length=3, blank=True, null=True)
+    storage = models.IntegerField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Historical Windows Data"
+        verbose_name_plural = "Historical Windows Data"
+        ordering = ["name"]
+
+    def __unicode__(self):
+        return '%s' % (self.name)
 
 
 #####Centrify Information Gathering Mission#####
