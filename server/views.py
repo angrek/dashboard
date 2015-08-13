@@ -26,6 +26,7 @@ from django.template import RequestContext, Context
 
 import datetime, calendar
 import sys
+import os
 from itertools import chain
 
 from django.db.models import Q
@@ -67,6 +68,7 @@ def index(request):
         note_list.append(line)
     last_ten_notes = note_list
     context = {'last_ten_notes': last_ten_notes}
+    os.environ['REMOTE_USER'] = str(request.user.username)
     return render(request, 'server/index.html', context)
 
 @login_required
@@ -562,9 +564,20 @@ def column_basic_proc_pools(request, frame, pool_name, period, time_range):
         #tmp_list = [str(frame.name), str(pool.pool_name), pool.max_proc_units, pool.used_proc_units] 
         #pool_data.append(tmp_list)
 
-        max_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).max_proc_units)
-        curr_procs.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).curr_procs)
-        used_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).used_proc_units)
+
+        #Needed to put these in here to account for missing data. In stacked_column we could use a filter but we can't here
+        try:
+            max_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).max_proc_units)
+        except:
+            max_proc_units.append(0)
+        try:
+            curr_procs.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).curr_procs)
+        except:
+            curr_procs.append(0)
+        try:
+            used_proc_units.append(HistoricalAIXProcPoolData.objects.get(frame=frame, pool_name=pool_name, date=ls).used_proc_units)
+        except:
+            used_proc_units.append(0)
 
     months.reverse()
     max_proc_units.reverse()
