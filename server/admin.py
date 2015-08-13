@@ -3,6 +3,7 @@ from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, E
 from server.models import AIXServerResource
 from server.models import AIXServerENV, AIXProcPool
 from server.models import AIXAffinity
+from server.models import AIXWorldWideName
 from server.models import Java
 
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
@@ -281,6 +282,12 @@ class AIXMksysbAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class AIXWorldWideNameAdmin(admin.ModelAdmin):
+    list_display = ['name', 'world_wide_name']
+    search_fields = ['name__name', 'world_wide_name']
+    fields = ['name', 'world_wide_name']
+    resource_class = AIXServerResource
+    
 
 class ErrptAdmin(admin.ModelAdmin):
     list_display = ['name', 'modified', 'report']
@@ -571,6 +578,8 @@ admin.site.register(AIXPowerHA, AIXPowerHAAdmin)
 admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(AIXAffinity, AIXAffinityAdmin)
 admin.site.register(AIXProcPool, AIXProcPoolAdmin)
+admin.site.register(AIXWorldWideName, AIXWorldWideNameAdmin)
+
 admin.site.register(HistoricalAIXProcPoolData, HistoricalAIXProcPoolAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
 admin.site.register(Power7Inventory, Power7InventoryAdmin)
