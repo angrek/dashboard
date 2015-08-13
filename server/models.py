@@ -222,6 +222,20 @@ class HistoricalAIXData(models.Model):
         return '%s' % (self.name)
 
 
+class AIXWorldWideName(models.Model):
+    name = models.ForeignKey(AIXServer)
+    world_wide_name = models.CharField(max_length=50, blank=True, null=True, default='None')
+
+    class Meta:
+        verbose_name = "AIX World Wide Name"
+        verbose_name_plural = "AIX World Wide Names"
+        ordering = ["name"]
+    
+    def __unicode__(self):
+        return self.name
+
+
+
 
 ##This will define relationships between LPARs and WPARs and it will probably break EVERYTHING
 class Relationships(models.Model):
