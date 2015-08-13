@@ -63,6 +63,8 @@ mail william.rehfield@wellcare.com -s 'starting aix user local' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_user_local.py
 mail william.rehfield@wellcare.com -s 'starting aix ping decoms' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_ping_decoms.py
+mail william.rehfield@wellcare.com -s 'starting aix wwns' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_world_wide_names.py
 
 /home/wrehfiel/ENV/dashboard/historical_data_aix.py
 mail william.rehfield@wellcare.com -s 'aix scripts are done' < 1.txt
