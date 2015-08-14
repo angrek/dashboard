@@ -7,7 +7,7 @@
 #
 #########################################################################
 
-import os
+import os, sys
 import re
 from ssh import SSHClient
 from django.utils import timezone
@@ -58,13 +58,25 @@ def update_server():
                 oslevel = re.sub('Release:', '', oslevel)
                 oslevel = re.sub('\s*', '', oslevel)
 
+
+                command = 'uname -r'
+                stdin, stdout, stderr = client.exec_command(command)
+                kernel = stdout.readlines()[0].rstrip()
+                print kernel
+                
+
+
                 #check existing value, if it exists, don't update
                 if str(os) != str(server.os):
                     utilities.log_change(str(server), 'OS', str(server.os), str(os))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os=os, modified=timezone.now())
+                    LinuxServer.objects.filter(name=server).update(os=os, modified=timezone.now())
                 if str(oslevel) != str(server.os_level):
                     utilities.log_change(str(server), 'OS Level', str(server.os_level), str(oslevel))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
+                    LinuxServer.objects.filter(name=server).update(os_level=oslevel, modified=timezone.now())
+
+                if str(kernel) != str(server.kernel):
+                    utilities.log_change(str(kernel), 'Kernel', str(server.kernel), str(kernel))
+                    LinuxServer.objects.filter(name=server).update(kernel=kernel, modified=timezone.now())
 
 
 if __name__ == '__main__':

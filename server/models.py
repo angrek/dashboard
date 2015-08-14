@@ -445,6 +445,7 @@ class LinuxServer(models.Model):
     zone = models.ForeignKey(Zone)
     os = models.CharField(max_length=50, blank=True, null=True, default='None')
     os_level = models.CharField(max_length=20, blank=True, null=True, default='None')
+    kernel = models.CharField(max_length=35, blank=True, null=True, default='None')
     memory = models.IntegerField(max_length=10, blank=True, null=True)
     cpu = models.IntegerField(max_length=3, blank=True, null=True)
     storage = models.IntegerField(max_length=10, blank=True, null=True)
