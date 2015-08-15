@@ -224,7 +224,9 @@ class HistoricalAIXData(models.Model):
 
 class AIXWorldWideName(models.Model):
     name = models.ForeignKey(AIXServer)
-    world_wide_name = models.CharField(max_length=50, blank=True, null=True, default='None')
+    fiber_channel_adapter = models.CharField(max_length=8, blank=True, null=True, default='None')
+    world_wide_name1 = models.CharField(max_length=16, blank=True, null=True, default='None')
+    world_wide_name2 = models.CharField(max_length=16, blank=True, null=True, default='None')
 
     class Meta:
         verbose_name = "AIX World Wide Name"

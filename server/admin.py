@@ -269,9 +269,9 @@ class AIXMksysbAdmin(admin.ModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
 
 class AIXWorldWideNameAdmin(admin.ModelAdmin):
-    list_display = ['name', 'world_wide_name']
-    search_fields = ['name__name', 'world_wide_name']
-    fields = ['name', 'world_wide_name']
+    list_display = ['name', 'fiber_channel_adapter', 'world_wide_name1', 'world_wide_name2']
+    search_fields = ['name__name', 'fiber_channel_adapter', 'world_wide_name1', 'world_wide_name2']
+    fields = ['name', 'fiber_channel_adapter', 'world_wide_name', 'world_wide_name2']
     resource_class = AIXServerResource
     
 

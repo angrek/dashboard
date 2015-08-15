@@ -17,7 +17,9 @@ import django
 from dashboard import settings
 from server.models import AIXServer, Frame, AIXWorldWideName
 import logging
-from decimal import Decimal
+#from decimal import Decimal
+import utilities
+
 django.setup()
 
 logging.basicConfig( level=logging.INFO )
@@ -60,43 +62,70 @@ def populate():
         data = stdout.readlines()
         for line in data:
             line = line.rstrip()
-            print line
+            #print line
             if line == "No results were found.":
                 continue
             find = re.compile(r"^[^,]*")
             name = re.search(find, line).group(0)
-            print name
+
+
+            #print name
             wwn = re.findall(",(.*)$", line)
             wwn = wwn[0]
             wwn = re.sub(r'"wwpns=', '', wwn) 
             wwn = re.sub(r'"', '', wwn) 
-            print wwn
+            wwn = wwn.split(',')
 
-            server_name = AIXServer.objects.get(name=name)
-            AIXWorldWideName.objects.get_or_create(name=server_name, world_wide_name=wwn)
+            wwn1 = wwn[0]
+            wwn2 = wwn[1]
+            
 
-            #    pool_data = AIXProcPool.objects.get_or_create(frame=frame_obj, pool_name=pool_name, max_proc_units=max_proc_units, used_proc_units=used_proc_units, curr_procs=curr_procs, modified=timezone.now())
+            server = AIXServer.objects.get(name=name)
+
+            #Need to go to the lpar and get the 
+            if utilities.ping(server):
+
+                client2 = SSHClient()
+
+                if utilities.ssh(server, client2):
+
+                    #get the list of fiber channel adapters
+                    command2 = 'lscfg | grep fcs'
+                    stdin, stdout, stderr = client2.exec_command(command2)
+
+                    fc_list = []
+                    for line2 in stdout.readlines():
+                         
+                        line2 = line2.split(' ')[1]
+                        fc_list.append(line2)
+
+                    #figure out which adapter these belong to
+                    correct_fc = ''
+                    for fc in fc_list:
+                        command2 = "lscfg -vpl " + fc + "|grep 'Network Address'|awk -F '.' '{print $14}'"
+                        stdin, stdout, stderr = client2.exec_command(command2)
+                        output = stdout.readlines()[0].rstrip().lower()
+                        print 'fc = ' + fc
+                        print 'output = ' + output 
+                        if output == wwn1:
+                            correct_fc = fc
+            print server
+            print wwn1
+            print wwn2
+            print fc_list[0]
+            print fc_list[1]
+            print "Correct Fiber channel = " + correct_fc
+            AIXWorldWideName.objects.get_or_create(name=server, fiber_channel_adapter=correct_fc, world_wide_name1=wwn1, world_wide_name2=wwn2)
 
 
 
 
-                        #change_message = "Server is now inactive. Set active to False"
-                        #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-#                except:
-#                    AIXServer.objects.get_or_create(name=server.rstrip(), frame=frame.rstrip(), os='AIX', active=False)
 
-
-
-    #for server in exclusion_list:
-    #    Server.objects.filter(name=server).update(exception=True)
-#def add_server(name, frame, os):
-#    s = Server.objects.get_or_create(name=name, fos='AIX')[0]
-#    return s
 
 
 
 #start execution
 if __name__ == '__main__':
-    print "Starting populations..."
+    print "Starting population..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     populate()
