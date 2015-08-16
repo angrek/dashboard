@@ -27,6 +27,7 @@ from server.models import CentrifyUserCountAIX, CentrifyUserCountLinux
 #from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
 from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportActionModelAdmin
 
 
 # Register your models here.
@@ -45,7 +46,7 @@ class AIXLogAdmin(admin.TabularInline):
 ######################### AIX Server Section #############################
 ##########################################################################
 
-class AIXServerAdmin(ImportExportModelAdmin):
+class AIXServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
 
