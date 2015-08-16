@@ -27,8 +27,8 @@ urlpatterns = patterns('',
     #url(r'^stacked_column/(?P<os>(.*)+)/(?P<zone>(.*)+)/(?P<service>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.stacked_column, name='stacked_column'),
 
 
-    url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
-    url(r'^line_basic/(?P<string>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.line_basic, name='line_basic'),
+    url(r'^line_basic/(?P<os>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.line_basic, name='line_basic'),
+    url(r'^line_basic/(?P<os>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)/$', views.line_basic, name='line_basic'),
 
 
     url(r'^column_basic_proc_pools/(?P<frame>(.*)+)/(?P<pool_name>(.*)+)/(?P<period>(.*)+)/(?P<time_range>(.*)+)$', views.column_basic_proc_pools, name='column_basic_proc_pools'),

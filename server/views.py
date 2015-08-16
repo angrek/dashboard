@@ -591,20 +591,23 @@ def column_basic_proc_pools(request, frame, pool_name, period, time_range):
 
 
 
-def line_basic(request, string, period, time_range):
-    request.GET.get('string')
+def line_basic(request, os, period, time_range):
+    request.GET.get('os')
     request.GET.get('period')
     request.GET.get('time_range')
     data = {}
 
-    name = "Test Name"
-    title = "Number Of Active AIX Servers - Last " + time_range + " " + period + "s"
+    #The else is in case we add historical windows servers to this
+    if os == 'aix':
+        os_title = 'AIX'
+    elif os == 'linux':
+        os_title = 'Linux'
+    else:
+        os_title = ''
 
-    #for now, we're just going to replace the data as I figure out what I'm doing with this view
-    #timestamp = timezone.localtime(now).strftime('%Y-%m-%d')
-    #today = datetime.date.today().strftime('%Y-%m-%d')
-    #months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', today]
-    #total_server_count = HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=today).count()
+
+    name = "Test Name"
+    title = "Number Of Active " + os_title + " Servers - Last " + time_range + " " + period + "s"
 
     
     months = []
@@ -642,11 +645,19 @@ def line_basic(request, string, period, time_range):
         else:
             #Not sure what to do here, 404? sys.exit?
             interval = interval + 1
-
-        number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
-        number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
-        number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
-        number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+        
+        if os == 'aix':
+            number_of_servers.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, date=ls).count())
+            number_of_decoms.append(HistoricalAIXData.objects.filter(decommissioned=True, date=ls).count())
+            number_of_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
+            number_of_non_prod.append(HistoricalAIXData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+        elif os == 'linux':
+            number_of_servers.append(HistoricalLinuxData.objects.filter(active=True, decommissioned=False, date=ls).count())
+            number_of_decoms.append(HistoricalLinuxData.objects.filter(decommissioned=True, date=ls).count())
+            number_of_prod.append(HistoricalLinuxData.objects.filter(active=True, decommissioned=False, zone_id=2 , date=ls).count())
+            number_of_non_prod.append(HistoricalLinuxData.objects.filter(active=True, decommissioned=False, zone=1 , date=ls).count())
+        else:
+            pass
 
     months.reverse()
     number_of_servers.reverse()
