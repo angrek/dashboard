@@ -75,7 +75,7 @@ def update_server():
                     LinuxServer.objects.filter(name=server).update(os_level=oslevel, modified=timezone.now())
 
                 if str(kernel) != str(server.kernel):
-                    utilities.log_change(str(kernel), 'Kernel', str(server.kernel), str(kernel))
+                    utilities.log_change(str(server), 'Kernel', str(server.kernel), str(kernel))
                     LinuxServer.objects.filter(name=server).update(kernel=kernel, modified=timezone.now())
 
 
