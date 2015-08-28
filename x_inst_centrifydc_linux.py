@@ -21,7 +21,7 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
-    server_list = LinuxServer.objects.filter(zone=2, name__contains='t2esbdb-v6', decommissioned=False).exclude(centrify='5.2.2-192')
+    server_list = LinuxServer.objects.filter(name__contains='pdlpap04')
     #server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
 
     counter = 0
@@ -105,7 +105,7 @@ def update_server():
                         print line
 
                     print 'Enabling direct audit'
-                    command = 'dzdo /usr/sbin/dacontrol -e -a'
+                    command = 'dzdo /usr/sbin/dacontrol -e'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
