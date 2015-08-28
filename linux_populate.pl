@@ -201,12 +201,11 @@ foreach my $host (@$host_views) {
                 xcelys,
                 bash,
                 java,
-                imperva,
                 netbackup,
                 log)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE vmware_cluster="$cluster_name", adapter="$adapter", modified="$timestamp", ip_address="$ip_address",  memory=$memory, cpu=$cpu} );
             $sth->execute($server_name, 'None', $cluster_name, "$adapter", 1, 0, 0, 1, 1, "$timestamp", "$timestamp", 
-                        "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '', '');
+                        "$ip_address", 3, '', '', $memory, $cpu, 0, '', '', '', '', '', '');
             $rv=$dbh->do("unlock table");
             $dbh->disconnect();
 
