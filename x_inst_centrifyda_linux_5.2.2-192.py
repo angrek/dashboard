@@ -21,7 +21,7 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
-    server_list = LinuxServer.objects.filter(name__contains='pinfatt01')
+    server_list = LinuxServer.objects.filter(name__contains='pdlpap04')
 
     counter = 0
 
