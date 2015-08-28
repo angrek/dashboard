@@ -353,7 +353,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'application', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'kernel', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['active', 'exception', 'zone', 'os', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'os_level', 'kernel']
+    list_filter = ['active', 'exception', 'zone', 'vmware_cluster', 'os', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'os_level', 'kernel']
     search_fields = ['name', 'owner', 'application', 'ip_address', 'adapter', 'os', 'os_level', 'kernel']
     readonly_fields = ['created', 'modified']
     fields = ['name', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'kernel', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'python', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
