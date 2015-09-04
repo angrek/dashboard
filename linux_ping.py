@@ -30,7 +30,7 @@ from itertools import chain
 def update_server():
 
     #Examples of how you can filter servers
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(decommissioned=False, active=False)
     #server_list = LinuxServer.objects.all()
     #server_list = LinuxServer.objects.filter(decommissioned=False, zone=2) #zone 1= non prod, zone 2 = prod
     #server_list = LinuxServer.objects.filter(name__contains='hdp')
