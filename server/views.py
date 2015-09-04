@@ -493,6 +493,190 @@ def stacked_column(request, os, zone, service, period, time_range):
     return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array, 'os':os, 'service':service, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
 
 
+##################################################################
+#################### Get total number of servers #################
+##################################################################
+def stacked_column_total(request, os, zone, service, period, time_range):
+    request.GET.get('os')
+    request.GET.get('zone')
+    request.GET.get('service')
+    request.GET.get('period')
+    request.GET.get('time_range')
+    data = {}
+
+    #url = 'http://www.cnn.com/' + str(zone)
+    #return HttpResponseRedirect(url)
+    #sys(exit)
+
+    zone, zone_label1, zone_label2, zone_url1, zone_url2, zone_title = get_zone(zone)
+
+
+    if os == 'aix':
+        os_label = os.upper()
+    elif os == "linux":
+        os_label = os.capitalize()
+
+    title = "Total number of Linux and AIX servers by " + period
+    
+    #doing this to cut down on the amount of calls to datetime
+    today = datetime.date.today().strftime('%Y-%m-%d')
+
+    #time_interval is the list of dates to gather data from, whether by day, week, month 
+    time_interval = []
+    #number_of_servers = []
+
+    #interval is the offset for timedelta to get last sunday every week, every month or whatever
+    interval = 0
+
+
+    #Populate time_interval with the dates for the labels and queries
+    time_interval.append(datetime.date.today().strftime('%Y-%m-%d'))
+
+    if period == "day":
+        day_offset = 1
+    elif period == 'week':
+        day_offset = int(datetime.date.today().weekday()) + 1
+    else:
+        day_offset = int(datetime.date.today().strftime('%d'))
+
+    for x in range (1, (int(time_range))):
+        end_date = (datetime.date.today() - datetime.timedelta(days = (day_offset + interval))).strftime('%Y-%m-%d')
+        
+        #####APPEND HERE#####
+        time_interval.append(end_date)
+
+        if period == 'week':
+            interval = interval + 7
+        elif period == 'day':
+            interval = interval + 1
+        elif period == 'month':
+            if x == 0:
+                #get the first day of the month, we're just adding today on the end of the graph here
+                interval = interval + (int(datetime.date.today().strftime('%d')) )
+            else:
+            #this goes back and finds the first day of each of the last months in the time range and adjusts the year if it has to
+            #the graph for days or weeks doesn't have to do this because it's a set 1 and 7 interval whereas days of the month vary
+                my_year = int(datetime.date.today().strftime('%Y'))
+                my_month = int(datetime.date.today().strftime('%m'))
+
+                #We need to go to last year
+                if (my_month - x) < 1:
+                    my_year = my_year -1
+                    my_month = my_month + 12
+                next_month_back = calendar.monthrange(my_year, (my_month - x))[1]
+                interval = interval + next_month_back
+        else:
+            #Not sure what to do here, 404? sys.exit?
+            sys.exit()
+
+
+    ################################################################
+    #  Divider for gettin version list
+    ################################################################
+
+    #Here we'll go through each label date and use those to find which versions are on those specific dates
+    version_list = []
+
+
+    for my_date in time_interval:
+
+        #FIXME Well crap.... I don't want this in here but I need that date to make the predicates....how...can I add it in after??
+        if zone == 'all':
+            predicates = [('active', True), ('decommissioned', False), ('date', my_date)]
+        else:
+            predicates = [('active', True), ('decommissioned', False), ('zone', zone), ('date', my_date)]
+
+        q_list = [Q(x) for x in predicates]
+
+        #if os == 'aix':
+        #   temp_list = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        #elif os == 'linux':
+        #    temp_list = HistoricalLinuxData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        #else:
+        #    sys.exit()
+
+        temp_list1 = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        temp_list2 = HistoricalLinuxData.objects.filter(reduce(operator.and_, q_list)).values_list(service , flat=True).distinct()
+        temp_list = list(chain(temp_list1, temp_list2))
+
+            
+        temp_list = list(set(temp_list)) #quick way to make sure you have all uniques
+        version_list = version_list + temp_list  #add em up
+
+    version_list = list(set(version_list))
+
+
+    #################################################################
+    # Divider for iterating over the versions
+    ################################################################
+
+    #Ok, this is a bit different, we're going to have to iterate over the date and push the number of servers into a list across dates
+    version_counter = 0
+    date_counter = 0
+    my_array = [[], [], [], [], [], [], [], [], [], [], [], [], [], []]
+
+    for version in version_list:
+        for date in time_interval:
+            #Using django Q objects to create a dynamic query here
+            if zone == 'all':
+                predicates = [('active', True), ('decommissioned', False), (service, version), ('date', date)]
+            else:
+                predicates = [('active', True), ('decommissioned', False), (service, version), ('zone', zone), ('date', date)]
+
+
+            q_list = [Q(x) for x in predicates]
+
+            #if os == 'aix':
+            #    num = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).count()
+            #elif os == 'linux':
+            #    num = HistoricalLinuxData.objects.filter(reduce(operator.and_, q_list)).count()
+
+            num1 = HistoricalAIXData.objects.filter(reduce(operator.and_, q_list)).count()
+            num2 = HistoricalLinuxData.objects.filter(reduce(operator.and_, q_list)).count()
+            num = num1 + num2
+
+
+            if date_counter == 0:
+                my_array[version_counter] = [num]
+            else:
+                my_array[version_counter].append(num)
+            date_counter += 1
+
+        #FIXME Need a proper call rather than hardcoding it
+        if service == 'zone':
+            if version == 1:
+                version = 'NonProduction'
+            elif version == 2:
+                version = 'Production'
+            elif version == 3:
+                version = 'Unsure'
+        data[version] = my_array[version_counter]
+        version_counter += 1
+    time_interval.reverse()
+
+
+    #remove empty sets
+    my_array = [x for x in my_array if x]
+
+    #reverse each list in the list of lists (of lists in lists....AHHH!)
+    for p in my_array:
+            p.reverse()
+        
+    name = "Test Name"
+    y_axis_title = 'Number of Servers'
+    percentage = 0
+    return render(request, 'server/stacked_column.html', {'data': data, 'name': name, 'title': title, 'y_axis_title':y_axis_title, 'version_list':version_list, 'time_interval':time_interval, 'my_array':my_array, 'os':os, 'service':service, 'zone_label1':zone_label1, 'zone_label2':zone_label2, 'zone_url1':zone_url1, 'zone_url2':zone_url2})
+
+
+
+
+
+
+
+
+
+
+
 
 
 ############################################################################
