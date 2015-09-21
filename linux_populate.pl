@@ -1,19 +1,6 @@
 #!/usr/bin/perl
 
-# List all VM's in a specific VMware Infrastructure Cluster
-# Written by: Jeremy van Doorn (jvandoorn@vmware.com)
 #
-# This program lists all VM's in a specific Cluster.
-# It will report the name of Host and the VM in a formatted table.
-# At the bottom of the table, it shows the amount of VM's and Hosts found in the Cluster.
-#
-# This program uses the VI Perl Tool kit, which you can download from:
-# http://www.sourceforge.net/projects/viperltoolkit
-#
-# Version History:
-# V1.0.0 - 20070417 Written by request
-# v1.0.1 - 20070418 Added error-trapping for incorrect Cluster Names
-
 ########## Setting the default variables for being able to work with the VMware Webservice
 #use strict;
 #use warnings;
