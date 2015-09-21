@@ -7,25 +7,48 @@
 
 {% block content %}
 
-<script type='text/javascript' src="/static/js/jquery.min.js">
-    </script>
-<script type='text/javascript' src="/static/js/test.js">
-    </script>
+<script type='text/javascript' src="/static/js/jquery.min.js"></script>
+
+<script type='text/javascript' src="/static/js/jquery.dataTables.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.colReorder.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.rowReorder.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.select.js"></script>
+
+
+<script type='text/javascript'>
+$(document).ready( function () {
+    $('#testTable').DataTable();
+} );
+</script>
+
+
 
 <link type='text/css' href='/static/css/index.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/select.dataTables.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/rowReorder.dataTables.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/jquery.dataTables.css' rel='stylesheet' />
 
 <center><h3>Release Notes</h3></center>
 
 <br>
 
-<div class='yellow_servers'>
 
-<ul class='frames'>
-{% for note in last_ten_notes %}
-<h5><a class='yellow' href=''>{{ note }}</a><h5>
-{% endfor %}
-</ul>
-</div>
+<table id='testTable' class="display">
+    <thead id='testTable'>
+        <tr>
+            <th>Date</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody id='testTable'>
+        {% for note in last_ten_notes %}
+        <tr>
+            <td>date</td>
+            <td>{{ note }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
  
