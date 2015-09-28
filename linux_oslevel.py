@@ -49,7 +49,7 @@ def update_server():
                     os = 'RHEL'
                 else:
                     os = 'Unknown'
-
+                print os
 
                 command = 'lsb_release -a | grep Release'
                 stdin, stdout, stderr = client.exec_command(command)
@@ -57,7 +57,7 @@ def update_server():
                 oslevel = stdout.readlines()[0].rstrip()
                 oslevel = re.sub('Release:', '', oslevel)
                 oslevel = re.sub('\s*', '', oslevel)
-
+                print oslevel
 
                 command = 'uname -r'
                 stdin, stdout, stderr = client.exec_command(command)
