@@ -45,7 +45,7 @@ def update_server():
                     print syslog_version
                 
                 #get rsyslog version now
-                command = 'rpm -qa | grep rsyslog | uniq'
+                command = 'rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
                 try:
                     rsyslog_version = stdout.readlines()[0].rstrip()
