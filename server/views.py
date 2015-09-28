@@ -110,6 +110,18 @@ def jquerytest(request):
     return render(request, 'server/jquerytest.html', context)
 
 
+@login_required
+def aix_server_table(request):
+    servers = AIXServer.objects.filter(decommissioned=False).order_by('-name')
+    server_list = []
+    #for server in servers:
+    #    line = str(note.created_date) + " --  " + str(note.release_note)
+    #    note_list.append(line)
+    #last_ten_notes = note_list
+    context = {'servers': servers}
+    os.environ['REMOTE_USER'] = str(request.user.username)
+    return render(request, 'server/aix_server_table.html', context)
+
 def treemap(request):
     predicted_100 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=100)
     predicted_90 = AIXServer.objects.filter(decommissioned=False, predicted_lpar_score=90)
