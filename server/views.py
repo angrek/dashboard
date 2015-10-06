@@ -719,7 +719,7 @@ def column_basic_proc_pools(request, frame, pool_name, period, time_range):
     max_proc_units = []
     curr_procs = []
     used_proc_units = []
-    interval = 1
+    interval = 0
 
     #time_interval is the list of dates to gather data from, whether by day, week, month
     time_interval = []
