@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from import_export import resources, fields, widgets
+from import_export.widgets import ForeignKeyWidget
 from django.contrib.admin.models import LogEntry
 
 
@@ -271,13 +272,16 @@ class AIXPowerHA(AIXServer):
         verbose_name = "AIX PowerHA Systems"
         verbose_name_plural = "AIX PowerHA Systems"
 
-#Meta model for exporting what you see into Excel and other formats
+#Class for exporting what you see into Excel and other formats
 class AIXServerResource(resources.ModelResource):
-
+    #by default it returns the PK of the Foreign Key
+    zone = fields.Field(column_name='zone', attribute='zone', widget=ForeignKeyWidget(Zone, 'name'))
+    frame = fields.Field(column_name='frame', attribute='frame', widget=ForeignKeyWidget(Frame, 'name'))
+    stack = fields.Field(column_name='stack', attribute='stack', widget=ForeignKeyWidget(Frame, 'name'))
     class Meta:
         model = AIXServer
-        #test = fields.Field(column_name='frame', attribute='frame', widget=ForeignLookupKeyWidget(Frame, 'name'))
-        fields = ('name', 'owner', 'frame', 'active', 'exception', 'decommissioned', 'stack', 'created', 'modified', 'ip_address', 'zone', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'emc_clar', 'emc_sym', 'relationship')
+        fields = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
+        export_order = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
 
 #Meta model of AIX Server to just show VIO servers
 class VIOServer(AIXServer):
@@ -534,8 +538,13 @@ class LinuxApplications(LinuxServer):
 
 ##Meta model to use for exporting into Excel and other formats
 class LinuxServerResource(resources.ModelResource):
+    #by default it returns the PK of the Foreign Key
+    zone = fields.Field(column_name='zone', attribute='zone', widget=ForeignKeyWidget(Zone, 'name'))
+    stack = fields.Field(column_name='stack', attribute='stack', widget=ForeignKeyWidget(Zone, 'name'))
     class Meta:
         model = LinuxServer
+        fields = ('name', 'owner', 'application', 'zone', 'stack', 'ip_address', 'adapter', 'os', 'os_level', 'kernel', 'cpu', 'memory', 'centrify', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', )
+
 
 class LinuxServerENV(LinuxServer):
     class Meta:
