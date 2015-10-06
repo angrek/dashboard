@@ -89,7 +89,7 @@ class AIXServerAdmin(ImportExportActionModelAdmin):
     pass
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
-class AIXApplicationsAdmin(ImportExportModelAdmin):
+class AIXApplicationsAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     #This overrides the cell div and sets it to a color based on what stack a server is in
@@ -124,7 +124,7 @@ class AIXApplicationsAdmin(ImportExportModelAdmin):
     pass
 
 
-class AIXServerENVAdmin(ImportExportModelAdmin):
+class AIXServerENVAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
 
@@ -145,7 +145,7 @@ class AIXServerENVAdmin(ImportExportModelAdmin):
 
 
 #class AIXApplicationsAdmin(admin.ModelAdmin):
-class AIXPowerHAAdmin(ImportExportModelAdmin):
+class AIXPowerHAAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0).exclude(powerha="None")
     #This overrides the cell div and sets it to a color based on what stack a server is in
@@ -180,7 +180,7 @@ class AIXPowerHAAdmin(ImportExportModelAdmin):
 
 
 #class AIXServerAdmin(admin.ModelAdmin):
-class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
+class DecommissionedAIXServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=1)
     list_max_show_all = 500
@@ -197,7 +197,7 @@ class DecommissionedAIXServerAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
-class HistoricalAIXDataAdmin(ImportExportModelAdmin):
+class HistoricalAIXDataAdmin(ImportExportActionModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['date', 'name', 'frame', 'active','exception', 'decommissioned', 'created', 'zone', 'os_level', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba', 'python', 'emc_clar', 'emc_sym']
@@ -212,7 +212,7 @@ class HistoricalAIXDataAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
-class AIXProcPoolAdmin(ImportExportModelAdmin):
+class AIXProcPoolAdmin(ImportExportActionModelAdmin):
     save_on_top = True
     list_display = ['frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs', 'modified']
     list_filter = ['frame', 'pool_name', 'modified']
@@ -223,7 +223,7 @@ class AIXProcPoolAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collaps.js']
     pass
 
-class HistoricalAIXProcPoolAdmin(ImportExportModelAdmin):
+class HistoricalAIXProcPoolAdmin(ImportExportActionModelAdmin):
     save_on_top = True
     list_display = ['date', 'frame', 'pool_name', 'max_proc_units', 'used_proc_units', 'curr_procs']
     list_filter = ['frame', 'pool_name']
@@ -234,7 +234,7 @@ class HistoricalAIXProcPoolAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collaps.js']
     pass
 
-class VIOServerAdmin(ImportExportModelAdmin):
+class VIOServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(name__contains='vio')
     save_on_top = True
@@ -248,7 +248,7 @@ class VIOServerAdmin(ImportExportModelAdmin):
         js = ['/static/admin/js/list_filter_collapse.js']
     pass
 
-class Power7InventoryAdmin(ImportExportModelAdmin):
+class Power7InventoryAdmin(ImportExportActionModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ('name', 'frame', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
@@ -330,7 +330,7 @@ class LocalUserAdmin(ImportExportModelAdmin):
 #########################Linux Server Section#############################
 ##########################################################################
 
-class LinuxServerAdmin(ImportExportModelAdmin):
+class LinuxServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     def stack_(self, obj):
@@ -362,7 +362,7 @@ class LinuxServerAdmin(ImportExportModelAdmin):
     resource_class = LinuxServerResource
     pass
 
-class LinuxApplicationsAdmin(ImportExportModelAdmin):
+class LinuxApplicationsAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
@@ -378,7 +378,7 @@ class LinuxApplicationsAdmin(ImportExportModelAdmin):
     pass
 
 
-class DecommissionedLinuxServerAdmin(ImportExportModelAdmin):
+class DecommissionedLinuxServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=1)
     list_max_show_all = 500
@@ -395,7 +395,7 @@ class DecommissionedLinuxServerAdmin(ImportExportModelAdmin):
 
 
 
-class HistoricalLinuxDataAdmin(ImportExportModelAdmin):
+class HistoricalLinuxDataAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
@@ -414,7 +414,7 @@ class HistoricalLinuxDataAdmin(ImportExportModelAdmin):
 
 
 
-class LinuxServerENVAdmin(ImportExportModelAdmin):
+class LinuxServerENVAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
 
@@ -489,7 +489,7 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 ############################# WINDOWS TESTING ####################################
 
-class WindowsServerAdmin(ImportExportModelAdmin):
+class WindowsServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
 
@@ -524,7 +524,7 @@ class WindowsServerAdmin(ImportExportModelAdmin):
     resource_class = LinuxServerResource
     pass
 
-class DecommissionedWindowsServerAdmin(ImportExportModelAdmin):
+class DecommissionedWindowsServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=1)
     list_max_show_all = 500
@@ -540,7 +540,7 @@ class DecommissionedWindowsServerAdmin(ImportExportModelAdmin):
     pass
 
 
-class WindowsServerOwnerAdmin(ImportExportModelAdmin):
+class WindowsServerOwnerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
