@@ -1,0 +1,72 @@
+{% extends "server/base.html" %}
+
+
+{% block title %}
+<title>AIX Server Table</title>
+{% endblock %}
+
+{% block content %}
+
+<script type='text/javascript' src="/static/js/jquery.min.js"></script>
+
+<script type='text/javascript' src="/static/js/jquery.dataTables.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.colReorder.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.rowReorder.js"></script>
+<script type='text/javascript' src="/static/js/dataTables.select.js"></script>
+
+
+<script type='text/javascript'>
+$(document).ready( function () {
+    $('#testTable').DataTable( {
+    scrollY: 400,
+    colReorder: true,
+    select: true
+    } );
+} );
+</script>
+
+
+
+<link type='text/css' href='/static/css/server_table.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/select.dataTables.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/rowReorder.dataTables.css' rel='stylesheet' />
+<link type='text/css' href='/static/css/jquery.dataTables.css' rel='stylesheet' />
+
+<center><h3>AIX Server Information</h3></center>
+
+<br>
+
+
+<table id='testTable' class="display">
+    <thead id='testTable'>
+        <tr>
+            <th width=80>Name</th>
+            <th width=200>Owner</th>
+            <th>Stack</th>
+            <th>Frame</th>
+            <th>Zone</th>
+            <th>Active</th>
+            <th>Exception</th>
+            <th>OS</th>
+            <th>OS Level</th>
+        </tr>
+    </thead>
+    <tbody id='testTable'>
+        {% for server in servers %}
+        <tr>
+            <td><a href="http://p1rhrep:8000/server/{{ server.name }}/">{{ server.name }}</a></td>
+            <td>{{ server.owner }}</td>
+            <td>{{ server.stack }}</td>
+            <td>{{ server.frame }}</td>
+            <td>{{ server.zone }}</td>
+            <td>{{ server.active }}</td>
+            <td>{{ server.exception }}</td>
+            <td>{{ server.os }}</td>
+            <td>{{ server.os_level }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+ 
