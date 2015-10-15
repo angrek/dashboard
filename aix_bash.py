@@ -29,10 +29,14 @@ def update_server():
             
             client = SSHClient()
             if utilities.ssh(server, client):
-                
+                print server.name                
                 command = 'rpm -qa | grep bash |grep -v doc'
                 stdin, stdout, stderr = client.exec_command(command)
-                bash_version = stdout.readlines()[0].rstrip()
+                try:
+                    bash_version = stdout.readlines()[0].rstrip()
+                except:
+                    print "Problem getting bash version"
+                    continue
                 stdin.close()
                 stderr.close()
                 
