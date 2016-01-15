@@ -33,7 +33,7 @@ def update_server():
 
             if utilities.ssh(server, client):
 
-                command = 'dzdo grep syslog.wellcare.com /etc/rsyslog.conf'
+                command = 'dzdo grep itsec /etc/*syslog*'
                 stdin, stdout, stderr = client.exec_command(command)
 
                 try:
