@@ -56,8 +56,8 @@ mail william.rehfield@wellcare.com -s 'starting aix ssh_aix' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_ssh.py
 mail william.rehfield@wellcare.com -s 'starting aix ssl' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_ssl.py
-mail william.rehfield@wellcare.com -s 'starting aix storage' < 1.txt
-/home/wrehfiel/ENV/dashboard/aix_storage.py
+#mail william.rehfield@wellcare.com -s 'starting aix storage' < 1.txt
+#/home/wrehfiel/ENV/dashboard/aix_storage.py
 mail william.rehfield@wellcare.com -s 'starting aix xcelys' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_xcelys.py
 mail william.rehfield@wellcare.com -s 'starting aix rsyslog' < 1.txt
