@@ -1,17 +1,18 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve SSL versions on the servers and drop them into Django dashboard
+# Python script to create dynamic inventory files for Ansible based
+# on queries to Lizardfish's ORM database connector.
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 1/22/2016
 #
 #########################################################################
 
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'dashboard.settings'
 import re
-from ssh import SSHClient
-from django.utils import timezone
+#from ssh import SSHClient
+#from django.utils import timezone
 from server.models import AIXServer, LinuxServer
 
 #need itertools to concatenate the query sets to combine lists of servers from two different tables
@@ -20,10 +21,9 @@ from itertools import chain
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-import utilities
+#import utilities
 django.setup()
-import paramiko
-import getpass
+#import paramiko
 import argparse
 import textwrap
 from subprocess import *
@@ -37,30 +37,56 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description=textwrap.dedent('''\
 
-    Set your SSH keys across active AIX and UNIX servers.
+    This is a script to query Lizardfish's database to create Ansible inventory files.
+    It will filter your query based on available fields in the database. See available below.
 
-    You must use either the --aix or --linux arguments, or both.
+    You must at least use the --os argument to know what database table to query.
+    You may only use the --os arg once.
 
-    Example:
-    ./ansible.py --os linux                 #return all linux servers (must be lowercase)
-    ./ansible.py --os aix
-    ./ansible.py --zone production                  #All production servers
-    ./ansible.py --os aix --zone nonproduction       #All nonproduction aix servers
-    ./ansible.py --name__contains p1sasgrid
+    Examples:
+    ./ansible.py --os linux                                             #Return all Linux servers (must be lowercase)
+    ./ansible.py --os aix                                               #Return all AIX servers
+    ./ansible.py --os linux --zone production                           #All Linux prod servers
+    ./ansible.py --os aix --zone nonproduction                          #All AIX nonprod servers
+    ./ansible.py --os aix --name__contains sas                          #This is a straight regex for 'sas'.
+    ./ansible.py --os linux --zone production --name__contains esb      #Give me prod ESB linux boxes
 
+
+    You would want to redirect the output to your inventory file:
+    ./ansible.py --os aix > aix_servers
+
+    So with SSH form and ansible server, your command would look something like this:
+    ssh p1rhrep /home/wrehfiel/ENV/dashboard/ansible.py --os linux --os_level 5.10 > testing
+
+    
+    Currently available fields: os, zone, os_level, centrify, centrifyda,
+    xcelys, bash, ssl, netbackup, syslog, rsyslog, samba, python, 
+    and name__contains. (note two underscores for name__contains)
+
+    
     #NOTE: I am intentionally not including anything decommed. Why would
-    we run ansible against a list of decoms??
+    we run ansible against a list of decoms?
     '''))
 
 parser.add_argument('--os', help="aix or linux (lowercase)")
+parser.add_argument('--os_level', help="Check for a specific version of the OS")
 parser.add_argument('--zone', help="production or nonproduction (lowercase)")
 parser.add_argument('--name__contains', help="Can be full or partial matching name of a server.")
-parser.add_argument('--os_level', help="Check for a specific version of the OS")
+parser.add_argument('--centrify', help="Centrify version")
+parser.add_argument('--centrifyda', help="Centrify Direct Audit version")
+parser.add_argument('--xcelys', help="Xcelys version")
+parser.add_argument('--bash', help="Bash version")
+parser.add_argument('--ssl', help="SSL version")
+parser.add_argument('--netbackup', help="Netbackup version")
+parser.add_argument('--syslog', help="Syslog version")
+parser.add_argument('--rsyslog', help="Rsyslog version")
+parser.add_argument('--samba', help="Samba version")
+parser.add_argument('--python', help="Python version")
 args = parser.parse_args()
 
 #must specify arguments
 if not args.os:
-    print "Error! You MUST define the --os parameter"
+    print "Error! You MUST define the --os parameter."
     parser.print_help()
     sys.exit()
 
@@ -97,6 +123,40 @@ def update_server():
     if args.os_level:
         predicates.append(('os_level', args.os_level))
 
+
+    if args.centrify:
+        predicates.append(('centrify', args.centrify))
+
+    if args.centrifyda:
+        predicates.append(('centrifyda', args.centrifyda))
+
+    if args.xcelys:
+        predicates.append(('xcelys', args.xcelys))
+
+    if args.bash:
+        predicates.append(('bash', args.bash))
+
+    if args.ssl:
+        predicates.append(('ssl', args.ssl))
+
+    if args.netbackup:
+        predicates.append(('netbackup', args.netbackup))
+
+    if args.syslog:
+        predicates.append(('syslog', args.syslog))
+
+    if args.rsyslog:
+        predicates.append(('rsyslog', args.rsyslog))
+
+    if args.samba:
+        predicates.append(('samba', args.samba))
+
+    if args.python:
+        predicates.append(('python', args.python))
+
+
+
+    #Here we use python's Q to get all the predicates together
     q_list = [Q(x) for x in predicates]
 
     if args.os == 'aix':
@@ -109,15 +169,10 @@ def update_server():
     for server in server_list:
         print server.name
     
-    #print "Predicates a comnin'!"
-    #print predicates
 
 
 #start execution
 if __name__ == '__main__':
-    #print "Beginning test..."
-    start_time = timezone.now()
+    #start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    #elapsed_time = timezone.now() - start_time
-    #print "Elapsed time: " + str(elapsed_time)
