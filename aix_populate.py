@@ -140,7 +140,7 @@ def populate():
                     server.save()
                     #server.update(frame=frame.id)
                     change_message = "Changed frame for " + str(server_name) + " from " + old_frame + " to " + new_frame
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message=change_message)
+                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=change_message)
                     print '5'
             except:
                 print "---------"
@@ -155,7 +155,7 @@ def populate():
                 server = AIXServer.objects.get_or_create(name=str(server_name).rstrip(), frame=frame, ip_address=ip_address, os='AIX', zone=zone, active=True, exception=True,  stack_id=1)
                 server = AIXServer.objects.get(name=server_name.rstrip())
                 change_message = "Added LPAR " + server_name.rstrip() + "."
-                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
+                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=1, change_message=change_message)
             
 
             if utilities.ping(server):
@@ -204,12 +204,12 @@ def populate():
                                     wpar.frame = frame
                                     wpar.save()
                                     change_message = "Changed frame for " + str(wpar_name) + " from " + old_frame + " to " + new_frame
-                                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=wpar_name, action_flag=2, change_message=change_message)
+                                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=wpar_name, action_flag=2, change_message=change_message)
                             except:
                                 #Here we are inheriting some of the parent LPAR objects into the WPAR
                                 wpar = AIXServer.objects.get_or_create(name=wpar_name, owner=server.owner, frame=server.frame, ip_address=ip_address, os='AIX', zone=server.zone, active=True, exception=True,  stack=server.stack)
                                 change_message = "Added WPAR " + wpar_name + "."
-                                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=wpar_name, action_flag=1, change_message=change_message)
+                                LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=wpar_name, action_flag=1, change_message=change_message)
 
 
                             #Now we'll try and check if the LPAR<->WPAR relationship exists, or create it

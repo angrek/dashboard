@@ -61,7 +61,7 @@ def update_server():
                         server.java.add(test_version)
                         #utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
                         message = "Added Java version " + str(test_version)
-                        LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message=message)
+                        LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=message)
 
                 #We've added them all to Java and to the AIX Server
                 #Now we need to go back and delete any that aren't on the server anymore
@@ -79,7 +79,7 @@ def update_server():
                         server.java.remove(version)
 
                         message = "Removed Java version " + str(version)
-                        LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=9, object_id =264, object_repr=server, action_flag=2, change_message=message)
+                        LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=message)
                     #if line in java_version_list:
                     #    pass:
                     #else:
