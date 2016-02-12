@@ -22,7 +22,7 @@ def update_server():
 
     #server_list = AIXServer.objects.filter(name__contains='uhdpdb01', zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
     #server_list = AIXServer.objects.filter(zone=2, name__contains='p1sasgrid01', decommissioned=False).exclude(centrify='5.2.2-192', name__contains='vio')
-    server_list = AIXServer.objects.filter(name__contains='dinfmdmap02')
+    server_list = AIXServer.objects.filter(name__contains='ustsmidcap')
 
     counter = 0
 
