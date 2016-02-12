@@ -100,6 +100,7 @@ def update_server():
 
     #By default we want to pull back only non decommed servers
     predicates = [('decommissioned', False)]
+    predicates.append(('active', True))
 
     #Operating system args
     if args.os:
