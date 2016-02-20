@@ -313,6 +313,7 @@ class AIXLog(AIXServer):
 #Model for AIX error reports
 class Errpt(models.Model):
     name = models.ForeignKey(AIXServer)
+    date = models.DateField("Date", default=datetime.date.today)
     report = models.TextField(blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
