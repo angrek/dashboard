@@ -26,7 +26,7 @@ def update_server():
 
     for server in server_list:
         #counter += 1
-        #print str(counter) + ' - ' + str(server)
+        #print str(counter) + ' - ' + server
 
         if utilities.ping(server):
 
@@ -48,7 +48,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(samba) != str(server.samba):
-                    utilities.log_change(str(server), 'samba', str(server.samba), str(samba))
+                    utilities.log_change(server, 'samba', str(server.samba), str(samba))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(samba=samba, modified=timezone.now())
 
                 

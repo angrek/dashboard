@@ -183,7 +183,7 @@ def update_server():
 
                     server.centrify = new_centrify
                     server.save()
-                    utilities.log_change(str(server), 'Centrify', old_version, new_centrify)
+                    utilities.log_change(server, 'Centrify', old_version, new_centrify)
 
             else:
                 print "No ssh"

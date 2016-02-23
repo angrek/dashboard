@@ -84,11 +84,11 @@ def populate():
                 print curr_lpar_score
                 #print len(server.curr_lpar_score)
                 #print len(curr_lpar_score)
-                utilities.log_change(str(server), 'AIX curr_lpar_score' , str(server.curr_lpar_score), str(curr_lpar_score))
+                utilities.log_change(server, 'AIX curr_lpar_score' , str(server.curr_lpar_score), str(curr_lpar_score))
                 server.curr_lpar_score = curr_lpar_score
                 server.save()
             if server.predicted_lpar_score != predicted_lpar_score:
-                utilities.log_change(str(server), 'AIX predicted_lpar_score', str(server.predicted_lpar_score), str(predicted_lpar_score))
+                utilities.log_change(server, 'AIX predicted_lpar_score', str(server.predicted_lpar_score), str(predicted_lpar_score))
                 server.predicted_lpar_score = predicted_lpar_score
                 server.save()
         print '-----------'

@@ -42,7 +42,7 @@ def update_server():
 
                 #if it's the same version, we don't need to update the record
                 if str(new_centrify) != str(server.centrify):
-                    utilities.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
+                    utilities.log_change(server, 'Centrify', str(server.centrify), str(new_centrify))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
 
                 #Using the centrify script here to pull the Active Directory Zone
@@ -71,7 +71,7 @@ def update_server():
 
                 #if it's the same version, we don't need to update the record
                 if str(new_centrifyda) != str(server.centrifyda):
-                    utilities.log_change(str(server), 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
+                    utilities.log_change(server, 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=new_centrifyda, modified=timezone.now())
 
 

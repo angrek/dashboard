@@ -84,11 +84,11 @@ def populate():
                 print curr_lpar_score
                 #print len(server.curr_lpar_score)
                 #print len(curr_lpar_score)
-                utilities.log_change(str(server), 'AIX curr_lpar_score_new' , str(server.curr_lpar_score_new), str(curr_lpar_score))
+                utilities.log_change(server, 'AIX curr_lpar_score_new' , str(server.curr_lpar_score_new), str(curr_lpar_score))
                 server.curr_lpar_score_new = curr_lpar_score
                 server.save()
             if server.predicted_lpar_score_new != predicted_lpar_score:
-                utilities.log_change(str(server), 'AIX predicted_lpar_score_new', str(server.predicted_lpar_score_new), str(predicted_lpar_score))
+                utilities.log_change(server, 'AIX predicted_lpar_score_new', str(server.predicted_lpar_score_new), str(predicted_lpar_score))
                 server.predicted_lpar_score_new = predicted_lpar_score
                 server.save()
         print '-----------'
@@ -141,7 +141,7 @@ def populate():
 #                client.load_system_host_keys()
 #                server_is_active=1
 #                try:
-#                    client.connect(str(server).rstrip(), username="wrehfiel")
+#                    client.connect(server.rstrip(), username="wrehfiel")
 #
 #                except:
 #                    #can't log in, set it as an exception

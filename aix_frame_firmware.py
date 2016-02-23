@@ -55,7 +55,7 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if firmware_version != frame.firmware_version:
-                        utilities.log_change(str(frame), 'firmware version', str(frame.firmware_version), str(firmware_version))
+                        utilities.log_change(frame 'firmware version', str(frame.firmware_version), str(firmware_version))
 
                         Frame.objects.filter(name=frame.name).update(firmware_version=firmware_version)
 

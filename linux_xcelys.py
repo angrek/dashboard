@@ -39,7 +39,7 @@ def update_server():
                     xcelys_version = "None"
                 #check existing value, if it exists, don't update
                 if str(xcelys_version) != str(server.xcelys):
-                    utilities.log_change(str(server), 'Xcelys', str(server.xcelys), str(xcelys_version))
+                    utilities.log_change(server, 'Xcelys', str(server.xcelys), str(xcelys_version))
                     LinuxServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
 
 

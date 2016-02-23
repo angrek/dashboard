@@ -46,7 +46,7 @@ def update_server():
 
                         #if existing value is the same, don't update
                         if str(emc_clar) != str(server.emc_clar):
-                            utilities.log_change(str(server), 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
+                            utilities.log_change(server, 'EMC_CLAR', str(server.emc_clar), str(emc_clar))
                             AIXServer.objects.filter(name=server).update(emc_clar=emc_clar, modified=timezone.now())
                     except:
                         pass
@@ -65,7 +65,7 @@ def update_server():
 
                         if str(emc_sym) != str(server.emc_sym):
 
-                            utilities.log_change(str(server), 'EMC_SYM', str(server.emc_sym), str(emc_sym))
+                            utilities.log_change(server, 'EMC_SYM', str(server.emc_sym), str(emc_sym))
 
                             AIXServer.objects.filter(name=server).update(emc_sym=emc_sym, modified=timezone.now())
                     except:

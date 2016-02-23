@@ -59,7 +59,7 @@ def update_server():
                     if test_version not in servers_java_versions:
                         print "WINNNNNNNNNNNNNN"
                         server.java.add(test_version)
-                        #utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+                        #utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
                         message = "Added Java version " + str(test_version)
                         LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=message)
 
@@ -92,7 +92,7 @@ def update_server():
                     #check if it exists
                 #check existing value, if it exists, don't update
                 #if str(java_text) != str(server.java_text):
-                #    utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+                #    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
 #
                 #AIXServer.objects.filter(name=server).update(java_text=java_text)
 

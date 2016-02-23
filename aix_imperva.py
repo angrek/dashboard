@@ -42,14 +42,14 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if str(imperva_version) != str(server.imperva):
-                        utilities.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
+                        utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
                 except:
                     imperva_version = 'None'
                     print imperva_version
                     if str(imperva_version) != str(server.imperva):
-                        utilities.log_change(str(server), 'Imperva', str(server.imperva), str(imperva_version))
+                        utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
                         AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
 

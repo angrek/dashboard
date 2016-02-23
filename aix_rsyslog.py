@@ -49,10 +49,10 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 #if str(syslog_version) != str(server.syslog):
-                #    utilities.log_change(str(server), 'samba', str(server.syslog), str(syslog_version))
+                #    utilities.log_change(server, 'samba', str(server.syslog), str(syslog_version))
                 #    AIXServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
                 if str(rsyslog_version) != str(server.rsyslog):
-                    utilities.log_change(str(server), 'rsyslog', str(server.rsyslog), str(rsyslog_version))
+                    utilities.log_change(server, 'rsyslog', str(server.rsyslog), str(rsyslog_version))
                     AIXServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 

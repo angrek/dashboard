@@ -42,7 +42,7 @@ def update_server():
                     ssl = temp2[2]
                     #if existing value is the same, don't update
                     if str(ssl) != str(server.ssl):
-                        utilities.log_change(str(server), 'SSL', str(server.ssl), str(ssl))
+                        utilities.log_change(server, 'SSL', str(server.ssl), str(ssl))
                         AIXServer.objects.filter(name=server).update(ssl=ssl, modified=timezone.now())
 
 

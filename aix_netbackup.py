@@ -35,7 +35,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(netbackup_version) != str(server.netbackup):
-                    utilities.log_change(str(server), 'NetBackup', str(server.netbackup), str(netbackup_version))
+                    utilities.log_change(server, 'NetBackup', str(server.netbackup), str(netbackup_version))
                     AIXServer.objects.filter(name=server).update(netbackup=netbackup_version, modified=timezone.now())
 
 

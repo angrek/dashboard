@@ -35,19 +35,19 @@ def update_server():
                 if stdout.readlines():
                     print "yes"
                     if server.ifix == False:
-                        utilities.log_change(str(server), 'ifix', 'False', 'True')
+                        utilities.log_change(server, 'ifix', 'False', 'True')
                         AIXServer.objects.filter(name=server).update(ifix=True, modified=timezone.now())
                 else:
                     print "no"
                     if server.ifix == True:
-                        utilities.log_change(str(server), 'ifix', 'True', 'False')
+                        utilities.log_change(server, 'ifix', 'True', 'False')
                         AIXServer.objects.filter(name=server).update(ifix=False, modified=timezone.now())
                 #need rstrip() because there are extra characters at the end
 
                 
                 #check existing value, if it exists, don't update
                 #if str(oslevel) != str(server.os_level):
-                #    utilities.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
+                #    utilities.log_change(server, 'oslevel', str(server.os_level), str(oslevel))
                 #    AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
 
 

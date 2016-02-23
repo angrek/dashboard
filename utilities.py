@@ -25,10 +25,13 @@ import paramiko
 django.setup()
 
 def content_type(server):
+    print server.name
+    print server.os
+    print '-'
     if server.os == 'AIX':
-        id = 16
-    if server.os == 'RHEL':
         id = 15
+    if server.os == 'RHEL':
+        id = 16
     return id
 
 

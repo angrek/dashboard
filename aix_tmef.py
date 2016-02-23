@@ -43,7 +43,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(tmef) != str(server.tmef):
-                    utilities.log_change(str(server), 'tmef', str(server.tmef), str(tmef))
+                    utilities.log_change(server, 'tmef', str(server.tmef), str(tmef))
 
                     AIXServer.objects.filter(name=server).update(tmef=tmef, modified=timezone.now())
 

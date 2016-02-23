@@ -51,7 +51,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(oslevel) != str(server.os_level):
-                    utilities.log_change(str(server), 'oslevel', str(server.os_level), str(oslevel))
+                    utilities.log_change(server, 'oslevel', str(server.os_level), str(oslevel))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(os_level=oslevel, modified=timezone.now())
 
 

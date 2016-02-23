@@ -53,7 +53,7 @@ def update_server():
                         centrify_is_installed = 0
                     #if it's the same version, we don't need to update the record
                     if str(new_centrify) != str(server.centrify):
-                        utilities.log_change(str(server), 'Centrify', str(server.centrify), str(new_centrify))
+                        utilities.log_change(server, 'Centrify', str(server.centrify), str(new_centrify))
 
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
 
@@ -67,7 +67,7 @@ def update_server():
                         zone = Zone.objects.get(name=zone_tmp)
                         old_zone = str(server.zone)
                         if str(old_zone) != str(zone):
-                            utilities.log_change(str(server), 'Zone', str(old_zone), str(zone))
+                            utilities.log_change(server, 'Zone', str(old_zone), str(zone))
                             AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
                             
                         
@@ -81,7 +81,7 @@ def update_server():
                         new_centrifyda = "None"
                     #if it's the same version, we don't need to update the record
                     if str(new_centrifyda) != str(server.centrifyda):
-                        utilities.log_change(str(server), 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
+                        utilities.log_change(server, 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
 
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=new_centrifyda, modified=timezone.now())
 

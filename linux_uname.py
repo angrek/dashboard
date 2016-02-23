@@ -27,7 +27,7 @@ def update_server():
 
     for server in server_list[:20]:
         #counter += 1
-        #print str(counter) + ' - ' + str(server)
+        #print str(counter) + ' - ' + server
 
         if utilities.ping(server):
 
@@ -41,7 +41,7 @@ def update_server():
                 print uname 
                 #check existing value, if it exists, don't update
                 #if str(bash_version) != str(server.bash):
-                #    utilities.log_change(str(server), 'bash', str(server.bash), str(bash_version))
+                #    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
                 #    LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())
 
 

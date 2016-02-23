@@ -43,7 +43,7 @@ def update_server():
 
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.aix_ssh):
-                        utilities.log_change(str(server), 'AIX SSH', str(server.aix_ssh), str(ssh))
+                        utilities.log_change(server, 'AIX SSH', str(server.aix_ssh), str(ssh))
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(aix_ssh=ssh, modified=timezone.now())
 
 

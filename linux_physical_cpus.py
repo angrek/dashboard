@@ -54,7 +54,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(number) != str(server.cpu):
-                    utilities.log_change(str(server), 'CPU', str(server.cpu), str(number))
+                    utilities.log_change(server, 'CPU', str(server.cpu), str(number))
 #
                     LinuxServer.objects.filter(name=server).update(cpu=number, modified=timezone.now())
                 client.close()

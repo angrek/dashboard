@@ -23,8 +23,8 @@ def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    for server in server_list:
-
+    for server in server_list[:3]:
+        print server
         if utilities.ping(server):
 
             client = SSHClient()
@@ -64,18 +64,23 @@ def update_server():
                 kernel = stdout.readlines()[0].rstrip()
                 print kernel
                 
+                command = 'rpm -qa --last | grep kernel'
+                stdin, stdout, stderr = client.exec_command(command)
+                kernel_date = stdout.readlines()[0].rstrip()
+                print kernel_date
+                
 
 
                 #check existing value, if it exists, don't update
                 if str(os) != str(server.os):
-                    utilities.log_change(str(server), 'OS', str(server.os), str(os))
+                    utilities.log_change(server, 'OS', str(server.os), str(os))
                     LinuxServer.objects.filter(name=server).update(os=os, modified=timezone.now())
                 if str(oslevel) != str(server.os_level):
-                    utilities.log_change(str(server), 'OS Level', str(server.os_level), str(oslevel))
+                    utilities.log_change(server, 'OS Level', str(server.os_level), str(oslevel))
                     LinuxServer.objects.filter(name=server).update(os_level=oslevel, modified=timezone.now())
 
                 if str(kernel) != str(server.kernel):
-                    utilities.log_change(str(server), 'Kernel', str(server.kernel), str(kernel))
+                    utilities.log_change(server, 'Kernel', str(server.kernel), str(kernel))
                     LinuxServer.objects.filter(name=server).update(kernel=kernel, modified=timezone.now())
 
 

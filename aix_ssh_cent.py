@@ -43,7 +43,7 @@ def update_server():
 
                     #if existing value is the same, don't update
                     if str(ssh) != str(server.cent_ssh):
-                        utilities.log_change(str(server), 'Centrify SSH', str(server.cent_ssh), str(ssh))
+                        utilities.log_change(server, 'Centrify SSH', str(server.cent_ssh), str(ssh))
                         AIXServer.objects.filter(name=server, exception=False, active=True).update(cent_ssh=ssh, modified=timezone.now())
 
 

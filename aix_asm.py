@@ -51,7 +51,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if my_output != server.asm:
-                    utilities.log_change(str(server), 'asm', str(server.asm), str(my_output))
+                    utilities.log_change(server, 'asm', str(server.asm), str(my_output))
 
                     AIXServer.objects.filter(name=server).update(asm=my_output, modified=timezone.now())
 

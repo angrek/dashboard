@@ -43,7 +43,7 @@ def update_server():
 
                 CentrifyUserCountAIX.objects.create(run_time=run_time, name=server, user_count=user_count)
 
-                #utilities.log_change(str(server), 'Centrify user count', str(server.centrify_user_count), str(user_coutn))
+                #utilities.log_change(server, 'Centrify user count', str(server.centrify_user_count), str(user_coutn))
 
                             
                         

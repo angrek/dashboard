@@ -50,7 +50,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if my_output != str(server.powerha):
-                    utilities.log_change(str(server), 'powerha', str(server.powerha), str(my_output))
+                    utilities.log_change(server, 'powerha', str(server.powerha), str(my_output))
 
                     AIXServer.objects.filter(name=server).update(powerha=my_output, modified=timezone.now())
 

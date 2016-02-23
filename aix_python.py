@@ -43,7 +43,7 @@ def update_server():
 
                 #check existing value, if it exists, don't update
                 if str(version) != str(server.python):
-                    utilities.log_change(str(server), 'python', str(server.python), str(version))
+                    utilities.log_change(server 'python', str(server.python), str(version))
 
                     AIXServer.objects.filter(name=server).update(python=version, modified=timezone.now())
                 client.close()
