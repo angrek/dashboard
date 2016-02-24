@@ -34,7 +34,7 @@ def update_server():
             if utilities.ssh(server, client):
                 print '------------------------------------'
                 print server.name
-                command = '/usr/sbin/smbd -V'
+                command = 'dzdo /usr/sbin/smbd -V'
                 #command = 'dzdo smbd -V'
                 stdin, stdout, stderr = client.exec_command(command)
                 try:
@@ -49,7 +49,7 @@ def update_server():
                 #check existing value, if it exists, don't update
                 if str(samba) != str(server.samba):
                     utilities.log_change(server, 'samba', str(server.samba), str(samba))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(samba=samba, modified=timezone.now())
+                    LinuxServer.objects.filter(name=server).update(samba=samba, modified=timezone.now())
 
                 
                 #command = 'smbd -V'
