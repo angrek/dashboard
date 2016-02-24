@@ -90,6 +90,8 @@ mail william.rehfield@wellcare.com -s 'starting linux ssl' < 1.txt
 #/home/wrehfiel/ENV/dashboard/linux_storage.py
 mail william.rehfield@wellcare.com -s 'starting linux xcelys' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_xcelys.py
+mail william.rehfield@wellcare.com -s 'starting linux samba' < 1.txt
+/home/wrehfiel/ENV/dashboard/linux_samba.py
 mail william.rehfield@wellcare.com -s 'starting linux syslog' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_syslog.py
 mail william.rehfield@wellcare.com -s 'starting linux rsyslog_r' < 1.txt
