@@ -23,7 +23,7 @@ def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    for server in server_list[:3]:
+    for server in server_list:
         print server
         if utilities.ping(server):
 
@@ -64,7 +64,7 @@ def update_server():
                 kernel = stdout.readlines()[0].rstrip()
                 print kernel
                 
-                command = 'rpm -qa --last | grep kernel'
+                command = 'dzdo rpm -qa --last | grep kernel'
                 stdin, stdout, stderr = client.exec_command(command)
                 kernel_date = stdout.readlines()[0].rstrip()
                 print kernel_date

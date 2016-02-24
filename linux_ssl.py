@@ -31,7 +31,7 @@ def update_server():
             client = SSHClient()
             if utilities.ssh(server, client):
 
-                stdin, stdout, stderr = client.exec_command('rpm -qa | grep openssl | grep -v devel | uniq | tail -n 1')
+                stdin, stdout, stderr = client.exec_command('dzdo rpm -qa | grep openssl | grep -v devel | uniq | tail -n 1')
                 #this is going to pull 4 different parts of ssl, we just need the base
                 rows = stdout.readlines()
                 ssl = str(rows[0]).rstrip().rstrip()
