@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve syslog and rsyslog versions and drop them into Django
+# Script to install centrify direct control
 #
-# Boomer Rehfield - 2/25/2014
+# Boomer Rehfield - 6/25/2015
 #
 #########################################################################
 
@@ -21,8 +21,8 @@ django.setup()
 def update_server():
 
     #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
-    server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
-    #server_list = LinuxServer.objects.filter(name__contains='pdlpap04')
+    #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
+    server_list = LinuxServer.objects.filter(name__contains='uinfatt01')
     #server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
 
     counter = 0
