@@ -25,9 +25,9 @@ import paramiko
 django.setup()
 
 def content_type(server):
-    print server.name
-    print server.os
-    print '-'
+    #print server.name
+    #print server.os
+    #print '-'
     if server.os == 'AIX':
         id = 15
     if server.os == 'RHEL':
