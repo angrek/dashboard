@@ -26,9 +26,7 @@ def update_server():
     counter = 0
 
     for server in server_list:
-        #counter += 1
-        #print str(counter) + ' - ' + server
-        print server.name
+        
         if utilities.ping(server):
 
             client = paramiko.SSHClient()
@@ -39,8 +37,9 @@ def update_server():
                 bash_version = stdout.readlines()[0].rstrip()
                 
                 bash_version = re.sub(r'x86_64', '', bash_version)
+                bash_version = re.sub(r'bash-', '', bash_version)
                 print bash_version
-                print timezone.now()
+                
                 #check existing value, if it exists, don't update
                 if str(bash_version) != str(server.bash):
                     utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
