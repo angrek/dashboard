@@ -462,6 +462,7 @@ class LinuxServer(models.Model):
     bash = models.CharField(max_length=25, blank=True, null=True, default='None')
     ssl = models.CharField(max_length=40, blank=True, null=True, default='None')
     java = models.CharField(max_length=20, blank=True, null=True, default='None')
+    glibc = models.CharField(max_length=20, blank=True, null=True, default='None')
     netbackup = models.CharField(max_length=40, blank=True, null=True, default='None')
     syslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
