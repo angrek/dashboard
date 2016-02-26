@@ -96,6 +96,8 @@ mail william.rehfield@wellcare.com -s 'starting linux syslog' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_syslog.py
 mail william.rehfield@wellcare.com -s 'starting linux rsyslog_r' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_rsyslog_r.py
+mail william.rehfield@wellcare.com -s 'starting linux python' < 1.txt
+/home/wrehfiel/ENV/dashboard/linux_python.py
 #put something in here to shoot me an email
 /home/wrehfiel/ENV/dashboard/historical_data_linux.py
 mail william.rehfield@wellcare.com -s 'finished all scripts' < 1.txt
