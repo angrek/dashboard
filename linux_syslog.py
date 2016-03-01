@@ -3,7 +3,7 @@
 #
 # Script to retrieve syslog and rsyslog versions and drop them into Django
 #
-# Boomer Rehfield - 2/25/2014
+# Boomer Rehfield - 4/15/2015
 #
 #########################################################################
 
@@ -22,11 +22,7 @@ def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    counter = 0
-
     for server in server_list:
-        #counter += 1
-        #print str(counter) + ' - ' + server
 
         if utilities.ping(server):
 
@@ -37,22 +33,25 @@ def update_server():
                 print server.name
                 command = 'rpm -qa | grep sysklog | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
+
                 try:
                     syslog_version = stdout.readlines()[0].rstrip()
-                    print syslog_version 
+                    syslog_version = re.sub(r'sysklogd-', '', syslog_version)
                 except:
                     syslog_version = "None"
-                    print syslog_version
+                print syslog_version
                 
                 #get rsyslog version now
                 command = 'rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
+
                 try:
                     rsyslog_version = stdout.readlines()[0].rstrip()
-                    print rsyslog_version 
+                    rsyslog_version = re.sub(r'.x86_64', '', rsyslog_version)
+                    rsyslog_version = re.sub(r'rsyslog-', '', rsyslog_version)
                 except:
                     rsyslog_version = "None"
-                    print rsyslog_version
+                print rsyslog_version
                 
 
                 #check existing value, if it exists, don't update
@@ -65,15 +64,10 @@ def update_server():
 
 
                 
-                #command = 'smbd -V'
-                #stdin, stdout, stderr = client.exec_command(command)
-                #bash_version = stdout.readlines()[0].rstrip()
-                #print smbd
-                
 
 #start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Checking syslog versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
