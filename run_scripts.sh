@@ -10,6 +10,8 @@ mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
 
 mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_populate.py
+mail william.rehfield@wellcare.com -s 'starting aix ssh keys' < 1.txt
+/home/wrehfiel/ENV/dashboard/ssh_keys.py --aix all
 
 mail william.rehfield@wellcare.com -s 'starting decom ping sweep' < 1.txt
 /home/wrehfiel/ENV/dashboard/x_ping_sweep_decommed.py
@@ -34,8 +36,6 @@ mail william.rehfield@wellcare.com -s 'starting aix tmef' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_tmef.py
 mail william.rehfield@wellcare.com -s 'starting aix powerha' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_powerha.py
-mail william.rehfield@wellcare.com -s 'starting aix ssh keys' < 1.txt
-/home/wrehfiel/ENV/dashboard/ssh_keys.py --aix all
 mail william.rehfield@wellcare.com -s 'starting aix bash' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_bash.py
 mail william.rehfield@wellcare.com -s 'starting aix centrify' < 1.txt
