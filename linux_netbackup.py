@@ -16,28 +16,26 @@ from dashboard import settings
 from server.models import LinuxServer
 import re
 import utilities
+from multiprocessing import Pool
+
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    if utilities.ping(server):
 
-    for server in server_list:
+        client = SSHClient()
+        if utilities.ssh(server, client):
 
-        if utilities.ping(server):
+            stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
+            netbackup_version = stdout.readlines()[0]
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-
-                stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
-                netbackup_version = stdout.readlines()[0]
-
-                 
-                #check existing value, if it exists, don't update
-                if str(netbackup_version) != str(server.netbackup):
-                    utilities.log_change(server, 'NetBackup', str(server.netbackup), str(netbackup_version))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(netbackup=netbackup_version, modified=timezone.now())
+             
+            #check existing value, if it exists, don't update
+            if str(netbackup_version) != str(server.netbackup):
+                utilities.log_change(server, 'NetBackup', str(server.netbackup), str(netbackup_version))
+                LinuxServer.objects.filter(name=server, exception=False, active=True).update(netbackup=netbackup_version, modified=timezone.now())
 
 
 
@@ -47,6 +45,11 @@ if __name__ == '__main__':
     print "Checking Netbackup versions..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+    pool = Pool(20)
+    pool.map(update_server, server_list)
+
     update_server()
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)
