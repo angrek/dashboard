@@ -30,7 +30,7 @@ def content_type(server):
     #print '-'
     if server.os == 'AIX':
         id = 15
-    if server.os == 'RHEL':
+    else:
         id = 16
     return id
 
