@@ -31,7 +31,7 @@ def update_server():
             client = SSHClient()
             if utilities.ssh(server, client):
                 print server.name                
-                command = 'rpm -qa | grep bash |grep -v doc'
+                command = 'dzdo rpm -qa | grep bash |grep -v doc'
                 stdin, stdout, stderr = client.exec_command(command)
                 try:
                     bash_version = stdout.readlines()[0].rstrip()

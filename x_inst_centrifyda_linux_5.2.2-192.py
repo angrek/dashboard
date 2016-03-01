@@ -81,7 +81,7 @@ def update_server():
                     for line in x:
                         print line
 
-                    command = 'rpm -qa | grep entrify'
+                    command = 'dzdo rpm -qa | grep entrify'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     for line in x:

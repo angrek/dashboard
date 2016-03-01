@@ -47,7 +47,7 @@ def update_server():
                 print 'sleeping 7 seconds for the yum db to update'
                 time.sleep(15) 
                 # we've installed it, let's get rsyslog version now and update the database
-                command = 'rpm -qa | grep rsyslog | uniq'
+                command = 'dzdo rpm -qa | grep rsyslog | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
                 print "New rsyslog version:"
                 try:

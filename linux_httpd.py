@@ -44,7 +44,7 @@ def update_server():
                     print server.name
                     print "Apache is running"
                     print line.rstrip()
-                    command2 = 'rpm -qa | grep httpd | grep -v devel | grep -v tools | grep -v manual'
+                    command2 = 'dzdo rpm -qa | grep httpd | grep -v devel | grep -v tools | grep -v manual'
                     stdin, stdout, stderr = client.exec_command(command2)
                     for line2 in stdout.readlines():
                         if line2: 

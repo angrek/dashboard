@@ -31,7 +31,7 @@ def update_server():
                 #get syslog version first
                 print '------------------------------------'
                 print server.name
-                command = 'rpm -qa | grep sysklog | uniq'
+                command = 'dzdo rpm -qa | grep sysklog | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
 
                 try:
@@ -42,7 +42,7 @@ def update_server():
                 print syslog_version
                 
                 #get rsyslog version now
-                command = 'rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
+                command = 'dzdo rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
                 stdin, stdout, stderr = client.exec_command(command)
 
                 try:
