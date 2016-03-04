@@ -74,11 +74,11 @@ class AIXServerAdmin(ImportExportActionModelAdmin):
 
     list_max_show_all = 1500
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'application', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'os', 'os_level', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym','centrify_user_count']
-    list_filter = ['active', 'exception', 'zone', 'stack', 'substack', 'os', 'os_level', 'asm', 'ifix', 'tmef', 'emc_clar', 'emc_sym', 'owner', 'application']
+    list_display = ['name', 'image_tag', 'owner', 'application', 'stack_', 'substack',  'frame', 'zone', 'active','exception', 'os', 'os_level', 'asm', 'ifix', 'efix', 'tmef', 'emc_clar', 'emc_sym','centrify_user_count']
+    list_filter = ['active', 'exception', 'zone', 'stack', 'substack', 'os', 'os_level', 'asm', 'ifix', 'efix', 'tmef', 'emc_clar', 'emc_sym', 'owner', 'application']
     search_fields = ['name', 'owner', 'application', 'frame__name', 'os', 'os_level', 'emc_clar', 'emc_sym']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', ['owner', 'application', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify','centrifyda', 'centrify_user_count', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'python', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
+    fields = ['name', 'image_tag', ['owner', 'application', 'stack', 'substack'], 'frame', ['active', 'exception', 'decommissioned'],['created', 'modified'], ['zone', 'asm', 'ifix', 'efix'], ['os', 'os_level'], 'tmef', 'emc_clar', 'emc_sym', 'centrify','centrifyda', 'centrify_user_count', 'xcelys', 'bash', 'ssl', 'java', 'imperva', 'netbackup', 'rsyslog', 'samba', 'python', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
     inlines = (RelationshipsInline, ) #, AIXLogAdmin)
     resource_class = AIXServerResource
     #put the js into /home/wrehfiel/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/js/
