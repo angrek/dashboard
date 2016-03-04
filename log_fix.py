@@ -1,11 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 ####################################################
 #
-# utilities.py
+# Script to fix a missing content type bug that broke stuff
 #
-# Script to ping the servers to see if they are up.
-# If they are not, then set them as inactive in the
-# Django Dashboard. -Boomer Rehfield 9/4/2014
+#  -Boomer Rehfield 1/15/2016
 #
 ####################################################
 
