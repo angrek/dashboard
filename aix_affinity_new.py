@@ -3,7 +3,7 @@
 #
 # Script to gather lpar affinity data from the HMC
 #
-# Boomer Rehfield - 4/2/2015
+# Boomer Rehfield - 4/24/2015
 #
 #########################################################################
 
