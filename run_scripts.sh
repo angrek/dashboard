@@ -44,8 +44,8 @@ mail william.rehfield@wellcare.com -s 'starting aix centrify' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_centrify.py
 mail william.rehfield@wellcare.com -s 'starting aix emc' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_emc.py
-#mail william.rehfield@wellcare.com -s 'starting aix errpt' < 1.txt
-#/home/wrehfiel/ENV/dashboard/aix_errpt.py
+mail william.rehfield@wellcare.com -s 'starting aix errpt' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_errpt.py
 mail william.rehfield@wellcare.com -s 'starting aix imperva' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_imperva.py
 mail william.rehfield@wellcare.com -s 'starting aix netbackup' < 1.txt
