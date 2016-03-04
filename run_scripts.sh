@@ -32,6 +32,8 @@ mail william.rehfield@wellcare.com -s 'starting aix frame firmware' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_frame_firmware.py
 mail william.rehfield@wellcare.com -s 'starting aix asm' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_asm.py
+mail william.rehfield@wellcare.com -s 'starting aix efix' < 1.txt
+/home/wrehfiel/ENV/dashboard/aix_efix.py
 mail william.rehfield@wellcare.com -s 'starting aix tmef' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_tmef.py
 mail william.rehfield@wellcare.com -s 'starting aix powerha' < 1.txt
