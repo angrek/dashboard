@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve bash versions and drop them into Django dashboard
+# Script to ping sweep decommed servers
 #
-# Boomer Rehfield - 11/13/2014
+# Boomer Rehfield - 10/03/2015
 #
 #########################################################################
 
@@ -21,16 +21,16 @@ from dashboard import settings
 from server.models import LinuxServer, AIXServer
 import utilities
 import paramiko
+from multiprocessing import Pool
 django.setup()
 
 #to chain the lists together
 from itertools import chain
 
 
-def update_server():
+def update_server(server):
 
     #Examples of how you can filter servers
-    server_list = LinuxServer.objects.filter(decommissioned=True)
     #server_list = LinuxServer.objects.all()
     #server_list = LinuxServer.objects.filter(decommissioned=False, zone=2) #zone 1= non prod, zone 2 = prod
     #server_list = LinuxServer.objects.filter(name__contains='hdp')
@@ -47,14 +47,13 @@ def update_server():
     #switch out the below two lines to only ping the first twenty servers
     #in the database
     #for server in server_list[:20]:
-    for server in server_list:
 
-        #print str(counter) + ' - ' + str(server)
-        print server.name
-        if utilities.ping(server):
-            print "good"
-        else:
-            print "no ping"
+    #print str(counter) + ' - ' + str(server)
+    print server.name
+    if utilities.ping(server):
+        print "good"
+    else:
+        print "no ping"
 
 
 #start execution
@@ -62,7 +61,12 @@ if __name__ == '__main__':
     print "Performing ping sweep..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=True)
+
+    pool = Pool(40)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 

@@ -34,11 +34,7 @@ def update_server(server):
 
             #need rstrip() because there are extra characters at the end
             #FIXME - dinfhdp09 doesn't have lsb_release installed?????
-            try:
-                os = stdout.readlines()[0].rstrip()
-            except:
-                continue
-
+            os = stdout.readlines()[0].rstrip()
             os = re.sub('Distributor ID:', '', os)
             os = re.sub('\s*', '', os)
 
@@ -87,7 +83,7 @@ if __name__ == '__main__':
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(decommissioned=False, name__contains='pidii').exclude(name='pgp')
     pool = Pool(20)
     pool.map(update_server, server_list)
 

@@ -15,55 +15,48 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    counter = 0
+    if utilities.ping(server):
 
-    for server in server_list:
-        #counter += 1
-        #print str(counter) + ' - ' + server
+        client = SSHClient()
+        if utilities.ssh(server, client):
+            print '------------------------------------'
+            print server.name
+            command = 'dzdo /usr/sbin/smbd -V'
+            #command = 'dzdo smbd -V'
+            stdin, stdout, stderr = client.exec_command(command)
+            try:
+                samba = stdout.readlines()[0]
+                print samba 
+            except:
+                samba = "None"
+                print samba
+            
+            samba = re.sub(r'Version ', '', samba)
 
-        if utilities.ping(server):
+            #check existing value, if it exists, don't update
+            if str(samba) != str(server.samba):
+                utilities.log_change(server, 'samba', str(server.samba), str(samba))
+                LinuxServer.objects.filter(name=server).update(samba=samba, modified=timezone.now())
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-                print '------------------------------------'
-                print server.name
-                command = 'dzdo /usr/sbin/smbd -V'
-                #command = 'dzdo smbd -V'
-                stdin, stdout, stderr = client.exec_command(command)
-                try:
-                    samba = stdout.readlines()[0]
-                    print samba 
-                except:
-                    samba = "None"
-                    print samba
-                
-                #bash_version = re.sub(r'x86_64', '', bash_version)
+            
 
-                #check existing value, if it exists, don't update
-                if str(samba) != str(server.samba):
-                    utilities.log_change(server, 'samba', str(server.samba), str(samba))
-                    LinuxServer.objects.filter(name=server).update(samba=samba, modified=timezone.now())
-
-                
-                #command = 'smbd -V'
-                #stdin, stdout, stderr = client.exec_command(command)
-                #bash_version = stdout.readlines()[0].rstrip()
-                #print smbd
-                
-
-#start execution
 if __name__ == '__main__':
     print "Checking Bash versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 

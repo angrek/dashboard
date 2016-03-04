@@ -36,7 +36,6 @@ def update_server(server):
             bash_version = re.sub(r'bash-', '', bash_version)
             print bash_version
             
-            #check existing value, if it exists, don't update
             if str(bash_version) != str(server.bash):
                 utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
                 LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())

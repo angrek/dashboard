@@ -14,38 +14,38 @@ import paramiko
 from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
+from server.models import LinuxServer
 from dashboard import settings
 import utilities
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
-
-    for server in server_list:
             
-        if utilities.ping(server):
+    if utilities.ping(server):
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
+        client = SSHClient()
+        if utilities.ssh(server, client):
 
-                stdin, stdout, stderr = client.exec_command('dzdo rpm -qa | grep openssl | grep -v devel | uniq | tail -n 1')
-                #this is going to pull 4 different parts of ssl, we just need the base
-                rows = stdout.readlines()
-                ssl = str(rows[0]).rstrip().rstrip()
-                print ssl
-                #
+            #this is going to pull 4 different parts of ssl, we just need the base
+            stdin, stdout, stderr = client.exec_command('dzdo rpm -qa | grep openssl | grep -v devel | uniq | tail -n 1')
+            
+            rows = stdout.readlines()
+            ssl = str(rows[0]).rstrip().rstrip()
 
-                #cut off the beginning and end, not really needed and saves space on the spreadsheet view.
-                ssl = re.sub('openssl-', '', ssl)
-                ssl = re.sub('.x86_64', '', ssl)
+            print server.name
+            print ssl
 
-                #if existing value is the same, don't update
-                if str(ssl) != str(server.ssl):
-                    utilities.log_change(server, 'SSL', str(server.ssl), str(ssl))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(ssl=ssl, modified=timezone.now())
+            ssl = re.sub('openssl-', '', ssl)
+            ssl = re.sub('.x86_64', '', ssl)
+
+            #if existing value is the same, don't update
+            if str(ssl) != str(server.ssl):
+                utilities.log_change(server, 'SSL', str(server.ssl), str(ssl))
+                LinuxServer.objects.filter(name=server).update(ssl=ssl, modified=timezone.now())
 
 
 
@@ -54,7 +54,11 @@ if __name__ == '__main__':
     print "Checking SSL versions..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import LinuxServer
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)

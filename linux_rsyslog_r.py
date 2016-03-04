@@ -15,32 +15,30 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    for server in server_list:
+    if utilities.ping(server):
 
-        if utilities.ping(server):
+        client = SSHClient()
+        if utilities.ssh(server, client):
+            print '------------------------------------'
+            print server.name
+            command = 'dzdo /sbin/service rsyslog status'
+            stdin, stdout, stderr = client.exec_command(command)
+            output = stdout.readlines()
+            for line in output[:1]:
+                if line.rstrip() == 'rsyslogd is stopped':
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-                print '------------------------------------'
-                print server.name
-                command = 'dzdo /sbin/service rsyslog status'
-                stdin, stdout, stderr = client.exec_command(command)
-                output = stdout.readlines()
-                for line in output[:1]:
-                    if line.rstrip() == 'rsyslogd is stopped':
-
-                        LinuxServer.objects.filter(name=server.name).update(rsyslog_r=0, modified=timezone.now())
-                        print 'rsyslog is stopped'
-                    else:
-                        LinuxServer.objects.filter(name=server.name).update(rsyslog_r=1, modified=timezone.now())
-                        print 'rsyslog is running'
+                    LinuxServer.objects.filter(name=server.name).update(rsyslog_r=0, modified=timezone.now())
+                    print 'rsyslog is stopped'
+                else:
+                    LinuxServer.objects.filter(name=server.name).update(rsyslog_r=1, modified=timezone.now())
+                    print 'rsyslog is running'
 
 
 #start execution
@@ -48,7 +46,12 @@ if __name__ == '__main__':
     print "Checking Bash versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 

@@ -16,39 +16,40 @@ from dashboard import settings
 from server.models import AIXServer,LinuxServer
 import re
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    if utilities.ping(server):
 
-    for server in server_list:
+        client = SSHClient()
+        if utilities.ssh(server, client):
 
-        if utilities.ping(server):
+            stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
+            temp_xcelys_version = stdout.readlines()[0]
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
+            #need to cut the string down
+            xcelys_version = temp_xcelys_version[36:-16]
+            if xcelys_version is '':
+                xcelys_version = "None"
 
-                stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
-                temp_xcelys_version = stdout.readlines()[0]
-
-                #need to cut the string down
-                xcelys_version = temp_xcelys_version[36:-16]
-                if xcelys_version is '':
-                    xcelys_version = "None"
-                #check existing value, if it exists, don't update
-                if str(xcelys_version) != str(server.xcelys):
-                    utilities.log_change(server, 'Xcelys', str(server.xcelys), str(xcelys_version))
-                    LinuxServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
+            if str(xcelys_version) != str(server.xcelys):
+                utilities.log_change(server, 'Xcelys', str(server.xcelys), str(xcelys_version))
+                LinuxServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
 
 
 
-#start execution
 if __name__ == '__main__':
     print "Checking Xcelys versions..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)

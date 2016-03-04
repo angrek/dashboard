@@ -17,31 +17,28 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, Errpt
+from server.models import AIXServer
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
 
-def update_server():
+def update_server(server):
 
-    #right now we are just getting these for the non-VIO servers
-    server_list = AIXServer.objects.filter(active=True, exception=False).exclude(name__contains='vio')
 
-    total_devices  = 0
-    for server in server_list:
 
-        if utilities.ping(server):
+    if utilities.ping(server):
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-                stdin, stdout, stderr = client.exec_command('lspv | wc -l')
-                temp = stdout.readlines()[0].rstrip()
-                devices = int(temp)
-                print server
-                print devices
-                total_devices += devices            
-                print "Total - " + str(total_devices)
+        client = SSHClient()
+        if utilities.ssh(server, client):
+            stdin, stdout, stderr = client.exec_command('lspv | wc -l')
+            temp = stdout.readlines()[0].rstrip()
+            devices = int(temp)
+            print server
+            print devices
+            total_devices += devices            
+            print "Total - " + str(total_devices)
 
 
 
@@ -51,7 +48,12 @@ if __name__ == '__main__':
     print "Getting devices..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import AIXServer
-    update_server()
+
+    total_devices  = 0
+    server_list = AIXServer.objects.filter(active=True, exception=False).exclude(name__contains='vio')
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)

@@ -15,51 +15,48 @@ import django
 from dashboard import settings
 from server.models import LinuxServer
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    if utilities.ping(server):
 
-    for server in server_list:
+        client = SSHClient()
+        if utilities.ssh(server, client):
+            #get syslog version first
+            print '------------------------------------'
+            print server.name
+            command = 'dzdo rpm -qa | grep sysklog | uniq'
+            stdin, stdout, stderr = client.exec_command(command)
 
-        if utilities.ping(server):
+            try:
+                syslog_version = stdout.readlines()[0].rstrip()
+                syslog_version = re.sub(r'sysklogd-', '', syslog_version)
+            except:
+                syslog_version = "None"
+            print syslog_version
+            
+            #get rsyslog version now
+            command = 'dzdo rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
+            stdin, stdout, stderr = client.exec_command(command)
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-                #get syslog version first
-                print '------------------------------------'
-                print server.name
-                command = 'dzdo rpm -qa | grep sysklog | uniq'
-                stdin, stdout, stderr = client.exec_command(command)
+            try:
+                rsyslog_version = stdout.readlines()[0].rstrip()
+                rsyslog_version = re.sub(r'.x86_64', '', rsyslog_version)
+                rsyslog_version = re.sub(r'rsyslog-', '', rsyslog_version)
+            except:
+                rsyslog_version = "None"
+            print rsyslog_version
+            
 
-                try:
-                    syslog_version = stdout.readlines()[0].rstrip()
-                    syslog_version = re.sub(r'sysklogd-', '', syslog_version)
-                except:
-                    syslog_version = "None"
-                print syslog_version
-                
-                #get rsyslog version now
-                command = 'dzdo rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
-                stdin, stdout, stderr = client.exec_command(command)
-
-                try:
-                    rsyslog_version = stdout.readlines()[0].rstrip()
-                    rsyslog_version = re.sub(r'.x86_64', '', rsyslog_version)
-                    rsyslog_version = re.sub(r'rsyslog-', '', rsyslog_version)
-                except:
-                    rsyslog_version = "None"
-                print rsyslog_version
-                
-
-                #check existing value, if it exists, don't update
-                if str(syslog_version) != str(server.syslog):
-                    utilities.log_change(server, 'syslog', str(server.syslog), str(syslog_version))
-                    LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
-                if str(rsyslog_version) != str(server.rsyslog):
-                    utilities.log_change(server, 'rsyslog', str(server.rsyslog), str(rsyslog_version))
+            #check existing value, if it exists, don't update
+            if str(syslog_version) != str(server.syslog):
+                utilities.log_change(server, 'syslog', str(server.syslog), str(syslog_version))
+                LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
+            if str(rsyslog_version) != str(server.rsyslog):
+                utilities.log_change(server, 'rsyslog', str(server.rsyslog), str(rsyslog_version))
                     LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
@@ -70,7 +67,12 @@ if __name__ == '__main__':
     print "Checking syslog versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 

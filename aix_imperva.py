@@ -17,40 +17,38 @@ from server.models import AIXServer
 import utilities
 django.setup()
 import re
+from multiprocessing import Pool
 
 
-def update_server():
+def update_server(server):
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
 
-    for server in server_list:
+    if utilities.ping(server):
 
-        if utilities.ping(server):
+        client = SSHClient()
+        if utilities.ssh(server, client):
+            print server.name
+            command = 'lslpp -L | grep -i imper'
+            stdin, stdout, stderr = client.exec_command(command)
+            test = stdout.readlines()
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
-                print server.name
-                command = 'lslpp -L | grep -i imper'
-                stdin, stdout, stderr = client.exec_command(command)
-                test = stdout.readlines()
+            try:
+                output = test[0].rstrip()
+                imperva_version = ' '.join(output.split())
+                imperva_version = imperva_version.split(" ")[1].rstrip()
+                print imperva_version
 
-                try:
-                    output = test[0].rstrip()
-                    imperva_version = ' '.join(output.split())
-                    imperva_version = imperva_version.split(" ")[1].rstrip()
-                    print imperva_version
+                #check existing value, if it exists, don't update
+                if str(imperva_version) != str(server.imperva):
+                    utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
+                    AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
-                    #check existing value, if it exists, don't update
-                    if str(imperva_version) != str(server.imperva):
-                        utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
-                        AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
-
-                except:
-                    imperva_version = 'None'
-                    print imperva_version
-                    if str(imperva_version) != str(server.imperva):
-                        utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
-                        AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
+            except:
+                imperva_version = 'None'
+                print imperva_version
+                if str(imperva_version) != str(server.imperva):
+                    utilities.log_change(server, 'Imperva', str(server.imperva), str(imperva_version))
+                    AIXServer.objects.filter(name=server).update(imperva=imperva_version, modified=timezone.now())
 
 
 
@@ -59,7 +57,12 @@ if __name__ == '__main__':
     print "Checking Imperva versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = AIXServer.objects.filter(decommissioned=False)
+
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 
