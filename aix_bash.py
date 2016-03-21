@@ -32,17 +32,14 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command(command)
             try:
                 bash_version = stdout.readlines()[0].rstrip()
+                #check existing value, if it exists, don't update
+                if str(bash_version) != str(server.bash):
+                    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
+                    AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
+
             except:
                 print "Problem getting bash version"
-                continue
-            stdin.close()
-            stderr.close()
             
-            #check existing value, if it exists, don't update
-            if str(bash_version) != str(server.bash):
-                utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
-
-                AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
             client.close()
 
 
