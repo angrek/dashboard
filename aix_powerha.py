@@ -21,7 +21,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False).exclude(powerha='None')
 
     counter = 0
     for server in server_list:
@@ -34,26 +34,49 @@ def update_server():
                 command = 'lssrc -ls clstrmgrES|head -1'
                 stdin, stdout, stderr = client.exec_command(command)
                 output = stdout.readlines()[0].rstrip()
+                print 'OUTPUT =>' + output
                 if re.search("is not on file", output):
                     my_output = "None"
-                elif re.search("ST_STABLE", output):
-                    my_output = "STABLE"
-                elif re.search("Current state", output):
-                    my_output = ("Current state: ", "", output)
-                else:
-                    my_output = "Uncertain"
+
+                cluster_state = re.sub('Current state: ', '', output)
+ 
+
+                state_dict = {'ST_INIT': 'cluster configured and down',
+                                'ST_JOINING': 'node joining the cluster',
+                                'ST_VOTING': 'Inter-node decision state for an event',
+                                'ST_RP_RUNNING': 'cluster running recovery program',
+                                'ST_BARRIER': 'clstrmgr is exiting recovery program',
+                                'ST_CBARRIER': 'clstrmgr is exiting recovery program',
+                                'ST_UNSTABLE': 'cluster unstable',
+                                'NOT_CONFIGURED': 'HA installed but not configured',
+                                'RP_FAILED': 'event script failed',
+                                'ST_RP_FAILED': 'event script failed',
+                                'ST_STABLE': 'cluster services are running',
+                                'STABLE': 'cluster services are running'}
+
+                cluster_description = state_dict[cluster_state]
+                
+                #elif re.search("ST_STABLE", output):
+                #    my_output = "STABLE"
+                #elif re.search("Current state", output):
+                #    my_output = ("Current state: ", "", output)
+                #else:
+                #    my_output = "Uncertain"
 
                 print '--------'
                 print server
                 print output
-                print my_output
+                print cluster_state
+                print cluster_description
 
                 #check existing value, if it exists, don't update
-                if my_output != str(server.powerha):
-                    utilities.log_change(server, 'powerha', str(server.powerha), str(my_output))
+                if cluster_state != str(server.powerha):
+                    utilities.log_change(server, 'powerha', str(server.powerha), str(cluster_state))
 
-                    AIXServer.objects.filter(name=server).update(powerha=my_output, modified=timezone.now())
-
+                    AIXServer.objects.filter(name=server).update(powerha=cluster_state, cluster_description=cluster_description, modified=timezone.now())
+                if cluster_description != str(server.cluster_description):
+                    AIXServer.objects.filter(name=server).update(cluster_description=cluster_description)
+                    
 
 
 #start execution
