@@ -101,6 +101,7 @@ class AIXServer(models.Model):
     efix = models.IntegerField(max_length=2, blank=True, null=True, default=0)
     tmef = models.FloatField(default=0.00)
     powerha = models.CharField(max_length=20, blank=True, null=True, default='None')
+    cluster_description = models.CharField(max_length=60, blank=True, null=True, default='None')
     centrify = models.CharField(max_length=35, blank=True, null=True, default='None')
     centrifyda = models.CharField(max_length=35, blank=True, null=True, default='None')
     aix_ssh = models.CharField(max_length=25, blank=True, null=True, default='None')
