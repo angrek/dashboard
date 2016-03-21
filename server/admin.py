@@ -167,11 +167,11 @@ class AIXPowerHAAdmin(ImportExportActionModelAdmin):
     stack_color.allow_tags = True
 
     save_on_top = True
-    list_display = ['name', 'image_tag', 'owner', 'application', 'stack_color', 'active','exception', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba', 'python']
-    list_filter = ['active', 'exception', 'owner', 'application', 'stack', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'imperva', 'netbackup', 'rsyslog', 'samba', 'python']
-    search_fields = ['name_name', 'owner', 'application', 'os', 'os_level', 'zone__id', 'centrify', 'xcelys', 'bash', 'ssl',  'imperva', 'netbackup']
+    list_display = ['name', 'image_tag', 'zone', 'powerha', 'cluster_description', 'active','exception', 'os', 'os_level', 'owner', 'application']
+    list_filter = ['active', 'exception', 'owner', 'application', 'stack', 'os', 'os_level', 'powerha', 'zone']
+    #search_fields = ['name_name', 'owner', 'application', 'os', 'os_level', 'zone__id', 'xcelys', 'ssl']
     readonly_fields = ['created', 'modified', 'image_tag']
-    fields = ['name', 'image_tag', 'owner', 'application', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'zone', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash','ssl', 'java', 'imperva', 'netbackup','rsyslog', 'samba', 'python' 'application_paths']
+    fields = ['name', 'image_tag', 'owner', 'application', 'stack', 'active', 'exception', 'decommissioned', 'modified', 'os', 'os_level', 'powerha', 'cluster_description', 'zone']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
