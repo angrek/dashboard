@@ -47,7 +47,8 @@ def update_server():
                     'qdrouterd', 'kickstart', 'nocpulse', 'protect', 'tunnel', 'arcsightsvc',
                     'stunnel', 'hue', 'xasecure', 'appviewx', 'anm', 'quest', 'nxpgsql',
                     'lpar2rrd', 'cacti', 'ucmbackup', 'sungard', 'rmsvc', 'jabber', 'pwrsvcrm',
-                    'autosys', 'cca_dev_', 'rstudio', 'rstudio-server']
+                    'autosys', 'cca_dev_', 'rstudio', 'rstudio-server', 'rrdcache', 'iteraplan',
+                    'service']
 
     server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=1)
     #server_list = LinuxServer.objects.filter(name__contains='p1rhrep')
