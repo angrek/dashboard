@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve bash versions and drop them into Django dashboard
+# Quick ping script that will update the database. Quick on off for one host
 #
 # Boomer Rehfield - 11/13/2014
 #
@@ -21,7 +21,6 @@ django.setup()
 
 def update_server():
 
-    #server_list = AIXServer.objects.filter(decommissioned=False, active=False)
     server_list = LinuxServer.objects.filter(name__contains="u0welap2")
 
 
