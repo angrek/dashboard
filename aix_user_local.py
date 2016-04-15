@@ -13,7 +13,8 @@ from django.utils import timezone
 #these are need in django 1.7 and needed vs the django settings command
 import django
 from dashboard import settings
-from server.models import AIXServer, LinuxServer
+from server.models import AIXServer
+from server.models import AIXServer
 
 from itertools import chain
 
@@ -99,7 +100,6 @@ if __name__ == '__main__':
     print "Checking centrify version..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import AIXServer
     update_server()
     elapsed_time= timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)

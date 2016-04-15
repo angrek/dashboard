@@ -47,6 +47,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    update_server()
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)

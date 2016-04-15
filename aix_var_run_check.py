@@ -18,29 +18,29 @@ from django.utils import timezone
 import django
 from dashboard import settings
 from server.models import LinuxServer, AIXServer, Errpt
+from server.models import AIXServer
 import utilities
+from multiprocessing import Pool
 django.setup()
 
 
 
-def update_server():
+def update_server(server):
 
-    #right now we are just getting these for the non-VIO servers
-    server_list = LinuxServer.objects.filter(active=True, exception=False).exclude(name__contains='vio')[:30]
 
     total_devices  = 0
-    for server in server_list:
 
-        print "========================================"
-        print server
-        if utilities.ping(server):
+    if utilities.ping(server):
 
-            client = SSHClient()
-            if utilities.ssh(server, client):
+        client = SSHClient()
+        if utilities.ssh(server, client):
 
-                stdin, stdout, stderr = client.exec_command('ls -l /var/run | grep dzdo')
-                temp = stdout.readlines()
-                for line in temp:
+            stdin, stdout, stderr = client.exec_command('ls -l /var/run | grep dzdo')
+            temp = stdout.readlines()
+            for line in temp:
+                if line:
+                    print "========================================"
+                    print server
                     print line
 
 
@@ -51,7 +51,10 @@ if __name__ == '__main__':
     print "Getting devices..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    from server.models import AIXServer
-    update_server()
+
+    server_list = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio')
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)

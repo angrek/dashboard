@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve sudo versions and drop them into Django dashboard
+# I think I created this to find versions of sudo that were NOT 1.7.2??
 #
 # Boomer Rehfield - 12/28/2015
 #
@@ -16,41 +16,36 @@ from dashboard import settings
 from server.models import AIXServer
 import utilities
 import paramiko
+from multiprocessing import Pool
 django.setup()
 
 
-def update_server():
+def update_server(server):
 
     inventory_list = []
-    server_list = AIXServer.objects.filter(decommissioned=False)
 
-    counter = 0
+    if utilities.ping(server):
 
-    for server in server_list:
-        #counter += 1
-        #print str(counter) + ' - ' + str(server)
-        if utilities.ping(server):
-
-            client = paramiko.SSHClient()
-            if utilities.ssh(server, client):
-                command = 'dzdo sudo -V | grep version | grep -v Sudoers'
-                stdin, stdout, stderr = client.exec_command(command)
-                try:
-                    sudo_version = stdout.readlines()[0].rstrip()
-                except:
-                    print server.name + ' - PROBLEM!!!!!!!!'
-                
-                #bash_version = re.sub(r'x86_64', '', bash_version)
+        client = paramiko.SSHClient()
+        if utilities.ssh(server, client):
+            command = 'dzdo sudo -V | grep version | grep -v Sudoers'
+            stdin, stdout, stderr = client.exec_command(command)
+            try:
+                sudo_version = stdout.readlines()[0].rstrip()
+            except:
+                print server.name + ' - PROBLEM!!!!!!!!'
+            
+            #bash_version = re.sub(r'x86_64', '', bash_version)
+            #print sudo_version
+            if '1.7.2' not in sudo_version:
+                inventory_list.append(server.name)
+                print server.name + ' - ' + sudo_version
                 #print sudo_version
-                if '1.7.2' not in sudo_version:
-                    inventory_list.append(server.name)
-                    print server.name + ' - ' + sudo_version
-                    #print sudo_version
-                #print timezone.now()
-                #check existing value, if it exists, don't update
-                #if str(bash_version) != str(server.bash):
-                #    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
-                #    LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())
+            #print timezone.now()
+            #check existing value, if it exists, don't update
+            #if str(bash_version) != str(server.bash):
+            #    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
+            #    LinuxServer.objects.filter(name=server, exception=False, active=True).update(bash=bash_version, modified=timezone.now())
 
     print ''
     print 'Inventory file listing'
@@ -62,7 +57,11 @@ if __name__ == '__main__':
     print "Checking Bash versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
-    update_server()
+
+    server_list = AIXServer.objects.filter(decommissioned=False)
+    pool = Pool(30)
+    pool.map(update_server, server_list)
+
     elapsed_time = timezone.now() - starting_time 
     print "Elapsed time: " + str(elapsed_time)
 
