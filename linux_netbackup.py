@@ -27,10 +27,16 @@ def update_server(server):
 
         client = SSHClient()
         if utilities.ssh(server, client):
-
+    
+            print server
             stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
-            netbackup_version = stdout.readlines()[0]
+            print stdout
+            try:
+                netbackup_version = stdout.readlines()[0]
+            except:
+                netbackup_version = 'None'
 
+            netbackup_version = re.sub('NetBackup-RedHat', '', netbackup_version)            
              
             #check existing value, if it exists, don't update
             if str(netbackup_version) != str(server.netbackup):
@@ -46,10 +52,10 @@ if __name__ == '__main__':
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(decommissioned=False)
+    server_list = LinuxServer.objects.filter(decommissioned=False, active=True)
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    update_server()
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)
