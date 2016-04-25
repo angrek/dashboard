@@ -5,6 +5,7 @@ from server.models import AIXServerENV, AIXProcPool
 from server.models import AIXAffinity
 from server.models import AIXWorldWideName
 from server.models import Java
+from server.models import OracleDatabase
 
 from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
 from server.models import LinuxServerResource
@@ -236,7 +237,7 @@ class HistoricalAIXProcPoolAdmin(ImportExportActionModelAdmin):
 
 class VIOServerAdmin(ImportExportActionModelAdmin):
     def get_queryset(self, request):
-        return self.model.objects.filter(name__contains='vio')
+        return self.model.objects.filter(name__contains='vio', decommissioned=0)
     save_on_top = True
     list_display = ['name', 'image_tag', 'frame', 'active','exception', 'modified', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     list_filter = ['os', 'frame', 'os_level', 'active', 'exception', 'centrify', 'xcelys', 'bash', 'ssl']
@@ -249,13 +250,38 @@ class VIOServerAdmin(ImportExportActionModelAdmin):
     pass
 
 class Power7InventoryAdmin(ImportExportActionModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+
+    #This overrides the cell div and sets it to a color based on what stack a server is in
+    #Note: var was 'stack_color' which displayed as 'Stack color' which was overly wide
+    #in the list display. The underscore converts to a space, but I couldn't use just 'stack'
+    #without it interferring with the stack object, so I used the _ at the end since it
+    #just translates to a space and is not visible in the list_display header.
+    def stack_(self, obj):
+        if str(obj.stack) == 'Orange':
+            return '<div style="width:100%%; background-color:#E97451;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Green':
+            return '<div style="width:100%%; background-color:#87A96B;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Yellow':
+            return '<div style="width:100%%; background-color:#FFEE77;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Red':
+            return '<div style="width:100%%; background-color:#A52A2A;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Train':
+            return '<div style="width:100%%; background-color:#72A0C1;">%s</div>' % obj.stack.name
+        elif str(obj.stack) == 'Config':
+            return '<div style="width:100%%; background-color:#CD9575;">%s</div>' % obj.stack.name
+        else:
+            return obj.stack
+    stack_.allow_tags = True
+
     list_max_show_all = 500
     save_on_top = True
-    list_display = ('name', 'frame', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
-    list_filter = ('frame', 'active', 'exception', 'decommissioned', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
+    list_display = ('name', 'frame', 'stack_', 'substack', 'lpar_id', 'active', 'exception', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
+    list_filter = ('frame', 'active', 'exception', 'stack', 'decommissioned', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
     search_fields = ('name__name', 'lpar_id', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
-    readonly_fields = ['modified',]
-    fields = ('name', 'frame', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
+    readonly_fields = ['modified', 'stack']
+    fields = ('name', 'frame', 'stack', 'substack', 'lpar_id', 'active', 'exception', 'decommissioned', 'modified', 'curr_shared_proc_pool_name', 'curr_min_proc_units', 'curr_proc_units', 'curr_max_proc_units', 'run_procs', 'curr_min_mem', 'curr_mem', 'curr_max_mem')
 
     resource_class = Power7InventoryResource
     class Media:
@@ -458,6 +484,11 @@ class JavaAdmin(admin.ModelAdmin):
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
+class OracleDatabaseAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
 class StorageAdmin(admin.ModelAdmin):
     list_display = ['name', 'size']
     class Media:
@@ -584,6 +615,7 @@ admin.site.register(Zone, ZoneAdmin)
 admin.site.register(Stack, StackAdmin)
 admin.site.register(SubStack, SubStackAdmin)
 admin.site.register(Java, JavaAdmin)
+admin.site.register(OracleDatabase, OracleDatabaseAdmin)
 admin.site.register(Storage, StorageAdmin)
 admin.site.register(WindowsServer, WindowsServerAdmin)
 admin.site.register(WindowsServerOwner, WindowsServerOwnerAdmin)

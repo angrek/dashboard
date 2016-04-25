@@ -35,6 +35,16 @@ class Java(models.Model):
     def __unicode__(self):
         return self.name
 
+class OracleDatabase(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True, default='None')
+
+    class Meta:
+        verbose_name = "Oracle Database"
+        verbose_name_plural = "Oracle Databases"
+
+    def __unicode__(self):
+        return self.name
+
 class Frame(models.Model):
     name = models.CharField(max_length=30, blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True, default='None')
@@ -364,6 +374,8 @@ class Power7Inventory(models.Model):
     active = models.NullBooleanField(default=True, blank=True)
     exception = models.NullBooleanField(default=False, blank=True)
     decommissioned = models.NullBooleanField(verbose_name='Decom', default=False, blank=True)
+    stack = models.ForeignKey(Stack, default=1)
+    substack = models.ForeignKey(SubStack, default=1)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     curr_shared_proc_pool_id = models.IntegerField(max_length=4, blank=True, null=True)
     curr_shared_proc_pool_name = models.CharField(max_length=20, blank=True, null=True)
@@ -422,6 +434,7 @@ class Power7Inventory(models.Model):
     class Meta:
         verbose_name = "AIX Power Inventory"
         verbose_name_plural = "AIX Power Inventory"
+        ordering = ['name']
 
     def __unicode__(self):
         return unicode(self.name)
