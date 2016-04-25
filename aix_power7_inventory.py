@@ -101,10 +101,10 @@ def populate():
                 if name.decommissioned == False:
                     try:
                         tmp = Power7Inventory.objects.get(name=name)
-                        Power7Inventory.objects.filter(name=name).update(frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
+                        Power7Inventory.objects.filter(name=name).update(frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned, stack=name.stack)
                     except Power7Inventory.DoesNotExist:
                         print 'Not found, creating'
-                        Power7Inventory.objects.get_or_create(name=name, frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned)
+                        Power7Inventory.objects.get_or_create(name=name, frame=name.frame, active=name.active, exception=name.exception, decommissioned=name.decommissioned, stack=name.stack)
 
                     for key, value in lpar_array.iteritems():
                         if value == 'null':
