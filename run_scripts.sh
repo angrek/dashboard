@@ -11,6 +11,7 @@ mail william.rehfield@wellcare.com -s 'starting aix scripts' < 1.txt
 mail william.rehfield@wellcare.com -s 'starting aix populate' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_populate.py
 mail william.rehfield@wellcare.com -s 'starting aix ssh keys' < 1.txt
+/home/wrehfiel/ENV/dashboard/ssh_locked.py
 /home/wrehfiel/ENV/dashboard/ssh_keys.py --aix all
 
 mail william.rehfield@wellcare.com -s 'starting decom ping sweep' < 1.txt
