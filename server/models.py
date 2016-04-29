@@ -350,6 +350,14 @@ class AIXMksysb(models.Model):
         return unicode(self.name)
     
 
+class AIXServerOwner(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "AIX Server Owner"
+        verbose_name_plural = "AIX Server Owners"
+
+
+
 #Poorly thought out model that only contains storage for AIX servers. Sigh.
 class Storage(models.Model):
     name = models.ForeignKey(AIXServer)

@@ -4,6 +4,8 @@ from server.models import AIXServerResource
 from server.models import AIXServerENV, AIXProcPool
 from server.models import AIXAffinity
 from server.models import AIXWorldWideName
+from server.models import AIXServerOwner
+
 from server.models import Java
 from server.models import OracleDatabase
 
@@ -244,6 +246,21 @@ class VIOServerAdmin(ImportExportActionModelAdmin):
     search_fields = ['name', 'os', 'os_level', 'centrify', 'xcelys', 'bash', 'ssl']
     readonly_fields = ['created', 'modified', 'image_tag']
     fields = ['name', 'image_tag', 'frame', 'active', 'exception', 'created', 'modified', 'ip_address', 'os', 'os_level', 'centrify', 'xcelys', 'bash','ssl', 'java', 'application_paths']
+    resource_class = AIXServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
+
+class AIXServerOwnerAdmin(ImportExportActionModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'application', 'stack', 'substack']
+    list_filter = ['os', 'owner', 'application', 'stack', 'substack']
+    list_editable = ['owner', 'application', 'stack', 'substack']
+    search_fields = ['name', 'owner', 'application', 'stack', 'substack']
+    fields = ['name', 'owner', 'application', 'stack', 'substack']
     resource_class = AIXServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
@@ -597,6 +614,7 @@ admin.site.register(AIXServerENV, AIXServerENVAdmin)
 admin.site.register(AIXAffinity, AIXAffinityAdmin)
 admin.site.register(AIXProcPool, AIXProcPoolAdmin)
 admin.site.register(AIXWorldWideName, AIXWorldWideNameAdmin)
+admin.site.register(AIXServerOwner, AIXServerOwnerAdmin)
 
 admin.site.register(HistoricalAIXProcPoolData, HistoricalAIXProcPoolAdmin)
 admin.site.register(VIOServer, VIOServerAdmin)
