@@ -452,6 +452,26 @@ class Power7InventoryResource(resources.ModelResource):
     class Meta:
         model = Power7Inventory
 
+class HistoricalPowerInventory(models.Model):
+    date = models.DateField("Date", default=datetime.date.today)
+    name = models.ForeignKey(AIXServer)
+    lpar_id = models.IntegerField(blank=True, null=True)
+    frame = models.ForeignKey(Frame, blank=True, null=True)   
+    curr_shared_proc_pool_id = models.IntegerField(max_length=4, blank=True, null=True)
+    curr_proc_units = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Assigned Processing Units")
+    curr_procs = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text="Assigned Processing Units")
+    curr_mem = models.IntegerField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Historical Power Inventory"
+        verbose_name_plural = "Historical Power Inventory"
+        ordering = ['name']
+
+    def __unicode__(self):
+        return unicode(self.name)
+
+
+
 
 
 
