@@ -1,35 +1,46 @@
 from django.contrib import admin
 from server.models import AIXServer, AIXApplications, DecommissionedAIXServer, Errpt, VIOServer, Power7Inventory, Zone, Stack, SubStack, Storage, Frame, AIXMksysb, AIXPowerHA
 from server.models import AIXServerResource
-from server.models import AIXServerENV, AIXProcPool
+from server.models import AIXServerENV
+from server.models import AIXProcPool
 from server.models import AIXAffinity
 from server.models import AIXWorldWideName
 from server.models import AIXServerOwner
+from server.models import Power7InventoryResource
+from server.models import Relationships
 
 from server.models import Java
 from server.models import OracleDatabase
 
-from server.models import LinuxServer, LinuxApplications, DecommissionedLinuxServer
+from server.models import LarrysFat
+
+from server.models import LinuxServer
+from server.models import LinuxApplications
 from server.models import LinuxServerResource
-from server.models import HistoricalLinuxData
 from server.models import LinuxServerENV
+from server.models import DecommissionedLinuxServer
+
+
+from server.models import HistoricalAIXData
+from server.models import HistoricalAIXProcPoolData
+from server.models import HistoricalPowerInventory
+from server.models import HistoricalLinuxData
+from server.models import HistoricalWindowsData
+
+from server.models import LocalUser
+from server.models import CentrifyUser
+from server.models import CentrifyUserCountAIX
+from server.models import CentrifyUserCountLinux
+
+#Stupid windows testing.
 from server.models import WindowsServer
 from server.models import WindowsServerOwner
 from server.models import WindowsServerResource
 from server.models import DecommissionedWindowsServer
-from server.models import HistoricalWindowsData
 
-from server.models import Power7InventoryResource
-from server.models import Relationships
-from server.models import HistoricalAIXData
-from server.models import HistoricalAIXProcPoolData
-from server.models import HistoricalPowerInventory
-
-from server.models import CentrifyUser, LocalUser
-from server.models import CentrifyUserCountAIX, CentrifyUserCountLinux
-
-#from server.models import CapacityPlanning
 from django.contrib.admin.models import LogEntry
+
+#Excel stuff
 from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
 
@@ -45,7 +56,6 @@ class AIXLogAdmin(admin.TabularInline):
 #    model = AIXServer
     def get_queryset(self, request):
         return self.model.objects.get_history()
-
 
 ######################### AIX Server Section #############################
 ##########################################################################
@@ -342,6 +352,12 @@ class AIXAffinityAdmin(admin.ModelAdmin):
     list_display = ['name', 'frame', 'curr_lpar_score', 'curr_lpar_score_new', 'predicted_lpar_score', 'predicted_lpar_score_new']
     list_filter = ['frame', 'curr_lpar_score', 'predicted_lpar_score']
     search_fields = ['name', 'curr_lpar_score', 'predicted_lpar_score']
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+
+
+class LarrysFatAdmin(ImportExportActionModelAdmin):
+    list_display = ['project_name', 'requestor', 'approved', 'server_breakdown', 'annual_operating_expense', 'initial_capital_expense', 'total_costs']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
@@ -656,3 +672,6 @@ admin.site.register(CentrifyUserCountAIX, CentrifyUserCountAIXAdmin)
 admin.site.register(CentrifyUserCountLinux, CentrifyUserCountLinuxAdmin)
 admin.site.register(CentrifyUser, CentrifyUserAdmin)
 admin.site.register(LocalUser, LocalUserAdmin)
+
+
+admin.site.register(LarrysFat, LarrysFatAdmin)
