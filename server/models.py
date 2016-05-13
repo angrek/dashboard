@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from decimal import Decimal
 from import_export import resources, fields, widgets
 from import_export.widgets import ForeignKeyWidget
 from django.contrib.admin.models import LogEntry
@@ -124,7 +125,7 @@ class AIXServer(models.Model):
     rsyslog = models.CharField(max_length=30, blank=True, null=True, default='None')
     samba = models.CharField(max_length=35, blank=True, null=True, default='None')
     python = models.CharField(max_length=35, blank=True, null=True, default='None')
-    java = models.ManyToManyField(Java, default='None')
+    java = models.ManyToManyField(Java, blank=True)
 
     emc_clar = models.CharField(max_length=20, blank=True, null=True, default='None')
     emc_sym = models.CharField(max_length=20, blank=True, null=True, default='None')
@@ -743,5 +744,26 @@ class LocalUser(models.Model):
 #        self.modified = datetime.datetime.today()
 #        return super(Server, self).save(*args, **kwargs)
 
+
+#Larry's Future Asset Tracker
+class LarrysFat(models.Model):
+    project_name = models.CharField(max_length=50, blank=True, null=True)
+    requestor = models.CharField(max_length=50, blank=True, null=True)
+    server_breakdown = models.CharField(max_length=80, blank=True, null=True)
+    approved = models.CharField(max_length=10, blank=True, null=True)
+    annual_operating_expense = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    initial_capital_expense = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    total_costs = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    project_notes = models.TextField(blank=True, null=True)
+    aix_servers = models.ManyToManyField(AIXServer, blank=True)
+    linux_servers = models.ManyToManyField(LinuxServer, blank=True)
+
+    class Meta:
+        verbose_name = "Larry's FAT"
+        verbose_name_plural = "Larry's FAT"
+        ordering = ('project_name',)
+
+    def __unicode__(self):
+        return self.project_name
 
 
