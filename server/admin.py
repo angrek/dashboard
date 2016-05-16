@@ -357,7 +357,7 @@ class AIXAffinityAdmin(admin.ModelAdmin):
 
 
 class LarrysFatAdmin(ImportExportActionModelAdmin):
-    list_display = ['project_name', 'requestor', 'approved', 'server_breakdown', 'annual_operating_expense', 'initial_capital_expense', 'total_costs']
+    list_display = ['project_name', 'requestor', 'approved', 'server_breakdown', 'quote_opex', 'quote_capex', 'total_quote', 'actual_purchase', 'capex', 'opex', 'total_po']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
 
