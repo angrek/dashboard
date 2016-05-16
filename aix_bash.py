@@ -28,7 +28,7 @@ def update_server(server):
         client = SSHClient()
         if utilities.ssh(server, client):
             print server.name                
-            command = 'dzdo rpm -qa | grep bash |grep -v doc'
+            command = 'rpm -qa | grep bash |grep -v doc'
             stdin, stdout, stderr = client.exec_command(command)
             try:
                 bash_version = stdout.readlines()[0].rstrip()
@@ -51,8 +51,9 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
     
-    server_list = AIXServer.objects.filter(decommissioned=False)
-    pool = Pool(30)
+    #server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False, name__contains='vio')
+    pool = Pool(20)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time 
