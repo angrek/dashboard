@@ -32,7 +32,7 @@ def update_server():
         print "======================="
         print frame.name
 
-        for server in server_list:
+        for server in server_list[:1]:
 
             print server.name
 
@@ -55,7 +55,7 @@ def update_server():
 
                     #check existing value, if it exists, don't update
                     if firmware_version != frame.firmware_version:
-                        utilities.log_change(frame 'firmware version', str(frame.firmware_version), str(firmware_version))
+                        #utilities.log_change(frame, 'firmware version', str(frame.firmware_version), str(firmware_version))
 
                         Frame.objects.filter(name=frame.name).update(firmware_version=firmware_version)
 
