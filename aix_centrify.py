@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     server_list = AIXServer.objects.filter(decommissioned=False).exclude(name__contains='vio')
 
-    pool = Pool(30)
+    pool = Pool(20)
     pool.map(update_server, server_list)
 
     elapsed_time= timezone.now() - starting_time

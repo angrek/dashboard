@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
 
-    pool = Pool(30)
+    pool = Pool(20)
     pool.map(update_server, server_list)
 
     update_server()

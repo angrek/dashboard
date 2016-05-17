@@ -56,7 +56,7 @@ if __name__ == '__main__':
     server_list = AIXServer.objects.filter(decommissioned=False, active=True)
 
     duplicates = 0
-    pool = Pool(30)
+    pool = Pool(20)
     pool.map(update_server, server_list)
 
     print "Duplicates"
