@@ -27,6 +27,8 @@ def update_server(server):
         client = SSHClient()
         if utilities.ssh(server, client):
 
+            print "======================="
+            print server.name
             command = 'lparstat -i | grep "Target Memory Expansion Factor"'
             stdin, stdout, stderr = client.exec_command(command)
             tmef = stdout.readlines()[0].rstrip()
@@ -53,7 +55,7 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
     server_list = AIXServer.objects.filter(decommissioned=False)
-    pool = Pool(20)
+    pool = Pool(30)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time 
