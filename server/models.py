@@ -293,8 +293,8 @@ class AIXServerResource(resources.ModelResource):
     stack = fields.Field(column_name='stack', attribute='stack', widget=ForeignKeyWidget(Frame, 'name'))
     class Meta:
         model = AIXServer
-        fields = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
-        export_order = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
+        fields = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'imperva', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
+        export_order = ('name', 'owner', 'frame', 'zone', 'stack', 'ip_address', 'os', 'os_level', 'powerha', 'imperva', 'centrify', 'aix_ssh', 'cent_ssh', 'xcelys', 'bash', 'ssl', 'java', 'netbackup', 'emc_clar', 'emc_sym')
 
 #Meta model of AIX Server to just show VIO servers
 class VIOServer(AIXServer):
