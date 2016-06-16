@@ -7,14 +7,16 @@
 #
 #########################################################################
 
-import os, re
+import os
+import re
 from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
-from server.models import AIXServer
 from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
+from django.utils import timezone
+import django
+
+from server.models import AIXServer
 import utilities
 
 django.setup()
@@ -23,7 +25,7 @@ django.setup()
 def update_server(server):
 
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
 
@@ -31,27 +33,27 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command(command)
             output = stdout.readlines()[0].rstrip()
             print 'OUTPUT =>' + output
-            if re.search("is not on file", output):
-                my_output = "None"
+
+            # if re.search("is not on file", output):
+            #    my_output = "None"
 
             cluster_state = re.sub('Current state: ', '', output)
 
-
             state_dict = {'ST_INIT': 'cluster configured and down',
-                            'ST_JOINING': 'node joining the cluster',
-                            'ST_VOTING': 'Inter-node decision state for an event',
-                            'ST_RP_RUNNING': 'cluster running recovery program',
-                            'ST_BARRIER': 'clstrmgr is exiting recovery program',
-                            'ST_CBARRIER': 'clstrmgr is exiting recovery program',
-                            'ST_UNSTABLE': 'cluster unstable',
-                            'NOT_CONFIGURED': 'HA installed but not configured',
-                            'RP_FAILED': 'event script failed',
-                            'ST_RP_FAILED': 'event script failed',
-                            'ST_STABLE': 'cluster services are running',
-                            'STABLE': 'cluster services are running'}
+                          'ST_JOINING': 'node joining the cluster',
+                          'ST_VOTING': 'Inter-node decision state for an event',
+                          'ST_RP_RUNNING': 'cluster running recovery program',
+                          'ST_BARRIER': 'clstrmgr is exiting recovery program',
+                          'ST_CBARRIER': 'clstrmgr is exiting recovery program',
+                          'ST_UNSTABLE': 'cluster unstable',
+                          'NOT_CONFIGURED': 'HA installed but not configured',
+                          'RP_FAILED': 'event script failed',
+                          'ST_RP_FAILED': 'event script failed',
+                          'ST_STABLE': 'cluster services are running',
+                          'STABLE': 'cluster services are running'}
 
             cluster_description = state_dict[cluster_state]
-            
+
             print '--------'
             print server
             print output
@@ -64,7 +66,6 @@ def update_server(server):
                 AIXServer.objects.filter(name=server).update(powerha=cluster_state, cluster_description=cluster_description, modified=timezone.now())
             if cluster_description != str(server.cluster_description):
                 AIXServer.objects.filter(name=server).update(cluster_description=cluster_description)
-                    
 
 
 if __name__ == '__main__':
@@ -76,6 +77,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

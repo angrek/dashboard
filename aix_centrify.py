@@ -9,15 +9,16 @@
 
 import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer, Zone
 import utilities
-from multiprocessing import Pool
-django.setup()
 
+django.setup()
 
 
 def update_server(server):
@@ -25,7 +26,7 @@ def update_server(server):
     new_centrify = ''
 
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
             centrify = ''
@@ -41,16 +42,15 @@ def update_server(server):
             except:
                 new_centrify = "None"
                 centrify_is_installed = 0
-            #if it's the same version, we don't need to update the record
+            # if it's the same version, we don't need to update the record
             if str(new_centrify) != str(server.centrify):
                 utilities.log_change(server, 'Centrify', str(server.centrify), str(new_centrify))
 
                 AIXServer.objects.filter(name=server, exception=False, active=True).update(centrify=new_centrify, modified=timezone.now())
 
-
             if centrify_is_installed:
 
-                #Since we're using adinfo to find the zone, it fits that it should be here in the centrify script
+                # Since we're using adinfo to find the zone, it fits that it should be here in the centrify script
                 stdin, stdout, stderr = client.exec_command('adinfo | grep Zone')
                 x = stdout.readlines()[0].split("/")
                 zone_tmp = x[4].rstrip()
@@ -59,8 +59,7 @@ def update_server(server):
                 if str(old_zone) != str(zone):
                     utilities.log_change(server, 'Zone', str(old_zone), str(zone))
                     AIXServer.objects.filter(name=server, exception=False, active=True).update(zone=zone)
-                    
-                
+
             stdin, stdout, stderr = client.exec_command('dainfo -v')
             centrifyda = ''
             new_centrifyda = ''
@@ -69,14 +68,11 @@ def update_server(server):
                 new_centrifyda = centrifyda[19:-2]
             except:
                 new_centrifyda = "None"
-            #if it's the same version, we don't need to update the record
+            # if it's the same version, we don't need to update the record
             if str(new_centrifyda) != str(server.centrifyda):
                 utilities.log_change(server, 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
 
                 AIXServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=new_centrifyda, modified=timezone.now())
-
-
-
 
 
 if __name__ == '__main__':
@@ -89,5 +85,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time= timezone.now() - starting_time
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)

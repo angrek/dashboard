@@ -1,20 +1,22 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve Python versions 
+# Script to retrieve Python versions
 #
-# Boomer Rehfield - 7/8/2015 
-# test
+# Boomer Rehfield - 7/8/2015
+#
 #########################################################################
 
-import os, re
+import os
+import re
 from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
-from server.models import AIXServer
 from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
+from django.utils import timezone
+import django
+
+from server.models import AIXServer
 import utilities
 
 django.setup()
@@ -23,14 +25,14 @@ django.setup()
 def update_server(server):
 
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
-            print server.name 
+            print server.name
             command = 'python -V'
             stdin, stdout, stderr = client.exec_command(command)
 
-            #FIXME why the hell is the version info coming through in stderr?
+            # FIXME why the hell is the version info coming through in stderr?
             try:
                 version = stderr.readlines()[0].rstrip()
                 version = re.sub('Python ', '', version)
@@ -38,16 +40,14 @@ def update_server(server):
                 version = 'None'
             print version
 
-            #check existing value, if it exists, don't update
+            # check existing value, if it exists, don't update
             if str(version) != str(server.python):
-                utilities.log_change(server 'python', str(server.python), str(version))
+                utilities.log_change(server, 'python', str(server.python), str(version))
 
                 AIXServer.objects.filter(name=server).update(python=version, modified=timezone.now())
             client.close()
 
 
-
-#start execution
 if __name__ == '__main__':
     print "Checking Python versions..."
     starting_time = timezone.now()
@@ -57,6 +57,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

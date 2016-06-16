@@ -7,20 +7,21 @@
 #
 #########################################################################
 
-import os, re
+import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer
 import utilities
-from multiprocessing import Pool
+
 django.setup()
 
 
 def update_server(server):
-
 
     if utilities.ping(server):
 
@@ -29,7 +30,8 @@ def update_server(server):
 
             print "---------------------------------"
             print server.name
-            #get rsyslog version now
+
+            # get rsyslog version now
             command = 'lslpp -l | grep rsyslog | uniq'
             stdin, stdout, stderr = client.exec_command(command)
             try:
@@ -39,25 +41,12 @@ def update_server(server):
             except:
                 rsyslog_version = "None"
                 print "rsyslog: " + rsyslog_version
-            
 
-            #check existing value, if it exists, don't update
-            #if str(syslog_version) != str(server.syslog):
-            #    utilities.log_change(server, 'samba', str(server.syslog), str(syslog_version))
-            #    AIXServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
             if str(rsyslog_version) != str(server.rsyslog):
                 utilities.log_change(server, 'rsyslog', str(server.rsyslog), str(rsyslog_version))
                 AIXServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
-            
-            #command = 'smbd -V'
-            #stdin, stdout, stderr = client.exec_command(command)
-            #bash_version = stdout.readlines()[0].rstrip()
-            #print smbd
-                
-
-#start execution
 if __name__ == '__main__':
     print "Checking rsyslog versions..."
     starting_time = timezone.now()
@@ -67,6 +56,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

@@ -9,14 +9,15 @@
 
 import os
 from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
-from server.models import AIXServer
-import re
-import utilities
 from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
+from django.utils import timezone
+import django
+
+from server.models import AIXServer
+import utilities
+
 django.setup()
 
 
@@ -30,14 +31,12 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
             netbackup_version = stdout.readlines()[0].rstrip()
 
-            #check existing value, if it exists, don't update
+            # check existing value, if it exists, don't update
             if str(netbackup_version) != str(server.netbackup):
                 utilities.log_change(server, 'NetBackup', str(server.netbackup), str(netbackup_version))
                 AIXServer.objects.filter(name=server).update(netbackup=netbackup_version, modified=timezone.now())
 
 
-
-#start execution
 if __name__ == '__main__':
     print "Checking Netbackup versions..."
     start_time = timezone.now()

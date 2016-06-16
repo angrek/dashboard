@@ -7,23 +7,21 @@
 #
 #########################################################################
 
-import os, sys, re
-from subprocess import *
-from time import strptime
+import os
+from multiprocessing import Pool
 from ssh import SSHClient
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer
 import utilities
-from  datetime import datetime, date, timedelta
-import datetime
-from multiprocessing import Pool
+
 django.setup()
 
 
-def check_server(server):
+def update_server(server):
 
     if utilities.ping(server):
         client = SSHClient()
@@ -57,6 +55,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

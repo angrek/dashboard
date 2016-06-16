@@ -9,16 +9,16 @@
 
 import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-from django.contrib.admin.models import LogEntry
-#these are need in django 1.7 and needed vs the django settings command
+# from django.contrib.admin.models import LogEntry
 import django
-from dashboard import settings
+
 from server.models import AIXServer, Errpt
 import utilities
-from multiprocessing import Pool
 django.setup()
-
 
 
 def update_server(server):
@@ -30,17 +30,16 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command('errpt | tail -n 20"')
             report = ''
 
-            #we have to do errpt differently due to the way it is handled by stdout
+            # we have to do errpt differently due to the way it is handled by stdout
             for line in stdout:
                 report = report + str(line)
             if report == '':
                 report = "The errpt was empty."
-        
-            #we don't care about the old record and we'll just add another
+
+            # we don't care about the old record and we'll just add another
             Errpt.objects.get_or_create(name=server, report=report, modified=timezone.now())
-            #LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
-
-
+            # FIXME do we want to log errpts?? It's only for the VIO servers....
+            # LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=9, object_id=264, object_repr=server, action_flag=2, change_message=change_message)
 
 
 if __name__ == '__main__':

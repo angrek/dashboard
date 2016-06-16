@@ -8,23 +8,21 @@
 #
 #########################################################################
 
-import os, re
-from ssh import SSHClient
+import os
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
-from server.models import AIXServer, LinuxServer
+
+from server.models import AIXServer
 import utilities
-import paramiko
 from multiprocessing import Pool
+
 django.setup()
 
 
 def update_server(server):
 
-    #counter += 1
-    #print str(counter) + ' - ' + str(server)
     print server.name
     if utilities.ping(server):
         print "good"
@@ -32,9 +30,8 @@ def update_server(server):
         print "no ping"
 
 
-#start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Checking decommed servers..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
@@ -42,6 +39,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

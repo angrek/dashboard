@@ -1,7 +1,7 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve java versions. This is to just output text for now. 
+# Script to retrieve java versions. This is to just output text for now.
 #
 # Boomer Rehfield - 8/7/2014
 #
@@ -9,29 +9,32 @@
 
 import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer, Java
 import utilities
 from django.contrib.admin.models import LogEntry
-from multiprocessing import Pool
+
 django.setup()
 
 
 def update_server(server):
 
-    java_version_list = Java.objects.values_list('name', flat=True)
-    counter = 0
-        
+    # not quite sure what this var was but leaving it for now
+    # java_version_list = Java.objects.values_list('name', flat=True)
+
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
+
             print "------------"
             print server
-            
+
             command = "lslpp -l| grep -i java | awk '{print $1 $2}'"
             stdin, stdout, stderr = client.exec_command(command)
             output = stdout.readlines()
@@ -49,12 +52,12 @@ def update_server(server):
                 if test_version not in servers_java_versions:
                     print "WINNNNNNNNNNNNNN"
                     server.java.add(test_version)
-                    #utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
+                    # utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
                     message = "Added Java version " + str(test_version)
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=message)
+                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=15, object_id=264, object_repr=server, action_flag=2, change_message=message)
 
-            #We've added them all to Java and to the AIX Server
-            #Now we need to go back and delete any that aren't on the server anymore
+            # We've added them all to Java and to the AIX Server
+            # Now we need to go back and delete any that aren't on the server anymore
 
             dbs_java_versions = server.java.all()
             installed_versions = []
@@ -69,28 +72,25 @@ def update_server(server):
                     server.java.remove(version)
 
                     message = "Removed Java version " + str(version)
-                    LogEntry.objects.create(action_time=timezone.now(), user_id=11 ,content_type_id=15, object_id =264, object_repr=server, action_flag=2, change_message=message)
-                #if line in java_version_list:
+                    LogEntry.objects.create(action_time=timezone.now(), user_id=11, content_type_id=15, object_id=264, object_repr=server, action_flag=2, change_message=message)
+                # if line in java_version_list:
                 #    pass:
-                #else:
-                    #it's not in
+                # else:
+                    # it's not in
                 #    print "WINNAR"
                 #    print line
-                #print line
+                # print line
 
-    
-                #check if it exists
-            #check existing value, if it exists, don't update
-            #if str(java_text) != str(server.java_text):
+                # check if it exists
+            # check existing value, if it exists, don't update
+            # if str(java_text) != str(server.java_text):
             #    utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
 #
-            #AIXServer.objects.filter(name=server).update(java_text=java_text)
+            # AIXServer.objects.filter(name=server).update(java_text=java_text)
 
 
-
-#start execution
 if __name__ == '__main__':
-    print "Checking Bash versions..."
+    print "Checking Java versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
@@ -98,7 +98,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-
