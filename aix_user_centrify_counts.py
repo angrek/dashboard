@@ -9,26 +9,24 @@
 
 import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer
 from server.models import CentrifyUserCountAIX
-from server.models import CentrifyUserCountLinux
-from multiprocessing import Pool
 import utilities
 django.setup()
-
 
 
 def update_server(server):
 
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
-
 
             stdin, stdout, stderr = client.exec_command('adquery user | wc -l')
 
@@ -36,12 +34,13 @@ def update_server(server):
 
             print server.name
             print user_count
-            #if it's the same version, we don't need to update the record
-            #if str(user_count) != str(server.centrify_user_count):
+            # if it's the same version, we don't need to update the record
+            # if str(user_count) != str(server.centrify_user_count):
 
+            run_time = timezone.now()
+
+            # FIXME THIS ISN"T EVEN WORKING
             CentrifyUserCountAIX.objects.create(run_time=run_time, name=server, user_count=user_count)
-
-                        
 
 
 if __name__ == '__main__':
@@ -53,5 +52,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time= timezone.now() - starting_time
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)

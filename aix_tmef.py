@@ -9,12 +9,13 @@
 
 import os
 from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
-from server.models import AIXServer
 from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
+import django
+from django.utils import timezone
+
+from server.models import AIXServer
 import utilities
 
 django.setup()
@@ -23,7 +24,7 @@ django.setup()
 def update_server(server):
 
     if utilities.ping(server):
-        
+
         client = SSHClient()
         if utilities.ssh(server, client):
 
@@ -40,15 +41,13 @@ def update_server(server):
             print server.name
             print tmef
 
-            #check existing value, if it exists, don't update
+            # check existing value, if it exists, don't update
             if str(tmef) != str(server.tmef):
                 utilities.log_change(server, 'tmef', str(server.tmef), str(tmef))
 
                 AIXServer.objects.filter(name=server).update(tmef=tmef, modified=timezone.now())
 
 
-
-#start execution
 if __name__ == '__main__':
     print "Checking Target Memory Expansion Factor..."
     starting_time = timezone.now()
@@ -58,6 +57,5 @@ if __name__ == '__main__':
     pool = Pool(30)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

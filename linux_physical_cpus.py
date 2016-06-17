@@ -1,18 +1,19 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to retrieve Python versions 
+# Script to retrieve cpus from physical boxes
 #
-# Boomer Rehfield - 7/8/2015 
-# test
+# Boomer Rehfield - 7/8/2015
+#
 #########################################################################
 
-import os, re
+import os
 from ssh import SSHClient
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
 
@@ -21,8 +22,7 @@ django.setup()
 
 def update_server():
 
-    server_list = LinuxServer.objects.filter(decommissioned=False,vmware_cluster='Physical')
-    #server_list = LinuxServer.objects.filter(decommissioned=False,name='pinfhdp18')
+    server_list = LinuxServer.objects.filter(decommissioned=False, vmware_cluster='Physical')
     number_of_servers = 0
     total = 0
     problem_list = []
@@ -31,16 +31,14 @@ def update_server():
     print "Total number of CPUs for all physical servers"
 
     for server in server_list:
-        number_of_servers += 1
 
         if utilities.ping(server):
-            
+
             client = SSHClient()
             if utilities.ssh(server, client):
-                
+
                 print "====================="
-                print server.name 
-                number_of_server = number_of_servers + 1
+                print server.name
                 stdin, stdout, stderr = client.exec_command(command)
 
                 try:
@@ -49,10 +47,10 @@ def update_server():
                     number = 'Error'
                     problem_list.append(server.name)
                     continue
-                print "CPUs - " + number 
+                print "CPUs - " + number
                 total = total + int(number)
 
-                #check existing value, if it exists, don't update
+                # check existing value, if it exists, don't update
                 if str(number) != str(server.cpu):
                     utilities.log_change(server, 'CPU', str(server.cpu), str(number))
 #
@@ -63,12 +61,11 @@ def update_server():
     print "Total Servers = " + str(number_of_servers)
     print "Problem Servers = " + str(problem_list)
 
-#start execution
+
 if __name__ == '__main__':
     print "Checking Python versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

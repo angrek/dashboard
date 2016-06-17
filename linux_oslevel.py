@@ -7,16 +7,17 @@
 #
 #########################################################################
 
-import os, sys
+import os
 import re
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
-from multiprocessing import Pool
 django.setup()
 
 
@@ -32,12 +33,11 @@ def update_server(server):
             command = 'lsb_release -a | grep Distributor'
             stdin, stdout, stderr = client.exec_command(command)
 
-            #need rstrip() because there are extra characters at the end
-            #FIXME - dinfhdp09 doesn't have lsb_release installed?????
+            # need rstrip() because there are extra characters at the end
+            # FIXME - dinfhdp09 doesn't have lsb_release installed?????
             os = stdout.readlines()[0].rstrip()
             os = re.sub('Distributor ID:', '', os)
             os = re.sub('\s*', '', os)
-
 
             if os == 'RedHatEnterpriseServer':
                 os = 'RHEL'
@@ -57,15 +57,13 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command(command)
             kernel = stdout.readlines()[0].rstrip()
             print kernel
-            
+
             command = 'dzdo rpm -qa --last | grep kernel'
             stdin, stdout, stderr = client.exec_command(command)
             kernel_date = stdout.readlines()[0].rstrip()
             print kernel_date
-            
 
-
-            #check existing value, if it exists, don't update
+            # check existing value, if it exists, don't update
             if str(os) != str(server.os):
                 utilities.log_change(server, 'OS', str(server.os), str(os))
                 LinuxServer.objects.filter(name=server).update(os=os, modified=timezone.now())

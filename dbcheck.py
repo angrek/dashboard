@@ -7,24 +7,24 @@
 #
 #########################################################################
 
-import os, re
-from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
-from server.models import AIXServer
-import utilities
+import os
 import paramiko
 from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
+import django
+from django.utils import timezone
+
+from server.models import AIXServer
+import utilities
 django.setup()
 
 db_list = []
 dupe_list = []
 
+
 def update_server(server):
 
-        
     if utilities.ping(server):
 
         client = paramiko.SSHClient()
@@ -41,7 +41,7 @@ def update_server(server):
                 print db_name
                 if db_name in db_list:
                     print "DUPLICATE!"
-                    #duplicates = duplicates + 1
+                    # duplicates = duplicates + 1
                     dupe_list.append(db_name)
                     print "-----------Duplicates----------"
                     print dupe_list
@@ -62,6 +62,5 @@ if __name__ == '__main__':
     print "Duplicates"
     print "------------------------------"
     print dupe_list
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-
