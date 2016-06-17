@@ -514,6 +514,7 @@ class LinuxServer(models.Model):
     rsyslog_problem = models.NullBooleanField(default=False, blank=True)
     samba = models.CharField(max_length=40, blank=True, null=True, default='None')
     python = models.CharField(max_length=35, blank=True, null=True, default='None')
+    iptables_on = models.NullBooleanField(default=False, blank=True)
     server_env = models.NullBooleanField(default=False, blank=True)
     server_env_marker = models.IntegerField(choices=SERVER_ENV_CHOICES, default=1)
     server_env_text = models.TextField(blank=True, null=True, default='None')
