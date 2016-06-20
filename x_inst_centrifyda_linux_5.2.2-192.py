@@ -7,12 +7,13 @@
 #
 #########################################################################
 
-import os, re, time
+import os
 from ssh import SSHClient
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
 django.setup()
@@ -20,10 +21,8 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
+    # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
     server_list = LinuxServer.objects.filter(name__contains='pdlpap04')
-
-    counter = 0
 
     for server in server_list:
 
@@ -35,10 +34,11 @@ def update_server():
         if utilities.ping(server):
 
             client = SSHClient()
+
             if utilities.ssh(server, client):
                 print "Current centrify version:"
                 print server.centrify
-                #FIXME  #FIXME #FIXME
+                # FIXME  #FIXME #FIXME
                 if server.centrify != '5.2.2-1922':
 
                     print 'Creating directory /centrify_install'
@@ -51,7 +51,6 @@ def update_server():
                         print line
                     for line in y:
                         print line
-
 
                     print 'Mounting naswin1 /centrify_install'
                     command = 'dzdo mount -o nolock naswin1:/unix /centrify_install'
@@ -87,36 +86,31 @@ def update_server():
                     for line in x:
                         print line
 
-
             else:
                 print "No ssh"
         else:
             print "No ping"
 
-                #t = stdout.readlines()
-                #for line in t:
-                #    print line.rstrip()
-#
- #               print '---------------------------'
+            # t = stdout.readlines()
+            # for line in t:
+            #    print line.rstrip()
+            #
+            # print '---------------------------'
 
-                #command = 'cat /etc/rsyslog.conf'
-                #stdin, stdout, stderr = client.exec_command(command)
+            # command = 'cat /etc/rsyslog.conf'
+            # stdin, stdout, stderr = client.exec_command(command)
 
-                #try changing chkconfig
-                #command = 'chkconfig --list | grep rsyslog'
-                #stdin, stdout, stderr = client.exec_command(command)
-                #t = stdout.readlines()[0]
-                #print t
+            # try changing chkconfig
+            # command = 'chkconfig --list | grep rsyslog'
+            # stdin, stdout, stderr = client.exec_command(command)
+            # t = stdout.readlines()[0]
+            # print t
 
 
-            
-
-#start execution
 if __name__ == '__main__':
     print "Checking and installing rsyslog."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

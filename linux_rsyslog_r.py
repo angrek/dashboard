@@ -7,20 +7,20 @@
 #
 #########################################################################
 
-import os, re
+import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
-from multiprocessing import Pool
 django.setup()
 
 
 def update_server(server):
-
 
     if utilities.ping(server):
 
@@ -41,8 +41,8 @@ def update_server(server):
                     print 'rsyslog is running'
 
 
-#start execution
 if __name__ == '__main__':
+
     print "Checking Bash versions..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
@@ -52,6 +52,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

@@ -7,15 +7,17 @@
 #
 #########################################################################
 
-import os, re
+import os
+import re
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
-from multiprocessing import Pool
 django.setup()
 
 
@@ -25,7 +27,8 @@ def update_server(server):
 
         client = SSHClient()
         if utilities.ssh(server, client):
-            #get syslog version first
+
+            # get syslog version first
             print '------------------------------------'
             print server.name
             command = 'dzdo rpm -qa | grep sysklog | uniq'
@@ -37,8 +40,8 @@ def update_server(server):
             except:
                 syslog_version = "None"
             print syslog_version
-            
-            #get rsyslog version now
+
+            # get rsyslog version now
             command = 'dzdo rpm -qa | grep rsyslog | grep -v mmjson | grep -v mysql | uniq'
             stdin, stdout, stderr = client.exec_command(command)
 
@@ -49,20 +52,16 @@ def update_server(server):
             except:
                 rsyslog_version = "None"
             print rsyslog_version
-            
 
-            #check existing value, if it exists, don't update
+            # check existing value, if it exists, don't update
             if str(syslog_version) != str(server.syslog):
                 utilities.log_change(server, 'syslog', str(server.syslog), str(syslog_version))
                 LinuxServer.objects.filter(name=server).update(syslog=syslog_version, modified=timezone.now())
             if str(rsyslog_version) != str(server.rsyslog):
                 utilities.log_change(server, 'rsyslog', str(server.rsyslog), str(rsyslog_version))
-                    LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
+                LinuxServer.objects.filter(name=server).update(rsyslog=rsyslog_version, modified=timezone.now())
 
 
-                
-
-#start execution
 if __name__ == '__main__':
     print "Checking syslog versions..."
     starting_time = timezone.now()
@@ -73,6 +72,5 @@ if __name__ == '__main__':
     pool = Pool(20)
     pool.map(update_server, server_list)
 
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

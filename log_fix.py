@@ -7,24 +7,19 @@
 #
 ####################################################
 
-import os
-from ssh import SSHClient
-from django.utils import timezone
-from django.contrib.admin.models import LogEntry
-#these are need in django 1.7 and needed vs the django settings command
+
+# these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+from django.contrib.admin.models import LogEntry
+
 from server.models import AIXServer
 from server.models import LinuxServer
-import smtplib
-from email.mime.text import MIMEText
-import email.utils
-import paramiko
 
 django.setup()
 
 
 log_entries = LogEntry.objects.filter(content_type_id=9)
+
 for entry in log_entries:
     server_type = ''
     print "------------------"
@@ -36,6 +31,7 @@ for entry in log_entries:
     new_time = entry.action_time
     print "length"
     print len(entry.object_repr.rstrip())
+
     try:
         test = AIXServer.objects.get(name=entry.object_repr.rstrip())
         server_type = "AIX"
@@ -45,7 +41,7 @@ for entry in log_entries:
             entry.content_type_id = 15
             entry.action_time = new_time
             entry.save()
-        
+
     except:
         test = LinuxServer.objects.get(name=entry.object_repr.rstrip())
         server_type = "Linux"
@@ -56,6 +52,3 @@ for entry in log_entries:
             entry.action_time = new_time
             entry.save()
     print server_type
-
-
-

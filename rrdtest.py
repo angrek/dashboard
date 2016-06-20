@@ -7,25 +7,19 @@
 #
 #########################################################################
 
-import os, sys
+import os
 from ssh import SSHClient
-import paramiko
 import utilities
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-from subprocess import call, check_output
-
-
-from django.contrib.admin.models import LogEntry
-
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
-from server.models import LinuxServer, Zone, Frame, Stack
-from server.models import Relationships
-#import logging
+
+from server.models import LinuxServer
 django.setup()
 
-#logging.basicConfig( level=logging.INFO )
+# logging.basicConfig( level=logging.INFO )
+
 
 def populate():
 
@@ -44,15 +38,13 @@ def populate():
 
             if utilities.ssh(server, client):
                 stdin, stdout, stderr = client.exec_command('dzdo rrdtool dump /home/lpar2rrd/lpar2rrd/data/795B-9119-FHB-SN02764FR/phmc02/p1midcap.rrm')
-                #frames = stdout.readlines()[0]
+                # frames = stdout.readlines()[0]
                 output = stdout.readlines()
                 for line in output:
-                    #wait for the first 
+                    # wait for the first
                     print line
 
 
-
-#start execution
 if __name__ == '__main__':
     print "Starting populations..."
     start_time = timezone.now()
@@ -60,7 +52,3 @@ if __name__ == '__main__':
     populate()
     elapsed_time = timezone.now() - start_time
     print "Elapsed time: " + str(elapsed_time)
-
-
-
-

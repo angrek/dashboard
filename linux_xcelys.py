@@ -9,14 +9,14 @@
 
 import os
 from ssh import SSHClient
+from subprocess import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
-from server.models import AIXServer,LinuxServer
-import re
+
+from server.models import LinuxServer
 import utilities
-from multiprocessing import Pool
 django.setup()
 
 
@@ -30,7 +30,7 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command('[ -f /opt/xcelys/version ] && cat /opt/xcelys/version || echo "None"')
             temp_xcelys_version = stdout.readlines()[0]
 
-            #need to cut the string down
+            # need to cut the string down
             xcelys_version = temp_xcelys_version[36:-16]
             if xcelys_version is '':
                 xcelys_version = "None"
@@ -38,7 +38,6 @@ def update_server(server):
             if str(xcelys_version) != str(server.xcelys):
                 utilities.log_change(server, 'Xcelys', str(server.xcelys), str(xcelys_version))
                 LinuxServer.objects.filter(name=server, exception=False, active=True).update(xcelys=xcelys_version, modified=timezone.now())
-
 
 
 if __name__ == '__main__':
