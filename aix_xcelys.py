@@ -3,7 +3,7 @@
 #
 # Script to retrieve Xcelys versions and drop them into Django dashboard
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 8/4/2014
 #
 #########################################################################
 

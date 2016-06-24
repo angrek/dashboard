@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get processor pool data for each frame
+# Script to get aix world wide names for the storage group
 #
-# Boomer Rehfield - 6/4/2015
+# Boomer Rehfield - 8/13/2015
 #
 #########################################################################
 

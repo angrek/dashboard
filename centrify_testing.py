@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get centrify version
+# Script for centrify testing
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 6/20/2015
 #
 #########################################################################
 
