@@ -18,6 +18,7 @@ from server.models import LinuxServer
 from server.models import LinuxApplications
 from server.models import LinuxServerResource
 from server.models import LinuxServerENV
+from server.models import LinuxServerOwner
 from server.models import DecommissionedLinuxServer
 
 
@@ -482,6 +483,20 @@ class HistoricalLinuxDataAdmin(ImportExportActionModelAdmin):
     pass
 
 
+class LinuxServerOwnerAdmin(ImportExportActionModelAdmin):
+    def get_queryset(self, request):
+        return self.model.objects.filter(decommissioned=0)
+    list_max_show_all = 500
+    save_on_top = True
+    list_display = ['name', 'owner', 'application', 'stack', 'substack']
+    list_filter = ['os', 'owner', 'application', 'stack', 'substack']
+    list_editable = ['owner', 'application', 'stack', 'substack']
+    search_fields = ['name', 'owner', 'application', 'stack', 'substack']
+    fields = ['name', 'owner', 'application', 'stack', 'substack']
+    resource_class = LinuxServerResource
+    class Media:
+        js = ['/static/admin/js/list_filter_collapse.js']
+    pass
 
 
 
@@ -655,6 +670,7 @@ admin.site.register(LinuxServer, LinuxServerAdmin)
 admin.site.register(LinuxApplications, LinuxApplicationsAdmin)
 admin.site.register(HistoricalLinuxData, HistoricalLinuxDataAdmin)
 admin.site.register(DecommissionedLinuxServer, DecommissionedLinuxServerAdmin)
+admin.site.register(LinuxServerOwner, LinuxServerOwnerAdmin)
 admin.site.register(LinuxServerENV, LinuxServerENVAdmin)
 
 admin.site.register(LogEntry, LogEntryAdmin)
