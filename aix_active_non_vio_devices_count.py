@@ -13,20 +13,19 @@
 
 import os
 from ssh import SSHClient
+from multiprocessing import Pool
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import AIXServer
 import utilities
-from multiprocessing import Pool
+
 django.setup()
 
 
-
 def update_server(server):
-
-
 
     if utilities.ping(server):
 
@@ -37,19 +36,16 @@ def update_server(server):
             devices = int(temp)
             print server
             print devices
-            total_devices += devices            
+            total_devices += devices
             print "Total - " + str(total_devices)
 
 
-
-
-#start execution
 if __name__ == '__main__':
     print "Getting devices..."
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    total_devices  = 0
+    total_devices = 0
     server_list = AIXServer.objects.filter(active=True, exception=False).exclude(name__contains='vio')
 
     pool = Pool(20)
