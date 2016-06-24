@@ -3,7 +3,7 @@
 #
 # Script to retrieve AIX ifix info
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 4/20/2015
 #
 #########################################################################
 

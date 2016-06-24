@@ -3,7 +3,7 @@
 #
 # Script to retrieve EMC versions on the servers
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 12/8/2014
 #
 #########################################################################
 

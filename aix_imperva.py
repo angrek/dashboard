@@ -3,7 +3,7 @@
 #
 # Script to retrieve Imperva versions
 #
-# Boomer Rehfield - 10/20/2014
+# Boomer Rehfield - 11/2/2014
 #
 #########################################################################
 

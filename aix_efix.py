@@ -3,7 +3,7 @@
 #
 # Script to count the number of efix's on an AIX box
 #
-# Boomer Rehfield - 3/3/2016
+# Boomer Rehfield - 3/4/2016
 #
 #########################################################################
 

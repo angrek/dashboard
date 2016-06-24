@@ -3,8 +3,8 @@
 #
 # Script to retrieve bash versions
 #
-# Boomer Rehfield - 8/7/2014
-# test
+# Boomer Rehfield - 10/6/2014
+#
 #########################################################################
 
 import os
