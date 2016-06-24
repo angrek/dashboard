@@ -3,7 +3,7 @@
 #
 # Script to retrieve AIX OS levels
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 8/28/2014
 #
 #########################################################################
 

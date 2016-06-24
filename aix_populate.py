@@ -11,7 +11,7 @@
 #   -check each wpars status and ssh connectivity
 #   -update the server database accordingly for each step
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 9/22/2015
 #
 #########################################################################
 

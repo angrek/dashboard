@@ -3,7 +3,7 @@
 #
 # Script to retrieve java versions. This is to just output text for now.
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 4/9/2015
 #
 #########################################################################
 

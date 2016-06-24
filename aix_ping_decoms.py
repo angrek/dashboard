@@ -4,7 +4,7 @@
 # Script to go through decommed servers and ping check them to see if
 # someone has brought them back up for some reason.
 #
-# Boomer Rehfield - 11/13/2014
+# Boomer Rehfield - 6/23/2015
 #
 #########################################################################
 

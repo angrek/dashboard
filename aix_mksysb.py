@@ -3,7 +3,7 @@
 #
 # Script to make sure our mksysb's are up to date
 #
-# Boomer Rehfield - 1/13/2015
+# Boomer Rehfield - 1/14/2015
 #
 #########################################################################
 

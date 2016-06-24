@@ -3,7 +3,7 @@
 #
 # Script to retrieve Python versions
 #
-# Boomer Rehfield - 7/8/2015
+# Boomer Rehfield - 7/10/2015
 #
 #########################################################################
 

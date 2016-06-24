@@ -3,7 +3,7 @@
 #
 # Quick ping script that will update the database. Quick on off for one host
 #
-# Boomer Rehfield - 11/13/2014
+# Boomer Rehfield - 6/16/2015
 #
 #########################################################################
 
@@ -24,8 +24,7 @@ def update_server():
     server_list = AIXServer.objects.filter(name__contains="u0")
 
     for server in server_list:
-        # counter += 1
-        # print str(counter) + ' - ' + str(server)
+
         print server.name
         if utilities.ping(server):
             print "good"
