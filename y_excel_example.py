@@ -9,24 +9,19 @@
 #########################################################################
 
 import os
-import re
-from subprocess import call
-from ssh import SSHClient
 from openpyxl import Workbook
-from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
+from openpyxl.styles import Style, Font
+# from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
 
-from django.utils import timezone
-from server.models import AIXServer, LinuxServer, Power7Inventory, Storage
-
-#these are need in django 1.7 and needed vs the django settings command
+# these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+from django.utils import timezone
+
+from server.models import AIXServer, LinuxServer, Power7Inventory, Storage
 django.setup()
 
 
 s = Style(font=Font(name='Calibri', size=11, bold=True))
-
-
 
 wb = Workbook()
 ws1 = wb.active
@@ -34,8 +29,7 @@ ws1.title = 'AIX'
 ws2 = wb.create_sheet()
 ws2.title = 'Linux'
 
-
-#create le pretty headers
+# create le pretty headers
 ws1['A1'] = 'Host Name'
 ws1['B1'] = 'OS'
 ws1['C1'] = 'Physical/VM'
@@ -68,7 +62,7 @@ ws2.column_dimensions["H"].width = 12
 
 list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-#to hell with writing all this out because the row dimensions are working...
+# to hell with writing all this out because the row dimensions are working...
 for letter in list:
     cell = letter + '1'
     c = ws1[cell]
@@ -79,8 +73,10 @@ for letter in list:
 d = ws1.row_dimensions[1].height = 20
 g = ws2.row_dimensions[1].height = 20
 
+
 def get_server_data():
-#starting line = 3
+
+    # starting line = 3
     line = 3
     counter = 0
     server_list = AIXServer.objects.filter(active=True, decommissioned=False)
@@ -127,13 +123,10 @@ def get_server_data():
         cell = 'H' + str(line)
         ws1[cell] = r.curr_procs
 
-
-
         line += 1
         aix_line = line
 
-
-    #################STARTING LINUX SECTION############################
+    # STARTING LINUX SECTION
     line = 3
     counter = 0
     linux_server_list = LinuxServer.objects.filter(decommissioned=False)
@@ -143,18 +136,18 @@ def get_server_data():
         counter = counter + 1
 
         t = LinuxServer.objects.get(name=server)
-        if t.active == False:
-            #we don't care about inactive servers for capacity planning
+        if t.active is False:
+            # we don't care about inactive servers for capacity planning
             continue
 
-        #try:
+        # try:
         #    r = Power7Inventory.objects.get(name=server)
-        #except:
+        # except:
         #    pass
         #
-        #try:
+        # try:
         #    p = Storage.objects.get(name=server)
-        #except:
+        # except:
         #    pass
 
         print str(counter) + ',' + str(server) + ',Linux,VM,' + t.ip_address.rstrip() + ',' + str(t.memory) + ',,' + ' n/a' + ',' + str(t.cpu)
@@ -183,16 +176,12 @@ def get_server_data():
         cell = 'H' + str(line)
         ws2[cell] = t.cpu
 
-
-
-        #AIXServer.objects.filter(name=server).update(active=False, modified=timezone.now())
+        # AIXServer.objects.filter(name=server).update(active=False, modified=timezone.now())
         line += 1
 
-
-
-    #total
+    # total
     cell = 'A' + str(line + 1)
-    aix_cell = 'A' +str(aix_line + 1)
+    aix_cell = 'A' + str(aix_line + 1)
     ws1[aix_cell] = 'Total'
     ws2[cell] = 'Total'
     ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
@@ -201,7 +190,7 @@ def get_server_data():
     cell = 'E' + str(line + 1)
     aix_cell = 'E' + str(aix_line + 1)
     sum = "=SUM(E3:E" + str((line - 1)) + ")"
-    aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
+    aix_sum = "=SUM(E3:E" + str((aix_line - 1)) + ")"
     print aix_sum
     print sum
     ws1[aix_cell] = aix_sum
@@ -229,7 +218,7 @@ def get_server_data():
     ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-#create le pretty headers
+    # create le pretty headers
     cell = 'A' + str(aix_line + 3)
     ws1[cell] = 'Host Name'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
@@ -255,23 +244,22 @@ def get_server_data():
     ws1[cell] = 'CPU Cores'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-    #ws2['A1'] = 'Host Name'
-    #ws2['B1'] = 'OS'
-    #ws2['C1'] = 'Physical/VM'
-    #ws2['D1'] = 'IP'
-    #ws2['E1'] = 'Mem(MB)'
-    #ws2['F1'] = 'Database Name'
-    #ws2['G1'] = 'Storage'
-    #ws2['H1'] = 'CPU Cores'
+    # ws2['A1'] = 'Host Name'
+    # ws2['B1'] = 'OS'
+    # ws2['C1'] = 'Physical/VM'
+    # ws2['D1'] = 'IP'
+    # ws2['E1'] = 'Mem(MB)'
+    # ws2['F1'] = 'Database Name'
+    # ws2['G1'] = 'Storage'
+    # ws2['H1'] = 'CPU Cores'
 
-    #need to put the timestamp in the filename
+    # need to put the timestamp in the filename
     now = timezone.now()
     timestamp = now.strftime('%m-%d-%Y')
     filename = 'Unix_Configuration_Report' + timestamp + '.xlsx'
     wb.save(filename)
 
-
-    #c and f are just arbitrary vars right now for page one and two :\
+    # c and f are just arbitrary vars right now for page one and two :\
     c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
     f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
@@ -279,22 +267,7 @@ def get_server_data():
     os.system(command)
 
 
-
-
-
-
-
-#start execution
 if __name__ == '__main__':
     print "Getting server information..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     get_server_data()
-
-    #print "Elapsed time: " + str(elapsed_time)
-
-
-
-
-
-
-

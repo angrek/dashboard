@@ -7,12 +7,13 @@
 #
 #########################################################################
 
-import os, re, time
+import os
 from ssh import SSHClient
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
 django.setup()
@@ -20,12 +21,10 @@ django.setup()
 
 def update_server():
 
-    #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
-    #server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
+    # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
+    # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
     server_list = LinuxServer.objects.filter(name__contains='p1rhrep')
-    #server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
-
-    counter = 0
+    # server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
 
     for server in server_list:
 
@@ -37,12 +36,14 @@ def update_server():
         if utilities.ping(server):
 
             client = SSHClient()
+
             if utilities.ssh(server, client):
+
                 print "Current centrify version:"
                 print server.netbackup
                 old_version = server.netbackup
-                if server.xxcentrify != '5.2.2-192':
 
+                if server.xxcentrify != '5.2.2-192':
 
                     print "Checking adquery before install"
                     command = "dzdo adquery user | wc -l"
@@ -61,8 +62,6 @@ def update_server():
                     for line in y:
                         print line
 
-
-
                     print 'Creating directory /centrify_install'
                     command = 'dzdo mkdir /centrify_install'
                     stdin, stdout, stderr = client.exec_command(command)
@@ -73,7 +72,6 @@ def update_server():
                         print line
                     for line in y:
                         print line
-
 
                     print 'Mounting naswin1 /centrify_install'
                     command = 'dzdo mount -o nolock naswin1:/unix /centrify_install'
@@ -86,10 +84,10 @@ def update_server():
                         print line
 
                     print 'Installing centrify'
-                    #command = 'dzdo rpm -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
-                    #command = 'dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/linux_386/centrifydc-5.2.2-rhel3-i386.rpm'
+                    # command = 'dzdo rpm -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    # command = 'dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/linux_386/centrifydc-5.2.2-rhel3-i386.rpm'
                     command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm"
-                    #command = 'dzdo rpm -Uvh /home/wrehfiel/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    # command = 'dzdo rpm -Uvh /home/wrehfiel/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
@@ -105,17 +103,15 @@ def update_server():
                     for line in x:
                         print line
 
-                    #print 'Enabling direct audit'
-                    #command = 'dzdo /usr/sbin/dacontrol -e'
-                    #stdin, stdout, stderr = client.exec_command(command)
-                    #x = stdout.readlines()
-                    #y = stderr.readlines()
-                    #for line in x:
+                    # print 'Enabling direct audit'
+                    # command = 'dzdo /usr/sbin/dacontrol -e'
+                    # stdin, stdout, stderr = client.exec_command(command)
+                    # x = stdout.readlines()
+                    # y = stderr.readlines()
+                    # for line in x:
                     #    print line
-                    #for line in y:
+                    # for line in y:
                     #    print line
-
-
 
                     print "Old version: " + old_version
                     command = 'adinfo -v'
@@ -131,7 +127,7 @@ def update_server():
                     server.save()
                     utilities.log_change(server, 'Centrify', old_version, new_centrify)
 
-                    #verify
+                    # verify
                     print 'Checking adquery after install'
                     command = 'dzdo adquery user | wc -l'
                     stdin, stdout, stderr = client.exec_command(command)
@@ -143,38 +139,30 @@ def update_server():
                     print "users before: " + before.rstrip()
                     print "users after : " + after.rstrip()
 
-
-
-
             else:
                 print "No ssh"
         else:
             print "No ping"
 
-                #t = stdout.readlines()
-                #for line in t:
-                #    print line.rstrip()
-#
- #               print '---------------------------'
+            # t = stdout.readlines()
+            # for line in t:
+            #    print line.rstrip()
+            # print '---------------------------'
 
-                #command = 'cat /etc/rsyslog.conf'
-                #stdin, stdout, stderr = client.exec_command(command)
+            # command = 'cat /etc/rsyslog.conf'
+            # stdin, stdout, stderr = client.exec_command(command)
 
-                #try changing chkconfig
-                #command = 'chkconfig --list | grep rsyslog'
-                #stdin, stdout, stderr = client.exec_command(command)
-                #t = stdout.readlines()[0]
-                #print t
+            # try changing chkconfig
+            # command = 'chkconfig --list | grep rsyslog'
+            # stdin, stdout, stderr = client.exec_command(command)
+            # t = stdout.readlines()[0]
+            # print t
 
 
-            
-
-#start execution
 if __name__ == '__main__':
     print "Checking and installing rsyslog."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

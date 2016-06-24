@@ -1,60 +1,54 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# EMC AIX server information report. This is for all network connections
+# SNMP Remediation (Why there is excel in here I have no idea....)
 #
 # Boomer Rehfield - 5/7/2015
 #
 #########################################################################
 
 import os
-import sys
 import re
-from subprocess import call
 from ssh import SSHClient
 from openpyxl import Workbook
-from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
+from openpyxl.styles import Style, Font
+# from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
+from subprocess import check_output
 
-from django.utils import timezone
-from server.models import AIXServer, LinuxServer, Power7Inventory, Storage
-
-import utilities
-
-from subprocess import call, check_output
-#these are need in django 1.7 and needed vs the django settings command
+# these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+from django.utils import timezone
+
+from server.models import AIXServer, LinuxServer
+import utilities
 django.setup()
 
 
 s = Style(font=Font(name='Calibri', size=11, bold=True))
 
-#need to put the timestamp in the filename
+# need to put the timestamp in the filename
 now = timezone.now()
 timestamp = now.strftime('%m-%d-%Y')
 filename = 'snmp_remediation_' + timestamp + '.xlsx'
-
 
 wb = Workbook()
 ws1 = wb.active
 ws1.title = 'AIX'
 
-
-#create le pretty headers
+# create le pretty headers
 ws1['A1'] = 'IP Address'
 ws1['B1'] = 'DNS Name'
 ws1['C1'] = 'OS'
 ws1['D1'] = 'SNMP ON'
 
-
-ws1.column_dimensions["A"].width = 18 
+ws1.column_dimensions["A"].width = 18
 ws1.column_dimensions["B"].width = 16
-ws1.column_dimensions["C"].width = 18 
+ws1.column_dimensions["C"].width = 18
 ws1.column_dimensions["D"].width = 16
 
 list = ['A', 'B', 'C', 'D']
 
-#to hell with writing all this out because the row dimensions are working...
+# to hell with writing all this out because the row dimensions are working...
 for letter in list:
     cell = letter + '1'
     c = ws1[cell]
@@ -69,13 +63,13 @@ def get_server_data():
 
     ip_list = []
     # ok, let's get all the IP Addresses from the file and stick them in a list
-    txt = open('vulnerable_snmp_servers','r')
+    txt = open('vulnerable_snmp_servers', 'r')
     for my_line in txt.readlines():
         my_line = my_line.rstrip()
         ip_list.append(my_line)
     txt.close()
 
-    #check dns for the hostnames
+    # check dns for the hostnames
     for ip in ip_list:
         counter = counter + 1
         line = line + 1
@@ -91,7 +85,7 @@ def get_server_data():
         print "ip:" + ip + " - hostname:" + hostname.rstrip()
 
         if AIXServer.objects.filter(name=hostname).exists():
-            operating_system = 'AIX' 
+            operating_system = 'AIX'
             server = AIXServer.objects.get(name=hostname)
             print "AIX SERVER"
         elif LinuxServer.objects.filter(name=hostname).exists():
@@ -101,7 +95,7 @@ def get_server_data():
         else:
             operating_system = ''
 
-        #we'll go ahead and populate the first three fields
+        # we'll go ahead and populate the first three fields
         cell = 'A' + str(line)
         ws1[cell] = ip
 
@@ -115,11 +109,11 @@ def get_server_data():
 
             print server
             if utilities.ping(server):
-                
+
                 print 'ping good'
                 client = SSHClient()
                 if utilities.ssh(server, client):
-                    
+
                     print 'ssh good'
                     command = 'ps -ef | grep -v grep | grep -v dirsnmp | grep -v hyperic| grep -q snmp && echo Yes || echo No'
                     stdin, stdout, stderr = client.exec_command(command)
@@ -128,57 +122,47 @@ def get_server_data():
                         print y
                         cell = 'D' + str(line)
                         ws1[cell] = y
-                        
 
+    # total
+    # cell = 'A' + str(line + 1)
+    # aix_cell = 'A' +str(aix_line + 1)
+    # ws1[aix_cell] = 'Total'
+    # ws2[cell] = 'Total'
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-#
-#
+    # cell = 'E' + str(line + 1)
+    # aix_cell = 'E' + str(aix_line + 1)
+    # sum = "=SUM(E3:E" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
+    # print aix_sum
+    # print sum
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-        
+    # cell = 'G' + str(line + 1)
+    # aix_cell = 'G' + str(aix_line + 1)
+    # sum = "=SUM(G3:G" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(G3:G" + str((aix_line - 1)) + ")"
+    # print aix_cell
+    # print aix_sum
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
+    # cell = 'H' + str(line + 1)
+    # aix_cell = 'H' + str(aix_line + 1)
+    # sum = "=SUM(H3:H" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(H3:H" + str((aix_line - 1)) + ")"
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-
-
-    #total
-    #cell = 'A' + str(line + 1)
-    #aix_cell = 'A' +str(aix_line + 1)
-    #ws1[aix_cell] = 'Total'
-    #ws2[cell] = 'Total'
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-#
-    #cell = 'E' + str(line + 1)
-    #aix_cell = 'E' + str(aix_line + 1)
-    #sum = "=SUM(E3:E" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
-    #print aix_sum
-    #print sum
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-#
-    #cell = 'G' + str(line + 1)
-    #aix_cell = 'G' + str(aix_line + 1)
-    #sum = "=SUM(G3:G" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(G3:G" + str((aix_line - 1)) + ")"
-    #print aix_cell
-    #print aix_sum
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-
-    #cell = 'H' + str(line + 1)
-    #aix_cell = 'H' + str(aix_line + 1)
-    #sum = "=SUM(H3:H" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(H3:H" + str((aix_line - 1)) + ")"
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-
-#create le pretty headers
+    # create le pretty headers
     cell = 'A1'
     ws1[cell] = 'IP Address'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
@@ -192,11 +176,9 @@ def get_server_data():
     ws1[cell] = 'SNMP Active'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-
-
-    #c and f are just arbitrary vars right now for page one and two :\
+    # c and f are just arbitrary vars right now for page one and two :\
     c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
     wb.save(filename)
 
@@ -204,22 +186,7 @@ def get_server_data():
     os.system(command)
 
 
-
-
-
-
-
-#start execution
 if __name__ == '__main__':
     print "Getting server information..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     get_server_data()
-
-    #print "Elapsed time: " + str(elapsed_time)
-
-
-
-
-
-
-

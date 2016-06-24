@@ -7,15 +7,16 @@
 #
 #########################################################################
 
-import os, re
-from ssh import SSHClient
-from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
+import os
+import paramiko
+
+# these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+from django.utils import timezone
+
 from server.models import LinuxServer
 import utilities
-import paramiko
+
 django.setup()
 
 
@@ -39,8 +40,6 @@ def update_server():
                 print server.name
                 for line in output:
                     print line.rstrip()
-                
-
 
 
 if __name__ == '__main__':
@@ -48,6 +47,5 @@ if __name__ == '__main__':
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

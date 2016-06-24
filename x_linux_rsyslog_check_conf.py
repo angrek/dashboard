@@ -7,12 +7,13 @@
 #
 #########################################################################
 
-import os, re, time
+import os
 from ssh import SSHClient
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
 django.setup()
@@ -22,18 +23,14 @@ def update_server():
 
     server_list = LinuxServer.objects.filter(active=True, exception=False, zone=1, decommissioned=False)
 
-    counter = 0
-
     for server in server_list[:25]:
-        #counter += 1
-        #print str(counter) + ' - ' + str(server)
+
         if server.rsyslog is not 'None':
+
             if utilities.ping(server):
 
                 client = SSHClient()
                 if utilities.ssh(server, client):
-                    print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-                    print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
                     print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
                     print server.name
                     print "Current syslog conf:"
@@ -47,24 +44,20 @@ def update_server():
 
                     print '---------------------------'
 
-                    #command = 'cat /etc/rsyslog.conf'
-                    #stdin, stdout, stderr = client.exec_command(command)
+                    # command = 'cat /etc/rsyslog.conf'
+                    # stdin, stdout, stderr = client.exec_command(command)
 
-                    #try changing chkconfig
-                    #command = 'chkconfig --list | grep rsyslog'
-                    #stdin, stdout, stderr = client.exec_command(command)
-                    #t = stdout.readlines()[0]
-                    #print t
+                    # try changing chkconfig
+                    # command = 'chkconfig --list | grep rsyslog'
+                    # stdin, stdout, stderr = client.exec_command(command)
+                    # t = stdout.readlines()[0]
+                    # print t
 
 
-                
-
-#start execution
 if __name__ == '__main__':
     print "Checking and installing rsyslog."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

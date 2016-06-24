@@ -7,23 +7,21 @@
 #
 #########################################################################
 
-import os, re
-from ssh import SSHClient
+import os
+import paramiko
+
+# these are need in django 1.7 and needed vs the django settings command
 from django.utils import timezone
-#these are need in django 1.7 and needed vs the django settings command
 import django
-from dashboard import settings
+
 from server.models import LinuxServer
 import utilities
-import paramiko
 django.setup()
 
 
 def update_server():
 
     server_list = LinuxServer.objects.filter(decommissioned=False)
-
-    counter = 0
 
     for server in server_list:
 
@@ -41,16 +39,12 @@ def update_server():
                 except:
                     continue
                 print server.name + " - " + output
-                
 
 
-
-#start execution
 if __name__ == '__main__':
     print "Checking /etc/rsyslog.conf entries..."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
-    elapsed_time = timezone.now() - starting_time 
+    elapsed_time = timezone.now() - starting_time
     print "Elapsed time: " + str(elapsed_time)
-

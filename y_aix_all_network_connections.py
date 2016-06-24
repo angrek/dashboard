@@ -9,25 +9,23 @@
 
 import os
 import re
-from subprocess import call
 from ssh import SSHClient
 from openpyxl import Workbook
-from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
+from openpyxl.styles import Style, Font
+# from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font
 
+# these are need in django 1.7 and needed vs the django settings command
+import django
 from django.utils import timezone
-from server.models import AIXServer, LinuxServer, Power7Inventory, Storage
 
+from server.models import AIXServer
 import utilities
 
-#these are need in django 1.7 and needed vs the django settings command
-import django
-from dashboard import settings
 django.setup()
-
 
 s = Style(font=Font(name='Calibri', size=11, bold=True))
 
-#need to put the timestamp in the filename
+# need to put the timestamp in the filename
 now = timezone.now()
 timestamp = now.strftime('%m-%d-%Y')
 filename = 'all_network_conections' + timestamp + '.xlsx'
@@ -38,7 +36,7 @@ ws1 = wb.active
 ws1.title = 'AIX'
 
 
-#create le pretty headers
+# create le pretty headers
 ws1['A1'] = 'local_ip_addr'
 ws1['B1'] = 'local_port'
 ws1['C1'] = 'remote_ip_addr'
@@ -62,13 +60,15 @@ ws1.column_dimensions["I"].width = 150
 
 list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
-#to hell with writing all this out because the row dimensions are working...
+# to hell with writing all this out because the row dimensions are working...
+
 for letter in list:
     cell = letter + '1'
     c = ws1[cell]
     c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
 d = ws1.row_dimensions[1].height = 20
+
 
 def get_server_data():
     line = 1
@@ -79,11 +79,11 @@ def get_server_data():
         print server.name
 
         if utilities.ping(server):
-            
+
             print 'ping good'
             client = SSHClient()
             if utilities.ssh(server, client):
-                
+
                 print 'ssh good'
 
                 counter = counter + 1
@@ -93,8 +93,8 @@ def get_server_data():
 
                 output = stdout.readlines()
 
-
                 for row in output:
+
                     line = line + 1
                     if re.search('Active UNIX', row):
                         line = line - 1
@@ -112,7 +112,7 @@ def get_server_data():
                         protocol = row[1]
                         print 'Protocol:' + protocol
 
-                        #these are giving issues for now
+                        # these are giving issues for now
                         if protocol == 'tcp6':
                             line = line - 1
                             continue
@@ -214,52 +214,46 @@ def get_server_data():
                         cell = 'I' + str(line)
                         ws1[cell] = cmd
 
+    # total
+    # cell = 'A' + str(line + 1)
+    # aix_cell = 'A' +str(aix_line + 1)
+    # ws1[aix_cell] = 'Total'
+    # ws2[cell] = 'Total'
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    #
+    # cell = 'E' + str(line + 1)
+    # aix_cell = 'E' + str(aix_line + 1)
+    # sum = "=SUM(E3:E" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
+    # print aix_sum
+    # print sum
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    #
+    # cell = 'G' + str(line + 1)
+    # aix_cell = 'G' + str(aix_line + 1)
+    # sum = "=SUM(G3:G" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(G3:G" + str((aix_line - 1)) + ")"
+    # print aix_cell
+    # print aix_sum
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-        
+    # cell = 'H' + str(line + 1)
+    # aix_cell = 'H' + str(aix_line + 1)
+    # sum = "=SUM(H3:H" + str((line - 1)) + ")"
+    # aix_sum = "=SUM(H3:H" + str((aix_line - 1)) + ")"
+    # ws1[aix_cell] = aix_sum
+    # ws2[cell] = sum
+    # ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-
-
-
-    #total
-    #cell = 'A' + str(line + 1)
-    #aix_cell = 'A' +str(aix_line + 1)
-    #ws1[aix_cell] = 'Total'
-    #ws2[cell] = 'Total'
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-#
-    #cell = 'E' + str(line + 1)
-    #aix_cell = 'E' + str(aix_line + 1)
-    #sum = "=SUM(E3:E" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(E3:E" + str((aix_line -1)) + ")"
-    #print aix_sum
-    #print sum
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-#
-    #cell = 'G' + str(line + 1)
-    #aix_cell = 'G' + str(aix_line + 1)
-    #sum = "=SUM(G3:G" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(G3:G" + str((aix_line - 1)) + ")"
-    #print aix_cell
-    #print aix_sum
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-
-    #cell = 'H' + str(line + 1)
-    #aix_cell = 'H' + str(aix_line + 1)
-    #sum = "=SUM(H3:H" + str((line - 1)) + ")"
-    #aix_sum = "=SUM(H3:H" + str((aix_line - 1)) + ")"
-    #ws1[aix_cell] = aix_sum
-    #ws2[cell] = sum
-    #ws1[aix_cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #ws2[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-
-#create le pretty headers
+    # create le pretty headers
     cell = 'A1'
     ws1[cell] = 'local_ip_addr'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
@@ -288,34 +282,19 @@ def get_server_data():
     ws1[cell] = 'cmd'
     ws1[cell].style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
-
-
-
-    #c and f are just arbitrary vars right now for page one and two :\
+    # c and f are just arbitrary vars right now for page one and two :\
     c.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
-    #f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
+    # f.style = Style(font=Font(name='Arial', size=11, bold=True, vertAlign=None, color='FF000000'))
 
     command = 'echo "Unix Configuration Report" | mutt -a "' + filename + '" -s "Unix Configuration Report" -- boomer@wellcare.com'
     os.system(command)
 
-
     wb.save(filename)
 
 
-
-
-
-#start execution
 if __name__ == '__main__':
     print "Getting server information..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     get_server_data()
 
-    #print "Elapsed time: " + str(elapsed_time)
-
-
-
-
-
-
-
+    # print "Elapsed time: " + str(elapsed_time)
