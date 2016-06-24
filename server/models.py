@@ -599,6 +599,13 @@ class LinuxServerENV(LinuxServer):
         verbose_name = "Linux Server ENV"
         verbose_name_plural = "Linux Sever ENV"
 
+class LinuxServerOwner(AIXServer):
+    class Meta:
+        proxy=True
+        verbose_name = "Linux Server Owner"
+        verbose_name_plural = "Linux Server Owners"
+
+
 ####################### WINDOWS TESTING###################################
 
 class WindowsServer(models.Model):
