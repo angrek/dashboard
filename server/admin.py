@@ -488,11 +488,11 @@ class LinuxServerOwnerAdmin(ImportExportActionModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'application', 'stack', 'substack']
-    list_filter = ['os', 'owner', 'application', 'stack', 'substack']
-    list_editable = ['owner', 'application', 'stack', 'substack']
-    search_fields = ['name', 'owner', 'application', 'stack', 'substack']
-    fields = ['name', 'owner', 'application', 'stack', 'substack']
+    list_display = ['name', 'owner', 'application', 'stack']
+    list_filter = ['os', 'owner', 'application', 'stack']
+    list_editable = ['owner', 'application', 'stack']
+    search_fields = ['name', 'owner', 'application', 'stack']
+    fields = ['name', 'owner', 'application', 'stack']
     resource_class = LinuxServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
