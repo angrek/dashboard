@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to get centrify version
+# Script to get aix local users
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 5/4/2015
 #
 #########################################################################
 

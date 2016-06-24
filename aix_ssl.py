@@ -3,7 +3,7 @@
 #
 # Script to retrieve SSL versions on the servers and drop them into Django dashboard
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 8/28/2014
 #
 #########################################################################
 

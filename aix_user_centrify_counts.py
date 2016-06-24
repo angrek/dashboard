@@ -3,7 +3,7 @@
 #
 # Script to get centrify version
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 5/4/2015
 #
 #########################################################################
 

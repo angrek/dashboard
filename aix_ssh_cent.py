@@ -3,7 +3,7 @@
 #
 # Script to retrieve the Centrify versions of SSH on the servers
 #
-# Boomer Rehfield - 8/7/2014
+# Boomer Rehfield - 12/3/2014
 #
 #########################################################################
 
