@@ -482,6 +482,7 @@ def get_default_zone():
 class LinuxServer(models.Model):
     name = models.CharField(max_length=40, primary_key=True)
     owner = models.CharField(max_length=30, blank=True, null=True, default='None')
+    distribution_list = models.CharField(max_length=50, blank=True, null=True, default='None')
     vmware_cluster = models.CharField(max_length=40, blank=True, null= True) 
     adapter = models.CharField(max_length=20, blank=True, null=True, default='None')
     active = models.NullBooleanField(default=True, blank=True)
