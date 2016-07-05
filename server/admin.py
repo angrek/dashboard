@@ -472,7 +472,7 @@ class HistoricalLinuxDataAdmin(ImportExportActionModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['date', 'name', 'owner', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage']
+    list_display = ['date', 'name', 'owner', 'active', 'exception', 'decommissioned', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'ip_address', 'cpu', 'memory', 'storage']
     list_filter = ['date', 'os', 'owner', 'vmware_cluster', 'adapter', 'zone', 'os_level', 'active', 'exception']
     search_fields = ['name__name', 'owner', 'ip_address', 'adapter', 'os', 'os_level']
     readonly_fields = ['created', ]
