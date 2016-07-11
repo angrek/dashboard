@@ -29,39 +29,48 @@ def update_server(server):
         if utilities.ssh(server, client):
 
             print server.name
+            #Get the OS
+            try:
+                command = 'lsb_release -a | grep Distributor'
+                stdin, stdout, stderr = client.exec_command(command)
+                # need rstrip() because there are extra characters at the end
+                # FIXME - dinfhdp09 doesn't have lsb_release installed?????
+                os = stdout.readlines()[0].rstrip()
+                os = re.sub('Distributor ID:', '', os)
+                os = re.sub('\s*', '', os)
 
-            command = 'lsb_release -a | grep Distributor'
-            stdin, stdout, stderr = client.exec_command(command)
+                if os == 'RedHatEnterpriseServer':
+                    os = 'RHEL'
+                else:
+                    os = 'None'
+            except:
+                os = 'None'
 
-            # need rstrip() because there are extra characters at the end
-            # FIXME - dinfhdp09 doesn't have lsb_release installed?????
-            os = stdout.readlines()[0].rstrip()
-            os = re.sub('Distributor ID:', '', os)
-            os = re.sub('\s*', '', os)
+            #Get the OS realease
+            try:
+                command = '/usr/bin/lsb_release -a | grep Release'
+                stdin, stdout, stderr = client.exec_command(command)
+                oslevel = stdout.readlines()[0].rstrip()
+                oslevel = re.sub('Release:', '', oslevel)
+                oslevel = re.sub('\s*', '', oslevel)
+            except:
+                oslevel = "None"
 
-            if os == 'RedHatEnterpriseServer':
-                os = 'RHEL'
-            else:
-                os = 'Unknown'
-            print os
-
-            command = 'lsb_release -a | grep Release'
-            stdin, stdout, stderr = client.exec_command(command)
-
-            oslevel = stdout.readlines()[0].rstrip()
-            oslevel = re.sub('Release:', '', oslevel)
-            oslevel = re.sub('\s*', '', oslevel)
-            print oslevel
-
+            #Get kernel version
             command = 'uname -r'
             stdin, stdout, stderr = client.exec_command(command)
             kernel = stdout.readlines()[0].rstrip()
-            print kernel
+            kernel = re.sub('.el6.x86_64', '', kernel)
+            kernel = re.sub('.el7.x86_64', '', kernel)
+            kernel = re.sub('.el5', '', kernel)
 
+            #Get kernel install date
             command = 'dzdo rpm -qa --last | grep kernel'
             stdin, stdout, stderr = client.exec_command(command)
             kernel_date = stdout.readlines()[0].rstrip()
-            print kernel_date
+
+            #For troubleshooting purposes
+            print server.name + "-" + os + "-" + oslevel + "-" + kernel + "-" + kernel_date
 
             # check existing value, if it exists, don't update
             if str(os) != str(server.os):
@@ -81,8 +90,9 @@ if __name__ == '__main__':
     start_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    server_list = LinuxServer.objects.filter(decommissioned=False, name__contains='pidii').exclude(name='pgp')
-    pool = Pool(20)
+    server_list = LinuxServer.objects.filter(decommissioned=False)
+    #server_list = LinuxServer.objects.filter(decommissioned=False, name__contains='pidii').exclude(name='pgp')
+    pool = Pool(1)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - start_time
