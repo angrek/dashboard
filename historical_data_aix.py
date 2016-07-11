@@ -22,7 +22,7 @@ django.setup()
 
 def update_server():
 
-    server_list = AIXServer.objects.all(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False)
 
     for server in server_list:
 
