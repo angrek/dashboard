@@ -36,7 +36,7 @@ def update_server(server):
 
             bash_version = re.sub(r'.x86_64', '', bash_version)
             bash_version = re.sub(r'bash-', '', bash_version)
-            print bash_version
+            print server.name + " == " + bash_version
 
             if str(bash_version) != str(server.bash):
                 utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
