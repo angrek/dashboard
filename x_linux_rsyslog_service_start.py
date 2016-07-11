@@ -9,7 +9,7 @@
 
 import os
 import time
-from ssh import SSHClient
+from paramiko import SSHClient
 import paramiko
 import getpass
 

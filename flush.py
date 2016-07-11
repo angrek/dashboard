@@ -9,7 +9,7 @@
 
 import os
 import re
-from ssh import SSHClient
+from paramiko import SSHClient
 # need itertools to concatenate the query sets to combine lists of servers from two different tables
 import paramiko
 import argparse

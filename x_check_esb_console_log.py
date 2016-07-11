@@ -7,7 +7,7 @@
 #
 #########################################################################
 
-from ssh import SSHClient
+from paramiko import SSHClient
 import smtplib
 from email.mime.text import MIMEText
 import email.utils

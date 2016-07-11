@@ -17,7 +17,7 @@
 
 import os
 import sys
-from ssh import SSHClient
+from paramiko import SSHClient
 import paramiko
 import utilities
 from subprocess import check_output

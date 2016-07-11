@@ -8,7 +8,7 @@
 #########################################################################
 
 import os
-from ssh import SSHClient
+from paramiko import SSHClient
 from multiprocessing import Pool
 
 # this is need in django 1.7 and needed vs the django settings command
@@ -33,6 +33,7 @@ def update_server(server):
             try:
                 bash_version = stdout.readlines()[0].rstrip()
                 # check existing value, if it exists, don't update
+                print bash_version
                 if str(bash_version) != str(server.bash):
                     utilities.log_change(server, 'bash', str(server.bash), str(bash_version))
                     AIXServer.objects.filter(name=server).update(bash=bash_version, modified=timezone.now())
@@ -47,8 +48,8 @@ if __name__ == '__main__':
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    # server_list = AIXServer.objects.filter(decommissioned=False)
-    server_list = AIXServer.objects.filter(decommissioned=False, name__contains='vio')
+    server_list = AIXServer.objects.filter(decommissioned=False)
+    # server_list = AIXServer.objects.filter(decommissioned=False, name__contains='uftsmid')
     pool = Pool(20)
     pool.map(update_server, server_list)
 

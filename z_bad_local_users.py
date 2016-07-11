@@ -50,7 +50,7 @@ def update_server():
                       'autosys', 'cca_dev_', 'rstudio', 'rstudio-server', 'rrdcache', 'iteraplan',
                       'service']
 
-    server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=1)
+    server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=1)[:30]
     # server_list = LinuxServer.objects.filter(name__contains='p1rhrep')
 
     main_user_count = 0

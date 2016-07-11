@@ -8,7 +8,7 @@
 #########################################################################
 
 import os
-from ssh import SSHClient
+from paramiko import SSHClient
 
 # these are need in django 1.7 and needed vs the django settings command
 import django
