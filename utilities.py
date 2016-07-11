@@ -23,7 +23,6 @@ from django.contrib.admin.models import LogEntry
 
 django.setup()
 
-
 def content_type(server):
     # print server.name
     # print server.os
