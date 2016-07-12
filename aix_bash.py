@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     server_list = AIXServer.objects.filter(decommissioned=False)
     # server_list = AIXServer.objects.filter(decommissioned=False, name__contains='uftsmid')
-    pool = Pool(20)
+    pool = Pool(10)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time

@@ -28,16 +28,21 @@ def update_server(server):
         client = SSHClient()
         if utilities.ssh(server, client):
 
+            tmef = ''
             print "======================="
             print server.name
-            command = 'lparstat -i | grep "Target Memory Expansion Factor"'
-            stdin, stdout, stderr = client.exec_command(command)
-            tmef = stdout.readlines()[0].rstrip()
-            tmef = tmef.split()[5]
-            if tmef == '-':
-                tmef = 0.00
-            else:
-                tmef = float(tmef)
+
+            try:
+                command = 'lparstat -i | grep "Target Memory Expansion Factor"'
+                stdin, stdout, stderr = client.exec_command(command)
+                tmef = stdout.readlines()[0].rstrip()
+                tmef = tmef.split()[5]
+                if tmef == '-':
+                    tmef = 0.00
+                else:
+                    tmef = float(tmef)
+            except:
+                pass
             print "======================="
             print server.name
             print tmef
@@ -55,7 +60,7 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
     server_list = AIXServer.objects.filter(decommissioned=False)
-    pool = Pool(1)
+    pool = Pool(15)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time

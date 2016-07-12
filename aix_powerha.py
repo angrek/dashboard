@@ -74,7 +74,7 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
     server_list = AIXServer.objects.filter(decommissioned=False)
-    pool = Pool(20)
+    pool = Pool(1)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time
