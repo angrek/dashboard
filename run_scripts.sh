@@ -20,7 +20,7 @@ mail william.rehfield@wellcare.com -s 'starting decom ping sweep' < 1.txt
 mail william.rehfield@wellcare.com -s 'starting aix power7 inventory' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_power7_inventory.py
 
-mail william.rehfield@wellcare.com -s 'starting aix historical proc pools' < 1.txt
+mail william.rehfield@wellcare.com -s 'starting aix proc pools' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_proc_pools.py
 
 mail william.rehfield@wellcare.com -s 'starting aix historical proc pools' < 1.txt
