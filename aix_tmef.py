@@ -37,6 +37,7 @@ def update_server(server):
                 stdin, stdout, stderr = client.exec_command(command)
                 tmef = stdout.readlines()[0].rstrip()
                 tmef = tmef.split()[5]
+                print '->>' + tmef
                 if tmef == '-':
                     tmef = 0.00
                 else:
@@ -59,7 +60,7 @@ if __name__ == '__main__':
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    server_list = AIXServer.objects.filter(decommissioned=False)
+    server_list = AIXServer.objects.filter(decommissioned=False, name__contains='hmc')
     pool = Pool(15)
     pool.map(update_server, server_list)
 
