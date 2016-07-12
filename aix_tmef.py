@@ -34,9 +34,10 @@ def update_server(server):
             stdin, stdout, stderr = client.exec_command(command)
             tmef = stdout.readlines()[0].rstrip()
             tmef = tmef.split()[5]
-            if tmef is '-':
+            if tmef == '-':
                 tmef = 0.00
-            tmef = float(tmef)
+            else:
+                tmef = float(tmef)
             print "======================="
             print server.name
             print tmef
@@ -54,7 +55,7 @@ if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
     server_list = AIXServer.objects.filter(decommissioned=False)
-    pool = Pool(30)
+    pool = Pool(1)
     pool.map(update_server, server_list)
 
     elapsed_time = timezone.now() - starting_time
