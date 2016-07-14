@@ -32,27 +32,29 @@ def update_server(server):
             command = 'lssrc -ls clstrmgrES|head -1'
             stdin, stdout, stderr = client.exec_command(command)
             output = stdout.readlines()[0].rstrip()
+            print server.name
             print 'OUTPUT =>' + output
 
-            # if re.search("is not on file", output):
-            #    my_output = "None"
+            if re.search("is not on file", output):
+                cluster_state = "None"
+                cluster_description = "None"
+            else:
+                cluster_state = re.sub('Current state: ', '', output)
 
-            cluster_state = re.sub('Current state: ', '', output)
+                state_dict = {'ST_INIT': 'cluster configured and down',
+                              'ST_JOINING': 'node joining the cluster',
+                              'ST_VOTING': 'Inter-node decision state for an event',
+                              'ST_RP_RUNNING': 'cluster running recovery program',
+                              'ST_BARRIER': 'clstrmgr is exiting recovery program',
+                              'ST_CBARRIER': 'clstrmgr is exiting recovery program',
+                              'ST_UNSTABLE': 'cluster unstable',
+                              'NOT_CONFIGURED': 'HA installed but not configured',
+                              'RP_FAILED': 'event script failed',
+                              'ST_RP_FAILED': 'event script failed',
+                              'ST_STABLE': 'cluster services are running',
+                              'STABLE': 'cluster services are running'}
 
-            state_dict = {'ST_INIT': 'cluster configured and down',
-                          'ST_JOINING': 'node joining the cluster',
-                          'ST_VOTING': 'Inter-node decision state for an event',
-                          'ST_RP_RUNNING': 'cluster running recovery program',
-                          'ST_BARRIER': 'clstrmgr is exiting recovery program',
-                          'ST_CBARRIER': 'clstrmgr is exiting recovery program',
-                          'ST_UNSTABLE': 'cluster unstable',
-                          'NOT_CONFIGURED': 'HA installed but not configured',
-                          'RP_FAILED': 'event script failed',
-                          'ST_RP_FAILED': 'event script failed',
-                          'ST_STABLE': 'cluster services are running',
-                          'STABLE': 'cluster services are running'}
-
-            cluster_description = state_dict[cluster_state]
+                cluster_description = state_dict[cluster_state]
 
             print '--------'
             print server
