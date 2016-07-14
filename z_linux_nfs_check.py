@@ -34,17 +34,13 @@ def update_server(server):
                 print server.name + ' - ' + line.rstrip()
                 test = ' '.join(line.split())
                 test = test.split(' ')[1]
-                print test
 
-                command = 'df | grep ' + test
-                stdin, stdout, stderr = client.exec_command(command)
+                command2 = 'dzdo df | grep ' + test
+                stdin, stdout, stderr = client.exec_command(command2)
                 output = stdout.readlines()
-                yes = 0
-                for li in output:
-                    if li:
-                        print "MOUNTED"
-                        yes = 1
-                if not yes:
+                if output:
+                    print "MOUNTED"
+                else:
                     print "NOT MOUNTED"
 
 
@@ -53,7 +49,7 @@ if __name__ == '__main__':
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
 
-    server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=2)
+    server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=1)
 
     pool = Pool(1)
     pool.map(update_server, server_list)
