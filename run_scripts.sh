@@ -69,8 +69,8 @@ mail william.rehfield@wellcare.com -s 'starting aix user local' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_user_local.py
 mail william.rehfield@wellcare.com -s 'starting aix ping decoms' < 1.txt
 /home/wrehfiel/ENV/dashboard/aix_ping_decoms.py
-mail william.rehfield@wellcare.com -s 'starting aix wwns' < 1.txt
-/home/wrehfiel/ENV/dashboard/aix_world_wide_names.py
+#mail william.rehfield@wellcare.com -s 'starting aix wwns' < 1.txt
+#/home/wrehfiel/ENV/dashboard/aix_world_wide_names.py
 
 /home/wrehfiel/ENV/dashboard/historical_data_aix.py
 mail william.rehfield@wellcare.com -s 'aix scripts are done' < 1.txt
@@ -82,6 +82,8 @@ mail william.rehfield@wellcare.com -s 'starting linux ssh keys' < 1.txt
 /home/wrehfiel/ENV/dashboard/ssh_keys.py --linux all
 mail william.rehfield@wellcare.com -s 'starting linux bash' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_bash.py
+#mail william.rehfield@wellcare.com -s 'starting linux glibc' < 1.txt
+#/home/wrehfiel/ENV/dashboard/linux_glibc.py
 mail william.rehfield@wellcare.com -s 'starting linux centrify' < 1.txt
 /home/wrehfiel/ENV/dashboard/linux_centrify.py
 mail william.rehfield@wellcare.com -s 'starting linux netbackup' < 1.txt
