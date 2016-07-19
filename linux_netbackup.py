@@ -32,7 +32,6 @@ def update_server(server):
 
             print server
             stdin, stdout, stderr = client.exec_command('[ -f /usr/openv/netbackup/bin/version ] && cat /usr/openv/netbackup/bin/version || echo "None"')
-            print stdout
 
             try:
                 netbackup_version = stdout.readlines()[0]
