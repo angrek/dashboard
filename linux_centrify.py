@@ -28,9 +28,11 @@ def update_server(server):
 
     if utilities.ping(server):
 
+        print 'ping good'
         client = SSHClient()
 
         if utilities.ssh(server, client):
+            print 'ssh good'
 
             centrify_is_installed = 1
             stdin, stdout, stderr = client.exec_command('adinfo -v')
@@ -67,16 +69,19 @@ def update_server(server):
 
             try:
                 centrifyda = stdout.readlines()[0]
-                new_centrifyda = centrifyda[19:-2]
+                centrifyda = centrifyda[19:-2]
             except:
-                new_centrifyda = "None"
+                centrifyda = "None"
                 centrify_is_installed = 0
+
+            print centrifyda
 
             # if it's the same version, we don't need to update the record
 
-            if str(new_centrifyda) != str(server.centrifyda):
-                utilities.log_change(server, 'CentrifyDA', str(server.centrifyda), str(new_centrifyda))
-                LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=new_centrifyda, modified=timezone.now())
+            if str(centrifyda) != str(server.centrifyda):
+                print 'updating lizardfish'
+                utilities.log_change(server, 'CentrifyDA', str(server.centrifyda), str(centrifyda))
+                LinuxServer.objects.filter(name=server, exception=False, active=True).update(centrifyda=centrifyda, modified=timezone.now())
 
 
 if __name__ == '__main__':
