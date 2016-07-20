@@ -27,7 +27,7 @@ def update_server():
     for server in server_list:
 
         my_date = datetime.date.today()
-        print date
+        print my_date
 
         # this was only here for testing but leaving it for some reason...?
         # date = datetime.date.today() - datetime.timedelta(days=1)
