@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser(
     ./ansible.py --os aix                                               #Return all AIX servers
     ./ansible.py --os linux --zone production                           #All Linux prod servers
     ./ansible.py --os aix --zone nonproduction                          #All AIX nonprod servers
-    ./ansible.py --os aix --name__contains sas                          #This is a straight regex for 'sas'.
+    ./ansible.py --os aix --name__contains sas                          #This is a straight query for 'sas'.
     ./ansible.py --os linux --zone production --name__contains esb      #Give me prod ESB linux boxes
 
 
@@ -51,14 +51,6 @@ parser = argparse.ArgumentParser(
     So with SSH form and ansible server, your command would look something like this:
     ssh p1rhrep /home/wrehfiel/ENV/dashboard/ansible.py --os linux --os_level 5.10 > testing
 
-
-    Currently available fields: os, zone, os_level, centrify, centrifyda,
-    xcelys, bash, ssl, netbackup, syslog, rsyslog, samba, python,
-    and name__contains. (note two underscores for name__contains)
-
-
-    #NOTE: I am intentionally not including anything decommed. Why would
-    we run ansible against a list of decoms?
     '''))
 
 parser.add_argument('--os', help="aix or linux (lowercase)")
