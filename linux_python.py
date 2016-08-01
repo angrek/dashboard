@@ -32,12 +32,23 @@ def update_server(server):
             command = 'python -V'
             stdin, stdout, stderr = client.exec_command(command)
 
-            # FIXME why the hell is the version info coming through in stderr?
+            # https://bugs.python.org/issue18338
+            # Apparently this is an old bug and only fixed in Python 3.4 and 2.7
+            # where the version is sent to stderr
+
             try:
                 version = stderr.readlines()[0].rstrip()
                 version = re.sub('Python ', '', version)
             except:
                 version = 'None'
+            
+            if version == 'None':
+                try:
+                    version = stdout.readlines()[0].rstrip()
+                    version = re.sub('Python ', '', version)
+                except:
+                    version = 'None'
+
             print version
 
             # check existing value, if it exists, don't update
