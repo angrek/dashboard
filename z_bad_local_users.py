@@ -16,7 +16,7 @@ import paramiko
 import django
 from django.utils import timezone
 
-from server.models import LinuxServer
+from server.models import LinuxServer, AIXServer
 import utilities
 django.setup()
 
@@ -48,9 +48,9 @@ def update_server():
                       'stunnel', 'hue', 'xasecure', 'appviewx', 'anm', 'quest', 'nxpgsql',
                       'lpar2rrd', 'cacti', 'ucmbackup', 'sungard', 'rmsvc', 'jabber', 'pwrsvcrm',
                       'autosys', 'cca_dev_', 'rstudio', 'rstudio-server', 'rrdcache', 'iteraplan',
-                      'service']
+                      'service', 'db2inst1', 'db2fenc1', 'dasusr1', 'lsfadmin']
 
-    server_list = LinuxServer.objects.filter(decommissioned=False, active=True, zone=1)[:30]
+    server_list = AIXServer.objects.filter(decommissioned=False, active=True, zone=2)
     # server_list = LinuxServer.objects.filter(name__contains='p1rhrep')
 
     main_user_count = 0
@@ -63,6 +63,7 @@ def update_server():
             client = paramiko.SSHClient()
             if utilities.ssh(server, client):
 
+                #Get all local users and filter against the standard_users dict
                 server_count = server_count + 1
 
                 command = "dzdo cat /etc/passwd"
@@ -84,9 +85,10 @@ def update_server():
                     counter = counter + 1
 
                     if counter == 1:
-                        print '========================='
-                        print server.name
-                        print '-------------------'
+                        print "                                      "
+                        print "======================================"
+                        print server.name + " - Unknown Local Users"
+                        print "======================================"
                     command = "adquery user -e " + name
                     stdin, stdout, stderr = client.exec_command(command)
 
@@ -96,6 +98,17 @@ def update_server():
                     except:
                         output = stderr.readlines()[0].rstrip()
                         print name + " -> " + output
+
+                #Get active directory/Centrify users        
+                #command = "adquery user"
+                #stdin, stdout, stderr = client.exec_command(command)
+
+                #print "======================================"
+                #print server.name + " - Users via Centrify"
+                #print '-------------------'
+
+                #for line in stdout.readlines():
+                #    print line.rstrip()
     print ""
     print ""
     print "======================================"
@@ -106,7 +119,7 @@ def update_server():
 
 
 if __name__ == '__main__':
-    print "Checking Local Users....."
+    print "Production User Access Report"
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()
