@@ -491,7 +491,7 @@ class LinuxServerOwnerAdmin(ImportExportActionModelAdmin):
     list_display = ['name', 'owner', 'application', 'distribution_list', 'stack']
     list_filter = ['os', 'owner', 'application', 'distribution_list', 'stack']
     list_editable = ['owner', 'application', 'distribution_list', 'stack']
-    search_fields = ['name', 'owner', 'application', 'distribution_list', 'stack']
+    search_fields = ['name', 'owner', 'application', 'distribution_list']
     fields = ['name', 'owner', 'application', 'distribution_list', 'stack']
     resource_class = LinuxServerResource
     class Media:
