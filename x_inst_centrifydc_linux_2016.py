@@ -23,7 +23,7 @@ def update_server():
 
     # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
     # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
-    server_list = LinuxServer.objects.filter(zone=1, active=True, decommissioned=False)
+    server_list = LinuxServer.objects.filter(zone=1, active=True, decommissioned=False, centrify='5.3.0-213')
 
     for server in server_list:
 
@@ -41,7 +41,7 @@ def update_server():
                 print "Current centrify version:"
                 print server.centrify
                 old_version = server.centrify
-                if server.centrify != '5.3.0-213':
+                if server.centrify != '5.3.1-398':
 
                     print "Checking adquery before install"
                     command = "dzdo adquery user | wc -l"
@@ -70,18 +70,19 @@ def update_server():
                     for line in y:
                         print line
 
-                    print 'Mounting naswin1 /centrify_install'
-                    command = 'dzdo mount -o nolock naswin1:/unix /centrify_install'
-                    stdin, stdout, stderr = client.exec_command(command)
-                    x = stdout.readlines()
-                    y = stderr.readlines()
-                    for line in x:
-                        print line
-                    for line in y:
-                        print line
+                    #print 'Mounting naswin1 /centrify_install'
+                    #command = 'dzdo mount -o nolock naswin1:/unix /centrify_install'
+                    #stdin, stdout, stderr = client.exec_command(command)
+                    #x = stdout.readlines()
+                    #y = stderr.readlines()
+                    #for line in x:
+                    #    print line
+                    #for line in y:
+                    #    print line
 
                     print 'Installing centrify'
-                    command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2016-agents/rhel/centrifydc-5.3.0-rhel4-x86_64.rpm"
+                    command = "dzdo rpm --force -Uvh /home/wrehfiel/centrifydc-5.3.1-rhel4-x86_64.rpm"
+                    #command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2016.1-agents-DM/rhel/centrifydc-5.3.1-rhel4-x86_64.rpm"
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()

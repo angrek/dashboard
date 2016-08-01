@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to install centrify direct control
+# Script to install centrify direct audit
 #
-# Boomer Rehfield - 6/25/2015
+# Boomer Rehfield - 7/22/2015
 #
 #########################################################################
 
@@ -23,8 +23,7 @@ def update_server():
 
     # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
     # server_list = LinuxServer.objects.filter(zone=1, active=True, exception=False, decommissioned=False, centrify='5.0.2-388')
-    server_list = LinuxServer.objects.filter(name__contains='')
-    # server_list = LinuxServer.objects.filter(name='p1ofapp02-v6')
+    server_list = LinuxServer.objects.filter(zone=1, name__contains='dinfhdp00', active=True, decommissioned=False)
 
     for server in server_list:
 
@@ -39,17 +38,10 @@ def update_server():
 
             if utilities.ssh(server, client):
 
-                print "Current centrify version:"
-                print server.centrify
-                old_version = server.centrify
-                if server.centrify != '5.2.2-192':
-
-                    print "Checking adquery before install"
-                    command = "dzdo adquery user | wc -l"
-                    stdin, stdout, stderr = client.exec_command(command)
-                    x = stdout.readlines()
-                    for line in x:
-                        before = line
+                print "Current direct audit version:"
+                print server.centrifyda
+                old_version = server.centrifyda
+                if server.centrifyda != '3.3.1-335':
 
                     print 'Shutting down direct audit'
                     command = 'dzdo /usr/sbin/dacontrol -d -a'
@@ -66,7 +58,6 @@ def update_server():
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
-                    print x
                     for line in x:
                         print line
                     for line in y:
@@ -82,11 +73,8 @@ def update_server():
                     for line in y:
                         print line
 
-                    print 'Installing centrify'
-                    # command = 'dzdo rpm -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
-                    # command = 'dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/linux_386/centrifydc-5.2.2-rhel3-i386.rpm'
-                    command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm"
-                    # command = 'dzdo rpm -Uvh /home/wrehfiel/rhel/centrifydc-5.2.2-rhel3-x86_64.rpm'
+                    print 'Installing Centrify Direct Audit'
+                    command = "dzdo rpm --force -Uvh /centrify_install/software/Centrify/Centrify-Suite-2016.1-agents-DM/rhel/centrifyda-3.3.1-rhel4-x86_64.rpm"
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
@@ -96,24 +84,28 @@ def update_server():
                     for line in y:
                         print line
 
-                    command = 'dzdo service centrifydc restart;dzdo service sshd restart;dzdo adflush -f;dzdo umount /centrify_install;dzdo rmdir /centrify_install'
+                    command = 'dzdo /sbin/service centrifyda restart;dzdo /sbin/service sshd restart;dzdo /usr/sbin/adflush -f;dzdo umount /centrify_install;dzdo rmdir /centrify_install'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
+                    y = stderr.readlines()
                     for line in x:
                         print line
+                    for line in y:
+                        print line
 
-                    # print 'Enabling direct audit'
-                    # command = 'dzdo /usr/sbin/dacontrol -e'
-                    # stdin, stdout, stderr = client.exec_command(command)
-                    # x = stdout.readlines()
-                    # y = stderr.readlines()
-                    # for line in x:
-                    #    print line
-                    # for line in y:
-                    #    print line
+                    if server.zone == 2:
+                        print 'Enabling direct audit'
+                        command = 'dzdo /usr/sbin/dacontrol -e'
+                        stdin, stdout, stderr = client.exec_command(command)
+                        x = stdout.readlines()
+                        y = stderr.readlines()
+                        for line in x:
+                            print line
+                        for line in y:
+                            print line
 
                     print "Old version: " + old_version
-                    command = 'adinfo -v'
+                    command = 'dainfo -v'
                     stdin, stdout, stderr = client.exec_command(command)
                     new_centrify = stdout.readlines()[0]
                     new_centrify = new_centrify[19:-2]
@@ -122,44 +114,31 @@ def update_server():
                     print ''
                     print "================================="
 
+                    #Let's update Lizardfish version for the server and log the change
                     server.centrify = new_centrify
                     server.save()
-                    utilities.log_change(server, 'Centrify', old_version, new_centrify)
+                    utilities.log_change(server, 'Centrify Direct Audit', old_version, new_centrify)
 
                     # verify
-                    print 'Checking adquery after install'
-                    command = 'dzdo adquery user | wc -l'
-                    stdin, stdout, stderr = client.exec_command(command)
-                    x = stdout.readlines()
-                    for line in x:
-                        after = line
-                    print server.name
-                    print "==============================="
-                    print "users before: " + before.rstrip()
-                    print "users after : " + after.rstrip()
+                    #print 'Checking adquery after install'
+                    #command = 'dzdo adquery user | wc -l'
+                    #stdin, stdout, stderr = client.exec_command(command)
+                    #x = stdout.readlines()
+                    #for line in x:
+                    #    after = line
+                    #print server.name
+                    #print "==============================="
+                    #print "users before: " + before.rstrip()
+                    #print "users after : " + after.rstrip()
 
             else:
                 print "No ssh"
         else:
             print "No ping"
 
-            # t = stdout.readlines()
-            # for line in t:
-            #    print line.rstrip()
-            # print '---------------------------'
-
-            # command = 'cat /etc/rsyslog.conf'
-            # stdin, stdout, stderr = client.exec_command(command)
-
-            # try changing chkconfig
-            # command = 'chkconfig --list | grep rsyslog'
-            # stdin, stdout, stderr = client.exec_command(command)
-            # t = stdout.readlines()[0]
-            # print t
-
 
 if __name__ == '__main__':
-    print "Checking and installing rsyslog."
+    print "Installing Centrify Direct Control 2016....."
     starting_time = timezone.now()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard.settings')
     update_server()

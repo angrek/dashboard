@@ -1,9 +1,9 @@
 #!/home/wrehfiel/ENV/bin/python2.7
 #########################################################################
 #
-# Script to upgrade to the new centrify patch
+# Script to upgrade to centrify 2016
 #
-# Boomer Rehfield - 5/19/2014
+# Boomer Rehfield - 7/20/2016
 #
 #########################################################################
 
@@ -23,7 +23,7 @@ def update_server():
 
     # server_list = AIXServer.objects.filter(name__contains='uhdpdb01', zone=1, active=True, exception=False, decommissioned=False).exclude(centrify='5.2.2-192')
     # server_list = AIXServer.objects.filter(zone=2, name__contains='p1sasgrid01', decommissioned=False).exclude(centrify='5.2.2-192', name__contains='vio')
-    server_list = AIXServer.objects.filter(name__contains='ustsmidcap')
+    server_list = AIXServer.objects.filter(zone=1, decommissioned=False, name__contains='t8sandbox')
 
     for server in server_list:
 
@@ -84,15 +84,19 @@ def update_server():
 
                     print 'Installing centrify'
                     # command = 'dzdo installp -acFY -d /unix_centrify/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/aix_install CentrifyDC.core;sleep 7;dzdo adflush -a;dzdo adreload;sleep 2'
-                    command = 'dzdo installp -acFY -d /unix_centrify/software/Centrify/Centrify-Suite-2015-agents-DM/centrify-suite-2015-5.2.2-192/aix/ CentrifyDC.core;sleep 7;dzdo adflush -a;dzdo adreload;sleep 2'
+                    command = 'dzdo installp -acFY -d /unix_centrify/software/Centrify/Centrify-Suite-2016-agents/aix/ CentrifyDC.core'
                     stdin, stdout, stderr = client.exec_command(command)
                     x = stdout.readlines()
                     y = stderr.readlines()
                     print '3'
-                    # for line in x:
-                    #    print line
-                    # for line in y:
-                    #    print line
+                    for line in x:
+                        print line
+                    for line in y:
+                        print line
+
+                    print 'Quick sleep'
+                    command = 'sleep 10; dzdo adflush -f; dzdo adreload; sleep 2'
+                    stdin, stdout, stderr = client.exec_command(command)
 
                     print 'Unmounting naswin1 /unix_centrify'
                     command = 'dzdo umount /unix_centrify'
@@ -123,15 +127,15 @@ def update_server():
                     # ps ef | grep centrifydc | awk '{print $2}' | xargs kill -9
                     # startsrc -s centrifydc
 
-                    # print "Stopping Centrify"
-                    # command = 'dzdo stopsrc -s centrifydc;sleep 5'
-                    # stdin, stdout, stderr = client.exec_command(command)
-                    # x = stdout.readlines()
-                    # for line in x:
-                    #    print line
-                    # y = stderr.readlines()
-                    # for line in y:
-                    #    print line
+                    print "Stopping Centrify"
+                    command = 'dzdo stopsrc -s centrifydc;sleep 2;dzdo startsrc -s centrifydc'
+                    stdin, stdout, stderr = client.exec_command(command)
+                    x = stdout.readlines()
+                    for line in x:
+                        print line
+                    y = stderr.readlines()
+                    for line in y:
+                        print line
 
                     # command = "dzdo ssh " + str(server.name) + " startsrc -s centrifydc"
                     # os.system(command)
@@ -148,15 +152,16 @@ def update_server():
                     # for line in y:
                     #    print line
 
-                    print 'Enabling direct audit'
-                    command = 'dzdo /usr/sbin/dacontrol -e -a'
-                    stdin, stdout, stderr = client.exec_command(command)
-                    x = stdout.readlines()
-                    y = stderr.readlines()
-                    for line in x:
-                        print line
-                    for line in y:
-                        print line
+                    if server.zone == 2:
+                        print 'Enabling direct audit'
+                        command = 'dzdo /usr/sbin/dacontrol -e -a'
+                        stdin, stdout, stderr = client.exec_command(command)
+                        x = stdout.readlines()
+                        y = stderr.readlines()
+                        for line in x:
+                            print line
+                        for line in y:
+                            print line
 
                     print "Old Version: " + old_version
                     command = 'adinfo -v'
