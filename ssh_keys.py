@@ -138,6 +138,7 @@ def update_server():
                 file = open(known_hosts)
                 lines = file.readlines()
                 file.close()
+
                 # now reopen it in write mode
                 file = open(known_hosts, "w")
                 for line in lines:
@@ -156,10 +157,10 @@ def update_server():
                 file.close()
 
                 print 'Trying SSH again'
-                # Now lets try to use SSH again
                 client = paramiko.SSHClient()
                 client.load_system_host_keys()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
                 # FIXME the below box still isn't working??
                 try:
                     client.connect(str(server), username=username, password=password)
@@ -169,12 +170,11 @@ def update_server():
                     continue
 
             command = '[ -d /home/' + username + '/.ssh ] && echo 1 || echo 0'
-            # command = 'ls /home'
+
             sdtin, stdout, stderr = client.exec_command(command)
             directory_exists = stdout.readlines()
             client.close()
-            # print "stdout!"
-            # print directory_exists[0].rstrip()
+
             if directory_exists[0].rstrip() == '0':
                 print 'SSH directory does not exist. Creating'
                 # directory does not exist so we need to create it
@@ -201,10 +201,6 @@ def update_server():
                     print "Connection timed out or errored out"
                     continue
 
-                # this is a one off for red hat 6 and selinux, but it needs some testing
-                # command = "restorecon -R ~/.ssh"
-                # stdin, stdout, stderr = client.exec_command(command)
-
                 command = '[ -e /home/' + username + '/.ssh/authorized_keys ] || [-e /home/' + username + '/.ssh/authorized_keys2 ] && echo 1 || echo 0'
                 sdtin, stdout, stderr = client.exec_command(command)
 
@@ -223,8 +219,8 @@ def update_server():
                 client.close()
 
             if keys_file_does_not_exist:
-                print 'Transferring key'
                 # sftp our key over
+                print 'Transferring key'
                 transport = paramiko.Transport((str(server), 22))
 
                 try:
@@ -242,7 +238,7 @@ def update_server():
                 transport.close()
 
                 # we've transferred it, but we need to rename the file now
-                # the paramiko sftp won't rename it (or I haven't figured it out yet -Boomer)
+                # the paramiko sftp won't rename it (or I haven't figured it out yet)
                 client.connect(str(server), username=username, password=password)
                 command = 'mv /home/' + username + '/.ssh/id_rsa.pub /home/' + username + '/.ssh/authorized_keys'
 
@@ -254,7 +250,7 @@ def update_server():
                 stdin, stdout, stderr = client.exec_command(command)
                 client.close()
         else:
-                print '-Server is unreachable by ping!!!!!!!!!!'
+                print '-Server is unreachable by ping!'
 
 
 if __name__ == '__main__':
