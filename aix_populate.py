@@ -141,8 +141,8 @@ def populate():
                 print "---------"
                 print frame.name
                 print len(frame.name)
-                print server.frame
-                print len(str(server.frame))
+                #print server.frame
+                #print len(str(server.frame))
                 print server_name.rstrip()
                 print len(server_name.rstrip())
                 # the created object is not the same, so we create it and then get the instance
