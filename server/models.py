@@ -92,7 +92,7 @@ SERVER_ENV_CHOICES = (
 
 
 class AIXServer(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=38, primary_key=True)
     owner = models.CharField(max_length=50, blank=True, null=True, default='None')
     frame = models.ForeignKey(Frame)   
     active = models.NullBooleanField(default=True, blank=True)
