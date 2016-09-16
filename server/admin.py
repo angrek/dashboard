@@ -425,10 +425,10 @@ class LinuxServerAdmin(ImportExportActionModelAdmin):
     list_max_show_all = 500
     save_on_top = True
     list_display = ['name', 'owner', 'distribution_list', 'application', 'stack_', 'active', 'exception', 'zone', 'vmware_cluster', 'adapter', 'os', 'os_level', 'kernel', 'ip_address', 'cpu', 'memory', 'storage', 'modified']
-    list_filter = ['active', 'exception', 'zone', 'vmware_cluster', 'os', 'owner', 'application', 'stack', 'vmware_cluster', 'adapter', 'os_level', 'kernel', 'distribution_list']
+    list_filter = ['active', 'exception', 'zone', 'vmware_cluster', 'os', 'owner', 'application', 'host_level', 'stack', 'vmware_cluster', 'adapter', 'os_level', 'kernel', 'distribution_list']
     search_fields = ['name', 'owner', 'application', 'distribution_list', 'ip_address', 'adapter', 'os', 'os_level', 'kernel']
     readonly_fields = ['created', 'modified']
-    fields = ['name', 'owner', 'distribution_list', 'application', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'kernel', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'glibc', 'java', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'python', 'iptables_on', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
+    fields = ['name', 'owner', 'distribution_list', 'host_level', 'application', 'stack', 'vmware_cluster', 'adapter', 'ip_address', 'active', 'exception', 'decommissioned', 'created', 'modified', 'cpu', 'memory', 'storage', 'zone', 'os', 'os_level', 'kernel', 'centrify', 'centrifyda', 'xcelys', 'bash', 'ssl', 'glibc', 'java', 'netbackup', 'syslog', 'rsyslog', 'rsyslog_r', 'samba', 'python', 'iptables_on', 'server_env', 'server_env_marker', 'server_env_text', 'application_paths', 'local_users']
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
     resource_class = LinuxServerResource
@@ -488,11 +488,11 @@ class LinuxServerOwnerAdmin(ImportExportActionModelAdmin):
         return self.model.objects.filter(decommissioned=0)
     list_max_show_all = 500
     save_on_top = True
-    list_display = ['name', 'owner', 'application', 'distribution_list', 'stack']
-    list_filter = ['os', 'owner', 'application', 'distribution_list', 'stack']
-    list_editable = ['owner', 'application', 'distribution_list', 'stack']
+    list_display = ['name', 'owner', 'application', 'distribution_list', 'host_level', 'stack']
+    list_filter = ['os', 'owner', 'application', 'distribution_list', 'host_level', 'stack']
+    list_editable = ['owner', 'application', 'distribution_list', 'host_level', 'stack']
     search_fields = ['name', 'owner', 'application', 'distribution_list']
-    fields = ['name', 'owner', 'application', 'distribution_list', 'stack']
+    fields = ['name', 'owner', 'application', 'distribution_list', 'host_level', 'stack']
     resource_class = LinuxServerResource
     class Media:
         js = ['/static/admin/js/list_filter_collapse.js']
